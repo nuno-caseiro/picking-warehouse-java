@@ -45,6 +45,10 @@ public class PanelParameters extends PanelAtributesValue {
         valueComponents.add(textFieldSeed);
         textFieldSeed.addKeyListener(new IntegerTextField_KeyAdapter(null));
 
+        labels.add(new JLabel("Population size: "));
+        valueComponents.add(textFieldN);
+        textFieldN.addKeyListener(new IntegerTextField_KeyAdapter(null));
+
         labels.add(new JLabel("# of generations: "));
         valueComponents.add(textFieldGenerations);
         textFieldGenerations.addKeyListener(new IntegerTextField_KeyAdapter(null));
@@ -73,7 +77,7 @@ public class PanelParameters extends PanelAtributesValue {
         valueComponents.add(comboBoxSearch);
         comboBoxSearch.addActionListener(new JComboBoxSearch_ActionAdapter(this));
 
-        //mainFrame.manageButtons(false,false,false,false,false,false,false,false);
+        mainFrame.manageButtons(false,false,false,false,false,false,false,false);
 
         configure();
     }
