@@ -249,7 +249,7 @@ public class MainFrame extends JFrame  {
 */
     }
 
-    private void manageButtons(
+    public void manageButtons(
             boolean dataSet,
             boolean runGA,
             boolean runSearch,
