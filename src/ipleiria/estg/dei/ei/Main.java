@@ -1,48 +1,36 @@
 package ipleiria.estg.dei.ei;
 
+import ipleiria.estg.dei.ei.model.Environment;
+import ipleiria.estg.dei.ei.model.search.AStar;
 import ipleiria.estg.dei.ei.model.search.Node;
 import ipleiria.estg.dei.ei.model.search.State;
-
-import java.util.PriorityQueue;
+import java.util.List;
 
 public class Main {
 
     public Main(){
         int[][] matrix = {
-                {0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0},
                 {0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0}};
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
-        State start = new State(0,0);
-        State end = new State(0,16);
+        Node start = new Node(new State(0,0));
+        Node end = new Node(new State(0,15));
 
-        Node a = new Node(null, null, 0);
-        Node b = new Node(null, null, 2);
-        Node c = new Node(null, null, 3);
-        Node d = new Node(null, null, 5);
-        Node e = new Node(null, null, 7);
-        Node f = new Node(null, null, 11);
+        Environment.getInstance().setMatrix(matrix);
 
-        PriorityQueue<Node> queue = new PriorityQueue<>();
+        AStar aStar = new AStar();
 
-        queue.add(a);
-        queue.add(b);
-        queue.add(c);
-        queue.add(d);
-        queue.add(e);
-        queue.add(f);
-
-        while (!queue.isEmpty()){
-            System.out.println(queue.poll().getF());
-        }
+        List<State> solution = aStar.search(start, end);
+        System.out.println(solution);
     }
 
     public static void main(String[] args) {
