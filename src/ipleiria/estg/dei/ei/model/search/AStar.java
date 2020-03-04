@@ -1,8 +1,8 @@
 package ipleiria.estg.dei.ei.model.search;
 
 import ipleiria.estg.dei.ei.model.Environment;
-import ipleiria.estg.dei.ei.model.NodePriorityQueue;
-import ipleiria.estg.dei.ei.model.Properties;
+import ipleiria.estg.dei.ei.utils.NodePriorityQueue;
+import ipleiria.estg.dei.ei.utils.Properties;
 
 import java.util.*;
 

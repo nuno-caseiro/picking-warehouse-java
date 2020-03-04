@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="798a742a-e745-4a5b-8e86-9362898e8156" name="Default Changelist" comment="Merged branch master into implementModel">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/org_jfree_jfreechart_1_5_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/catchBox/EnvironmentListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/MainFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelAtributesValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelParameters.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelSimulation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/FileOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projeto_Picking.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Projeto_Picking.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/NodePriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/NodePriorityQueue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/Properties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/Properties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/search/AStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/search/AStar.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1YRwf4yxp31Yac0hruxl6xdaH1P" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ipleiria.estg.dei.ei.utils" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ipleiria.estg.dei.ei.gui" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="ipleiria.estg.dei.ei.gui.Main" />
+      <module name="Projeto_Picking" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="798a742a-e745-4a5b-8e86-9362898e8156" name="Default Changelist" comment="" />
+      <created>1582918815166</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1582918815166</updated>
+      <workItem from="1582918818624" duration="160000" />
+      <workItem from="1582919406233" duration="2170000" />
+      <workItem from="1582990973277" duration="7044000" />
+      <workItem from="1583031062671" duration="5000" />
+      <workItem from="1583031248924" duration="207000" />
+      <workItem from="1583073916125" duration="12129000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merged branche master into implementModel" />
+    <MESSAGE value="Merged branch master into implementModel" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merged branch master into implementModel" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="440" y="190" width="946" height="669" key="#Project_Structure" timestamp="1583077477842">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="440" y="190" width="946" height="669" key="#Project_Structure/0.0.1680.1050@0.0.1680.1050" timestamp="1583077477842" />
+    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1583090140783">
+      <screen x="0" y="23" width="1680" height="981" />
+    </state>
+    <state x="653" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1583085146176" />
+    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/0.23.1680.981@0.23.1680.981" timestamp="1583090140783" />
+    <state x="756" y="405" width="408" height="237" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1583343993266">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="756" y="405" width="408" height="237" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040@0.0.1920.1040" timestamp="1583343993266" />
+    <state x="486" y="114" key="CommitChangelistDialog2" timestamp="1583344521293">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="486" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1583344521293" />
+    <state width="1877" height="205" key="GridCell.Tab.0.bottom" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1638" height="110" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590280" />
+    <state width="1877" height="205" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
+    <state width="1638" height="103" key="GridCell.Tab.0.bottom/0.23.1680.979@0.23.1680.979" timestamp="1582941684041" />
+    <state width="1638" height="97" key="GridCell.Tab.0.bottom/0.23.1680.981@0.23.1680.981" timestamp="1583090426421" />
+    <state width="1877" height="205" key="GridCell.Tab.0.center" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1638" height="110" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
+    <state width="1877" height="205" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
+    <state width="1638" height="103" key="GridCell.Tab.0.center/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
+    <state width="1638" height="97" key="GridCell.Tab.0.center/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
+    <state width="1877" height="205" key="GridCell.Tab.0.left" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1638" height="110" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590278" />
+    <state width="1877" height="205" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
+    <state width="1638" height="103" key="GridCell.Tab.0.left/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
+    <state width="1638" height="97" key="GridCell.Tab.0.left/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
+    <state width="1877" height="205" key="GridCell.Tab.0.right" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1638" height="110" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
+    <state width="1877" height="205" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
+    <state width="1638" height="103" key="GridCell.Tab.0.right/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
+    <state width="1638" height="97" key="GridCell.Tab.0.right/0.23.1680.981@0.23.1680.981" timestamp="1583090426420" />
+    <state width="1638" height="137" key="GridCell.Tab.1.bottom" timestamp="1583090732929">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="137" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
+    <state width="1638" height="137" key="GridCell.Tab.1.center" timestamp="1583090732929">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="137" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
+    <state width="1638" height="137" key="GridCell.Tab.1.left" timestamp="1583090732928">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="137" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732928" />
+    <state width="1638" height="137" key="GridCell.Tab.1.right" timestamp="1583090732929">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="137" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1582918820032">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582918820032" />
+    <state x="617" y="425" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1583077462223">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="617" y="425" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1680.1050@0.0.1680.1050" timestamp="1583077462223" />
+    <state x="602" y="127" key="refactoring.ChangeSignatureDialog" timestamp="1582993256177">
+      <screen x="0" y="23" width="1680" height="981" />
+    </state>
+    <state x="602" y="127" key="refactoring.ChangeSignatureDialog/0.23.1680.981@0.23.1680.981" timestamp="1582993256177" />
+    <state x="505" y="239" width="670" height="676" key="search.everywhere.popup" timestamp="1582993018268">
+      <screen x="0" y="23" width="1680" height="981" />
+    </state>
+    <state x="505" y="239" width="670" height="676" key="search.everywhere.popup/0.23.1680.981@0.23.1680.981" timestamp="1582993018268" />
+  </component>
+</project>

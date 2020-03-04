@@ -1,4 +1,4 @@
-package ipleiria.estg.dei.ei.model;
+package ipleiria.estg.dei.ei.utils;
 
 import ipleiria.estg.dei.ei.model.search.Node;
 import ipleiria.estg.dei.ei.model.search.State;

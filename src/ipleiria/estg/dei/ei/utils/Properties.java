@@ -1,4 +1,4 @@
-package ipleiria.estg.dei.ei.model;
+package ipleiria.estg.dei.ei.utils;
 
 public interface Properties {
     int obstacle = 1;
