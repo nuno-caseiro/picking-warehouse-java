@@ -77,7 +77,7 @@ public class PanelParameters extends PanelAtributesValue {
         valueComponents.add(comboBoxSearch);
         comboBoxSearch.addActionListener(new JComboBoxSearch_ActionAdapter(this));
 
-        mainFrame.manageButtons(false,false,false,false,false,false,false,false);
+        mainFrame.manageButtons(true,false,false,false,false,false,false,false);
 
         configure();
     }

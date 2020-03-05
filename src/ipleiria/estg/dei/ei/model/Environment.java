@@ -1,6 +1,7 @@
 package ipleiria.estg.dei.ei.model;
 
 import ipleiria.estg.dei.ei.model.search.Action;
+import ipleiria.estg.dei.ei.model.search.State;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,7 @@ public class Environment {
     private static Environment INSTANCE = new Environment();
     private int[][] matrix;
     private List<Action> actions;
+    private List<State> picks;
 
     private Environment() {
         actions = new LinkedList<>();
@@ -36,5 +38,13 @@ public class Environment {
 
     public void setActions(List<Action> actions) {
         this.actions = actions;
+    }
+
+    public List<State> getPicks() {
+        return picks;
+    }
+
+    public void setPicks(List<State> picks) {
+        this.picks = picks;
     }
 }

@@ -71,7 +71,12 @@ public class MainFrame extends JFrame  {
 
         panelButtons.add(buttonDataSet);
         buttonDataSet.setVisible(true);
-        buttonDataSet.addActionListener(new ButtonDataSet_actionsAdapter(this));
+        buttonDataSet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
 
         panelButtons.add(buttonRunSearch);
         buttonRunSearch.setEnabled(false);
@@ -168,6 +173,10 @@ public class MainFrame extends JFrame  {
         return panelParameters;
     }
 
+    public JButton getButtonDataSet() {
+        return buttonDataSet;
+    }
+
     public void cleanBoards() {
         problemPanel.textArea.setText("");
         bestIndividualPanel.textArea.setText("");
@@ -175,30 +184,7 @@ public class MainFrame extends JFrame  {
         seriesAverage.clear();
     }
 
-    public void buttonDataSet_actionPerformed(ActionEvent actionEvent) {
 
-        JFileChooser fc = new JFileChooser(new File("./DataSets"));
-        int returnVal = fc.showOpenDialog(this);
-
-        //TODO
-        /*try{
-            if(returnVal == JFileChooser.APPROVE_OPTION){
-                File dataSet = fc.getSelectedFile();
-                int[][] matrix = CatchAgentSearch.readInitialStateFromFile(dataSet); // TODO change catchagentsearch name
-                state = new CatchState(matrix);
-                agentSearch = new CatchAgentSearch(new CatchState(matrix));
-                problemPanel.textArea.setText(agentSearch.getEnvironment().toString());
-                bestIndividualPanel.textArea.setText("");
-                bestInRun = null;
-                manageButtons(true,false,true,false,false,true,false,false);
-            }
-        }catch (IOException e1){
-            e1.printStackTrace(System.err);
-        }catch (java.util.NoSuchElementException e2){
-            JOptionPane.showMessageDialog(this, "File format not valid", "Error!", JOptionPane.ERROR_MESSAGE);
-        }*/
-
-    }
 
     public void jButtonRunSearch_actionPerformed(ActionEvent actionEvent) {
 //TODO
@@ -481,21 +467,6 @@ public class MainFrame extends JFrame  {
 
     //TODO experimentEnd and getters & setters
 
-}
-
-class ButtonDataSet_actionsAdapter implements ActionListener{
-
-    final private MainFrame adaptee;
-
-    public ButtonDataSet_actionsAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.buttonDataSet_actionPerformed(actionEvent);
-    }
 }
 
 class ButtonRunSearch_actionAdapter implements ActionListener{
