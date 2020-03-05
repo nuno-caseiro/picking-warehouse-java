@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="798a742a-e745-4a5b-8e86-9362898e8156" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="798a742a-e745-4a5b-8e86-9362898e8156" name="Default Changelist" comment="Merged branch master into implementModel">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/org_jfree_jfreechart_1_5_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/catchBox/EnvironmentListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/MainFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelAtributesValue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelParameters.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelSimulation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/FileOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Projeto_Picking.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Projeto_Picking.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/NodePriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/NodePriorityQueue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/Properties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/Properties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/search/AStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/search/AStar.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +36,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YRwf4yxp31Yac0hruxl6xdaH1P" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -41,6 +57,9 @@
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ipleiria.estg.dei.ei.utils" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="ipleiria.estg.dei.ei.gui" />
     </key>
@@ -84,6 +103,11 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merged branche master into implementModel" />
+    <MESSAGE value="Merged branch master into implementModel" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merged branch master into implementModel" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="440" y="190" width="946" height="669" key="#Project_Structure" timestamp="1583077477842">
       <screen x="0" y="0" width="1680" height="1050" />
@@ -94,32 +118,40 @@
     </state>
     <state x="653" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1583085146176" />
     <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/0.23.1680.981@0.23.1680.981" timestamp="1583090140783" />
-    <state width="1638" height="110" key="GridCell.Tab.0.bottom" timestamp="1583101590280">
-      <screen x="0" y="0" width="1680" height="1050" />
+    <state x="756" y="405" width="408" height="237" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1583343993266">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="756" y="405" width="408" height="237" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040@0.0.1920.1040" timestamp="1583343993266" />
+    <state x="486" y="114" key="CommitChangelistDialog2" timestamp="1583344521293">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="486" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1583344521293" />
+    <state width="1877" height="205" key="GridCell.Tab.0.bottom" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1638" height="110" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590280" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1582918869964" />
+    <state width="1877" height="205" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
     <state width="1638" height="103" key="GridCell.Tab.0.bottom/0.23.1680.979@0.23.1680.979" timestamp="1582941684041" />
     <state width="1638" height="97" key="GridCell.Tab.0.bottom/0.23.1680.981@0.23.1680.981" timestamp="1583090426421" />
-    <state width="1638" height="110" key="GridCell.Tab.0.center" timestamp="1583101590279">
-      <screen x="0" y="0" width="1680" height="1050" />
+    <state width="1877" height="205" key="GridCell.Tab.0.center" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1638" height="110" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1582918869964" />
+    <state width="1877" height="205" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
     <state width="1638" height="103" key="GridCell.Tab.0.center/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.center/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
-    <state width="1638" height="110" key="GridCell.Tab.0.left" timestamp="1583101590278">
-      <screen x="0" y="0" width="1680" height="1050" />
+    <state width="1877" height="205" key="GridCell.Tab.0.left" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1638" height="110" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590278" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1582918869964" />
+    <state width="1877" height="205" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
     <state width="1638" height="103" key="GridCell.Tab.0.left/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.left/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
-    <state width="1638" height="110" key="GridCell.Tab.0.right" timestamp="1583101590279">
-      <screen x="0" y="0" width="1680" height="1050" />
+    <state width="1877" height="205" key="GridCell.Tab.0.right" timestamp="1583344280529">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1638" height="110" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1582918869964" />
+    <state width="1877" height="205" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583344280529" />
     <state width="1638" height="103" key="GridCell.Tab.0.right/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.right/0.23.1680.981@0.23.1680.981" timestamp="1583090426420" />
     <state width="1638" height="137" key="GridCell.Tab.1.bottom" timestamp="1583090732929">
