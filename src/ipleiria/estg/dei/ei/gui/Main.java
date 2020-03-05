@@ -1,23 +1,26 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.controller.Controller;
+
 import javax.swing.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    createAndShowGUI();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public Main() {
+        MainFrame frame = new MainFrame();
+        Controller controller = new Controller(frame);
+        controller.initController();
     }
 
-    public static void createAndShowGUI() throws Exception {
-        new MainFrame();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            new Main();
+        });
     }
 
 }
