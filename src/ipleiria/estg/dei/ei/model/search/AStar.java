@@ -32,7 +32,7 @@ public class AStar {
             explored.add(node.getState().toString());
             List<State> successors = computeSuccessors(node.getState());
             addSuccessorsToFrontier(successors, node, goalNode.getState());
-            //statistics
+            //TODO
         }
         return null;
     }
