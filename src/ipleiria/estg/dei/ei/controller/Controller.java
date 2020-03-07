@@ -26,8 +26,7 @@ public class Controller {
         try{
             if(returnVal == JFileChooser.APPROVE_OPTION){
                 File dataSet = fc.getSelectedFile();
-                int[][] matrix = readInitialStateFromFile(dataSet);
-                Environment.getInstance().setMatrix(matrix);
+                Environment.getInstance().readInitialStateFromFile(dataSet);
             }
         }catch (IOException e1){
             e1.printStackTrace(System.err);
@@ -36,24 +35,4 @@ public class Controller {
         }
     }
 
-    public int[][] readInitialStateFromFile(File file) throws IOException {
-        java.util.Scanner scanner = new java.util.Scanner(file);
-
-        int lines = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println(lines);
-        int columns = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println(columns);
-
-        int[][] matrix = new int[lines][columns];
-        for (int i = 0; i < lines; i++) {
-            for (int j = 0; j < columns; j++) {
-                matrix[i][j] = scanner.nextInt();
-            }
-            scanner.nextLine();
-        }
-
-        return matrix;
-    }
 }
