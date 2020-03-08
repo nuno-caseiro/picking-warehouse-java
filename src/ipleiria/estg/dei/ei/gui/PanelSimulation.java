@@ -1,14 +1,12 @@
 package ipleiria.estg.dei.ei.gui;
 
-import ipleiria.estg.dei.ei.catchBox.EnvironmentListener;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-public class PanelSimulation extends JPanel implements EnvironmentListener {
+public class PanelSimulation extends JPanel {
 
     public static final int PANEL_SIZE = 250;
     public static final int CELL_SIZE = 15;
@@ -40,8 +38,8 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
 
 
 
-    @Override
-    public void environmentUpdated() {
+//    @Override
+//    public void environmentUpdated() {
         //TODO
       /*  int n = environment.getSize();
         Graphics g = image.getGraphics();
@@ -70,7 +68,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
             Thread.sleep(100);
         } catch (InterruptedException ignore) {
         }*/
-    }
+//    }
 
     public void setJButtonSimulateEnabled(boolean enabled){
         if(worker != null){
@@ -133,7 +131,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         //environment.addEnvironmentListener(this);
 
         //buildImage(environemnt);
-        environmentUpdated();
+//        environmentUpdated();
     }
 
     //TODO

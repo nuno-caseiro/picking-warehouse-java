@@ -177,6 +177,10 @@ public class MainFrame extends JFrame  {
         return buttonDataSet;
     }
 
+    public JButton getButtonRunSearch() {
+        return buttonRunSearch;
+    }
+
     public void cleanBoards() {
         problemPanel.textArea.setText("");
         bestIndividualPanel.textArea.setText("");

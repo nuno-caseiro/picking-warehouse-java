@@ -41,8 +41,8 @@ public class GeneticAlgorithm {
 
         while (!stopCondition(t)) {
             Population populationAux = selection.run(population);
-//            recombination.run(populationAux);
-//            mutation.run(populationAux);
+//            recombination.run(populationAux); //TODO
+//            mutation.run(populationAux); //TODO
             population = populationAux;
             Individual bestInGen = population.evaluate();
             computeBestInRun(bestInGen);
@@ -61,5 +61,9 @@ public class GeneticAlgorithm {
 
     private boolean stopCondition(int t) {
         return stopped || t == maxGenerations;
+    }
+
+    public void stop() {
+        stopped = true;
     }
 }

@@ -2,6 +2,7 @@ package ipleiria.estg.dei.ei.model;
 
 import ipleiria.estg.dei.ei.model.search.Action;
 import ipleiria.estg.dei.ei.model.search.Pair;
+import ipleiria.estg.dei.ei.model.search.Pick;
 import ipleiria.estg.dei.ei.model.search.State;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class Environment {
     private static Environment INSTANCE = new Environment();
     private int[][] matrix;
     private List<Action> actions;
-    private List<State> picks;
+    private List<Pick> picks;
     private List<Pair> pairs;
     private List<State> agents;
     private State offloadArea;
@@ -27,8 +28,6 @@ public class Environment {
         this.actions.add(new Action(1, 1, 0)); // move down
         this.actions.add(new Action(1, 0, -1)); // move left
         this.actions.add(new Action(1, 0, 1)); // move right
-
-        this.pairs = new LinkedList<>();
         this.agents = new LinkedList<>();
     }
 
@@ -49,10 +48,8 @@ public class Environment {
 
         int lines = scanner.nextInt();
         scanner.nextLine();
-        System.out.println(lines);
         int columns = scanner.nextInt();
         scanner.nextLine();
-        System.out.println(columns);
 
         int[][] matrix = new int[lines][columns];
         for (int i = 0; i < lines; i++) {
@@ -79,12 +76,36 @@ public class Environment {
         this.actions = actions;
     }
 
-    public List<State> getPicks() {
+    public List<Pick> getPicks() {
         return picks;
     }
 
     public void setPicks(List<State> picks) {
-        this.picks = picks;
-        //TODO create pairs list
+        this.pairs = new LinkedList<>();
+
+        for (State pick : picks) {
+            for (State agent : this.agents) {
+                pairs.add(new Pair(agent, pick));
+            }
+            pairs.add(new Pair(pick, offloadArea));
+        }
+
+        for (int i = 0; i < picks.size() - 1; i++) {
+            for (int j = i + 1; j < picks.size(); j++) {
+                pairs.add(new Pair(picks.get(i), picks.get(j)));
+            }
+        }
+    }
+
+    public int getNumberOfAgents() {
+        return agents.size();
+    }
+
+    public int getNumberOfPicks() {
+        return picks.size();
+    }
+
+    public List<Pair> getPairs() {
+        return pairs;
     }
 }

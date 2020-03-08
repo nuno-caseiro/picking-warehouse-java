@@ -18,7 +18,7 @@ public class AStar {
         this.heuristic = new Heuristic();
     }
 
-    public List<State> search(Node initialNode, Node goalNode) {
+    public List<Action> search(Node initialNode, Node goalNode) {
         frontier.clear();
         explored.clear();
         frontier.add(initialNode);
@@ -37,15 +37,23 @@ public class AStar {
         return null;
     }
 
-    private List<State> computeSolution(Node node) {
-        LinkedList<State> solution = new LinkedList<>();
+    private List<Action> computeSolution(Node node) {
+        LinkedList<Action> solution = new LinkedList<>();
 
         while (node.hasParent()) {
-            solution.addFirst(node.getState());
+            solution.addFirst(node.getState().getAction());
             node = node.getParent();
         }
 
         return solution;
+    }
+
+    public double computePathCost(List<Action> path) {
+        double cost = 0;
+        for (Action operator : path) {
+            cost += operator.getCost();
+        }
+        return cost;
     }
 
     private List<State> computeSuccessors(State state) {
