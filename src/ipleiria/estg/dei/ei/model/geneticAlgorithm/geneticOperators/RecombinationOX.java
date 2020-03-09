@@ -73,8 +73,8 @@ public class RecombinationOX extends Recombination {
             ind2.setGene(i, child1.get(i));
         }
 
-        System.out.println(ind1.toString());
-        System.out.println(ind2.toString());
+//        System.out.println(ind1.toString());
+//        System.out.println(ind2.toString());
 
     }
 

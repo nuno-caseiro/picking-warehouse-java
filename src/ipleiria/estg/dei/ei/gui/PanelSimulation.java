@@ -1,12 +1,15 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.Environment;
+import ipleiria.estg.dei.ei.model.EnvironmentListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-public class PanelSimulation extends JPanel {
+public class PanelSimulation extends JPanel implements EnvironmentListener {
 
     public static final int PANEL_SIZE = 250;
     public static final int CELL_SIZE = 15;
@@ -36,9 +39,11 @@ public class PanelSimulation extends JPanel {
         ));
     }
 
+    public JButton getButtonSimulate() {
+        return buttonSimulate;
+    }
 
-
-//    @Override
+    //    @Override
 //    public void environmentUpdated() {
         //TODO
       /*  int n = environment.getSize();
@@ -125,22 +130,52 @@ public class PanelSimulation extends JPanel {
 
     }
 
-    private void createEnvironment() {
+    public void createEnvironment() {
         //TODO
-        //environment = new State(mainFrame.getState().getMatrix());
-        //environment.addEnvironmentListener(this);
+//        environment = new State(mainFrame.getState().getMatrix());
+        Environment.getInstance().addEnvironmentListener(this);
 
-        //buildImage(environemnt);
-//        environmentUpdated();
+        buildImage(Environment.getInstance().getMatrix());
+        environmentUpdated();
     }
 
     //TODO
-    /*public void buildImage(State environemnt){
-        image = new BufferedImage(
-                environemnt.getSize() * CELL_SIZE +1,
-                environemnt.getSize() * CELL_SIZE + 1,
-                BufferedImage.TYPE_INT_RGB);
-    }*/
+    public void buildImage(int[][] matrix){
+        image = new BufferedImage(matrix[0].length * CELL_SIZE +1, matrix.length * CELL_SIZE + 1, BufferedImage.TYPE_INT_RGB);
+    }
+
+    @Override
+    public void environmentUpdated() {
+
+        int n = Environment.getInstance().getMatrix().length;
+        Graphics g = image.getGraphics();
+
+
+        //Fill the cells color
+        for (int y = 0; y < n; y++) {
+            for (int x = 0; x < n; x++) {
+                g.setColor(Environment.getInstance().getCellColor(y, x));
+                g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+        }
+
+        //Draw the grid lines
+        g.setColor(Color.BLACK);
+        for (int i = 0; i <= n; i++) {
+            g.drawLine(0, i * CELL_SIZE, n * CELL_SIZE, i * CELL_SIZE);
+            g.drawLine(i * CELL_SIZE, 0, i * CELL_SIZE, n * CELL_SIZE);
+        }
+
+        g = environmentPanel.getGraphics();
+        g.drawImage(image, GRID_TO_PANEL_GAP, GRID_TO_PANEL_GAP, null);
+//        panelInformation.getTextFieldBox().setText(Integer.toString(mainFrame.getAgentSearch().getInitialBox().size()-environment.getNumBox()));
+////        panelInformation.getTextFieldSteps().setText(Integer.toString(environment.getSteps()));
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ignore) {
+        }
+    }
 }
 
 class SimulationPanel_buttonSimulate_actionAdapter implements ActionListener{

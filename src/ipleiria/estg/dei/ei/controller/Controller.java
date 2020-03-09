@@ -30,6 +30,30 @@ public class Controller {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
         view.getButtonRunSearch().addActionListener(e -> search());
         view.getButtonRunGA().addActionListener(e -> runGA());
+        view.getButtonStop().addActionListener(e -> stop());
+        view.getButtonSimulate().addActionListener(e -> simulate());
+    }
+
+    private void simulate() {
+        worker = new SwingWorker<>() {
+            @Override
+            public Void doInBackground() {
+                try {
+                    Environment.getInstance().executeSolution();
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+                return null;
+            }
+
+            @Override
+            public void done() { }
+        };
+        worker.execute();
+    }
+
+    private void stop() {
+        worker.cancel(true);
     }
 
     private void runGA() {
@@ -38,7 +62,7 @@ public class Controller {
         view.getSeriesBestIndividual().clear();
         view.getSeriesAverage().clear();
 
-        view.manageButtons(false, true, false, true, true, true, false, false);
+        view.manageButtons(true, true, false, true, true, true, false, false);
         Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
 
         GeneticAlgorithm ga = new GeneticAlgorithm(
@@ -66,24 +90,19 @@ public class Controller {
 
             @Override
             public void done() {
-                view.manageButtons(false, true, false, false, true, true, false, false);
+                view.manageButtons(true, true, false, false, true, true, false, false);
             }
         };
         worker.execute();
     }
 
     private void search() { //TODO agents and offload area loaded statically(in matrix)
-        List<State> picks = new LinkedList<>();
-        picks.add(new State(3,0));
-        picks.add(new State(5,11));
-        picks.add(new State(9,12));
+
 
         worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 try {
-                    Environment.getInstance().setPicks(picks);
-
                     AStar aStar = new AStar();
                     for (Pair pair : Environment.getInstance().getPairs()) {
                         List<Action> actions = aStar.search(new Node(pair.getState1()), new Node(pair.getState2()));
@@ -107,7 +126,7 @@ public class Controller {
                     str.append(p);
                 }
                 System.out.println(str.toString());
-                view.manageButtons(false, true, false, false, false, true, false, false);
+                view.manageButtons(true, true, false, false, false, true, false, false);
             }
         };
         worker.execute();
@@ -121,6 +140,15 @@ public class Controller {
             if(returnVal == JFileChooser.APPROVE_OPTION){
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
+
+                List<State> picks = new LinkedList<>();
+                picks.add(new State(3,0));
+                picks.add(new State(5,11));
+                picks.add(new State(9,12));
+
+                Environment.getInstance().setPicks(picks);
+
+                view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true,false,true,false,false,true,false,false);
             }
         }catch (IOException e1){
@@ -129,5 +157,4 @@ public class Controller {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }

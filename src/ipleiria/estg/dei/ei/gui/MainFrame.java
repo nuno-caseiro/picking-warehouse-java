@@ -88,11 +88,10 @@ public class MainFrame extends JFrame  {
 
         panelButtons.add(buttonStop);
         buttonStop.setEnabled(false);
-        buttonStop.addActionListener(new ButtonStop_actionAdapter(this));
 
-        panelButtons.add(buttonRunSearch2);
-        buttonRunSearch2.setEnabled(false);
-        buttonRunSearch2.addActionListener(new ButtonRunSearch2_actionAdapter(this));
+//        panelButtons.add(buttonRunSearch2);
+//        buttonRunSearch2.setEnabled(false);
+//        buttonRunSearch2.addActionListener(new ButtonRunSearch2_actionAdapter(this));
 
         panelNorthLeft.add(panelButtons,BorderLayout.SOUTH);
 
@@ -181,6 +180,10 @@ public class MainFrame extends JFrame  {
         return buttonRunSearch;
     }
 
+    public JButton getButtonSimulate() {
+        return simulationPanel.getButtonSimulate();
+    }
+
     public PanelTextArea getProblemPanel() {
         return problemPanel;
     }
@@ -199,6 +202,14 @@ public class MainFrame extends JFrame  {
 
     public JButton getButtonRunGA() {
         return buttonRunGA;
+    }
+
+    public JButton getButtonStop() {
+        return buttonStop;
+    }
+
+    public PanelSimulation getSimulationPanel() {
+        return simulationPanel;
     }
 
     public void cleanBoards() {
@@ -413,9 +424,9 @@ public class MainFrame extends JFrame  {
         }
     }*/
 
-    public void jButtonStop_actionPerformed(ActionEvent actionEvent) {
-        worker.cancel(true);
-    }
+//    public void jButtonStop_actionPerformed(ActionEvent actionEvent) {
+//        worker.cancel(true);
+//    }
 
     public void buttonExperiments_actionPerformed(ActionEvent actionEvent) {
         //TODO
@@ -537,20 +548,20 @@ class ButtonRunSearch2_actionAdapter implements ActionListener{
     }
 }
 
-class ButtonStop_actionAdapter implements ActionListener{
-
-    final private MainFrame adaptee;
-
-    public ButtonStop_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.jButtonStop_actionPerformed(actionEvent);
-    }
-}
+//class ButtonStop_actionAdapter implements ActionListener{
+//
+//    final private MainFrame adaptee;
+//
+//    public ButtonStop_actionAdapter(MainFrame adaptee) {
+//        this.adaptee = adaptee;
+//    }
+//
+//
+//    @Override
+//    public void actionPerformed(ActionEvent actionEvent) {
+//        adaptee.jButtonStop_actionPerformed(actionEvent);
+//    }
+//}
 
 class ButtonExperiments_actionAdapter implements ActionListener{
 

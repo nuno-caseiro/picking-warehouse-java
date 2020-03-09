@@ -6,8 +6,10 @@ import ipleiria.estg.dei.ei.model.search.Pair;
 import ipleiria.estg.dei.ei.model.search.Pick;
 import ipleiria.estg.dei.ei.model.search.State;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Environment {
     private State offloadArea;
     private Individual bestInRun;
     private HashMap<String, Pair> pairsMap;
+    private ArrayList<EnvironmentListener> listeners;
 
     private Environment() {
         this.actions = new LinkedList<>();
@@ -32,6 +35,7 @@ public class Environment {
         this.actions.add(new Action(1, 0, -1)); // move left
         this.actions.add(new Action(1, 0, 1)); // move right
         this.agents = new LinkedList<>();
+        this.listeners = new ArrayList<>();
     }
 
     public static Environment getInstance() {
@@ -85,6 +89,11 @@ public class Environment {
 
     public void setPicks(List<State> picks) {
         this.picks = picks;
+
+        for (State pick : picks) {
+            matrix[pick.getLine()][pick.getColumn()] = 4;
+        }
+
         this.pairs = new LinkedList<>();
 
         for (State pick : picks) {
@@ -164,6 +173,64 @@ public class Environment {
 
             pairsMap.put(key1, pair.clone());
             pairsMap.put(key2, reverseActionsPair);
+        }
+    }
+
+    public void executeSolution() {
+        int[] genome = bestInRun.getGenome();
+        List<Integer> agentStartIndex = new ArrayList<>();
+        agentStartIndex.add(0);
+
+        for (int i = 0; i < genome.length; i++) {
+            if (genome[i] == 0) {
+                agentStartIndex.add(i);
+            }
+        }
+
+//        for (int i = 0; i < genome.length; i++) {
+//            for (int index : agentStartIndex) {
+//                if (index == -1) {
+//                    continue;
+//                }
+//                if (index + 1 > genome.length - 1 || genome[index + 1] == 0) {
+//                    continue;
+//                }
+//                agentStartIndex.remove(in)
+//            }
+//        }
+
+        fireUpdatedEnvironment();
+    }
+
+    public Color getCellColor(int line, int column) {
+
+        switch (matrix[line][column]) {
+            case Properties.obstacle:
+                return Properties.COLOROBSTACLE;
+            case Properties.agent:
+                return Properties.COLORAGENT;
+            case Properties.offloadArea:
+                return Properties.COLOROFFLOADAREA;
+                case  Properties.pick:
+                    return Properties.COLORPICK;
+            default:
+                return Properties.COLOREMPTY;
+        }
+    }
+
+    public synchronized void addEnvironmentListener(EnvironmentListener l) {
+        if (!listeners.contains(l)) {
+            listeners.add(l);
+        }
+    }
+
+    public synchronized void removeEnvironmentListener(EnvironmentListener l) {
+        listeners.remove(l);
+    }
+
+    public void fireUpdatedEnvironment() {
+        for (EnvironmentListener listener : listeners) {
+            listener.environmentUpdated();
         }
     }
 }
