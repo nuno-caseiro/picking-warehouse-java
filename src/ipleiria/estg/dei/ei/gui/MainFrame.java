@@ -181,6 +181,26 @@ public class MainFrame extends JFrame  {
         return buttonRunSearch;
     }
 
+    public PanelTextArea getProblemPanel() {
+        return problemPanel;
+    }
+
+    public PanelTextArea getBestIndividualPanel() {
+        return bestIndividualPanel;
+    }
+
+    public XYSeries getSeriesAverage() {
+        return seriesAverage;
+    }
+
+    public XYSeries getSeriesBestIndividual() {
+        return seriesBestIndividual;
+    }
+
+    public JButton getButtonRunGA() {
+        return buttonRunGA;
+    }
+
     public void cleanBoards() {
         problemPanel.textArea.setText("");
         bestIndividualPanel.textArea.setText("");
@@ -562,7 +582,7 @@ class ButtonRunExperiments_actionAdapter implements ActionListener
 }
 
 class PanelTextArea extends JPanel{
-    JTextArea textArea;
+    public JTextArea textArea;
 
     public PanelTextArea(String title, int rows, int columns) {
         textArea = new JTextArea(rows,columns);

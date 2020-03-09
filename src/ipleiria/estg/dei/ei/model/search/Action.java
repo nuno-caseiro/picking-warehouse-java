@@ -22,4 +22,12 @@ public class Action {
     public int getHorizontalMovement() {
         return horizontalMovement;
     }
+
+    public void flipVerticalMovement() {
+        verticalMovement *= -1;
+    }
+
+    public void flipHorizontalMovement() {
+        horizontalMovement *= -1;
+    }
 }

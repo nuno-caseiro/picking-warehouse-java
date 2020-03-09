@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.model;
 
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.Action;
 import ipleiria.estg.dei.ei.model.search.Pair;
 import ipleiria.estg.dei.ei.model.search.Pick;
@@ -17,10 +18,12 @@ public class Environment {
     private static Environment INSTANCE = new Environment();
     private int[][] matrix;
     private List<Action> actions;
-    private List<Pick> picks;
+    private List<State> picks;
     private List<Pair> pairs;
     private List<State> agents;
     private State offloadArea;
+    private Individual bestInRun;
+    private HashMap<String, Pair> pairsMap;
 
     private Environment() {
         this.actions = new LinkedList<>();
@@ -76,11 +79,12 @@ public class Environment {
         this.actions = actions;
     }
 
-    public List<Pick> getPicks() {
+    public List<State> getPicks() {
         return picks;
     }
 
     public void setPicks(List<State> picks) {
+        this.picks = picks;
         this.pairs = new LinkedList<>();
 
         for (State pick : picks) {
@@ -107,5 +111,59 @@ public class Environment {
 
     public List<Pair> getPairs() {
         return pairs;
+    }
+
+    public Individual getBestInRun() {
+        return bestInRun;
+    }
+
+    public void setBestInRun(Individual bestInRun) {
+        this.bestInRun = bestInRun;
+    }
+
+    public List<State> getAgents() {
+        return agents;
+    }
+
+    public State getOffloadArea() {
+        return offloadArea;
+    }
+
+    public HashMap<String, Pair> getPairsMap() {
+        return pairsMap;
+    }
+
+    public void setPairsMap() {
+        pairsMap = new HashMap<>();
+
+        StringBuilder sb;
+        StringBuilder sb1;
+        for (Pair pair : pairs) {
+            sb = new StringBuilder();
+            sb.append(pair.getState1().getLine());
+            sb.append("-");
+            sb.append(pair.getState1().getColumn());
+            sb.append("/");
+            sb.append(pair.getState2().getLine());
+            sb.append("-");
+            sb.append(pair.getState2().getColumn());
+            String key1 = sb.toString();
+
+            sb1 = new StringBuilder();
+            sb1.append(pair.getState2().getLine());
+            sb1.append("-");
+            sb1.append(pair.getState2().getColumn());
+            sb1.append("/");
+            sb1.append(pair.getState1().getLine());
+            sb1.append("-");
+            sb1.append(pair.getState1().getColumn());
+            String key2 = sb1.toString();
+
+            Pair reverseActionsPair = pair.clone();
+            reverseActionsPair.reverseActions();
+
+            pairsMap.put(key1, pair.clone());
+            pairsMap.put(key2, reverseActionsPair);
+        }
     }
 }

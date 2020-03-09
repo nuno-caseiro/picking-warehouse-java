@@ -41,8 +41,8 @@ public class GeneticAlgorithm {
 
         while (!stopCondition(t)) {
             Population populationAux = selection.run(population);
-//            recombination.run(populationAux); //TODO
-//            mutation.run(populationAux); //TODO
+            recombination.run(populationAux);
+            mutation.run(populationAux);
             population = populationAux;
             Individual bestInGen = population.evaluate();
             computeBestInRun(bestInGen);

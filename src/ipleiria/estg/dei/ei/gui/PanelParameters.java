@@ -1,5 +1,9 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.*;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.SelectionMethod;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.Tournament;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,11 +29,11 @@ public class PanelParameters extends PanelAtributesValue {
     JComboBox comboBoxSelectionMethods = new JComboBox(selectionMethods);
     JTextField textFieldTournamentSize = new JTextField(TOURNMENT_SIZE,TEXT_FIELD_LENGHT);
 
-    String[] recombinationMethods = {"PMX"};
+    String[] recombinationMethods = {"CX", "DX", "OX", "PMX"};
     JComboBox comboBoxRecombinationMethods = new JComboBox(recombinationMethods);
     JTextField textFieldProbRecombination = new JTextField(PROB_RECOMBINATION,TEXT_FIELD_LENGHT);
 
-    String[] mutationMethods={"Insert"};
+    String[] mutationMethods={"Insert", "Inversion", "Scramble"};
     JComboBox comboBoxMutationMethods = new JComboBox(mutationMethods);
     JTextField textFieldProbMutation = new JTextField(PROB_MUTATION,TEXT_FIELD_LENGHT);
 
@@ -80,6 +84,59 @@ public class PanelParameters extends PanelAtributesValue {
         mainFrame.manageButtons(true,false,false,false,false,false,false,false);
 
         configure();
+    }
+
+    public JTextField getTextFieldSeed() {
+        return textFieldSeed;
+    }
+
+    public JTextField getTextFieldN() {
+        return textFieldN;
+    }
+
+    public JTextField getTextFieldGenerations() {
+        return textFieldGenerations;
+    }
+
+    public SelectionMethod getSelectionMethod() {
+
+        switch (comboBoxSelectionMethods.getSelectedIndex()) {
+            case 0:
+                return new Tournament(Integer.parseInt(textFieldN.getText()), Integer.parseInt(textFieldTournamentSize.getText()));
+        }
+        return null;
+    }
+
+
+    public Recombination getRecombinationMethod() {
+
+        double recombinationProb = Double.parseDouble(textFieldProbRecombination.getText());
+
+        switch (comboBoxRecombinationMethods.getSelectedIndex()) {
+            case 0:
+                return new RecombinationCX(recombinationProb);
+            case 1:
+                return new RecombinationDX(recombinationProb);
+            case 2:
+                return new RecombinationOX(recombinationProb);
+            case 3:
+                return new RecombinationPartialMapped(recombinationProb);
+        }
+
+        return null;
+    }
+
+    public Mutation getMutationMethod() {
+        double mutationProbability = Double.parseDouble(textFieldProbMutation.getText());
+        switch (comboBoxMutationMethods.getSelectedIndex()) {
+            case 0:
+                return new MutationInsert(mutationProbability);
+            case 1:
+                return new MutationInversion(mutationProbability);
+            case 2:
+                return new MutationScramble(mutationProbability);
+        }
+        return null;
     }
 
     public void actionPerformedSelectionMethods(ActionEvent actionEvent) {

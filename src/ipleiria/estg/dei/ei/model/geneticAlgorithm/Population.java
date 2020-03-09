@@ -25,7 +25,10 @@ public class Population {
         bestInPopulation = individuals.get(0);
 
         for (Individual individual : individuals) {
-            //TODO individual.computeFitness();
+            individual.computeFitness();
+            if (individual.getFitness() == 0) {
+                System.out.println(individual.toString());
+            }
             if (individual.compareTo(bestInPopulation) > 0) {
                 bestInPopulation = individual;
             }
