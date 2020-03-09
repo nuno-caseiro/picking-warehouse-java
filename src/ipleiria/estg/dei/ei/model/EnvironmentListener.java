@@ -1,7 +1,8 @@
-package ipleiria.estg.dei.ei.catchBox;
+package ipleiria.estg.dei.ei.model;
 
 public interface EnvironmentListener {
 
     void environmentUpdated();
-
 }
+
+
