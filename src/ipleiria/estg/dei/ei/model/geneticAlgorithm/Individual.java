@@ -21,7 +21,7 @@ public class Individual implements Comparable<Individual>{
         this.genes = new LinkedList<>();
 
         for (int i = 0; i < numAgents - 1; i++) {
-            genes.add(0);
+            genes.add(-1 - i);
         }
 
         for (int i = 0; i < numPicks; i++) {
