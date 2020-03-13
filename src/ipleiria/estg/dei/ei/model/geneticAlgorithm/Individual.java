@@ -4,7 +4,6 @@ import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.search.Pair;
 import ipleiria.estg.dei.ei.model.search.State;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,12 +12,11 @@ public class Individual implements Comparable<Individual>{
 
     private int[] genome;
     private double fitness;
-    private List<Integer> genes; // 0 -> divisions between paths for different agents | 1 ... n index of the picks (eg. Environment.getInstance().getPicks().get(n -1))
 
     public Individual(int numPicks, int numAgents) {
         int genomeSize = numPicks + (numAgents -1);
         this.genome = new int[genomeSize];
-        this.genes = new LinkedList<>();
+        List<Integer> genes = new LinkedList<>(); // 0 -> divisions between paths for different agents | 1 ... n index of the picks (eg. Environment.getInstance().getPicks().get(n -1))
 
         for (int i = 0; i < numAgents - 1; i++) {
             genes.add(-1 - i);
@@ -92,55 +90,41 @@ public class Individual implements Comparable<Individual>{
 
     public void computeFitness() {
         List<State> picks = Environment.getInstance().getPicks();
+        HashMap<String, Pair> pairsValueMap = Environment.getInstance().getPairsMap();
         List<State> agents = Environment.getInstance().getAgents();
         State offload = Environment.getInstance().getOffloadArea();
-        int agentFitness = 0;
+        double agentFitness = 0;
         int agent = 0;
-        State state1;
-        State state2;
+        State previousState = agents.get(agent);
+        State currentState;
 
-        if (genome[0] != 0) {
-            state1 = agents.get(agent);
-            state2 = picks.get(genome[0] - 1);
-            agentFitness += getPairValue(state1, state2);
-        }
+        for (int i = 0; i < genome.length; i++) {
+            if (genome[i] < 0) {
+                currentState = offload;
+                agentFitness += getPairValue(pairsValueMap, previousState, currentState);
 
-        for (int i = 0; i < genome.length - 1; i++) {
-            if (genome[i] == 0) {
-                state1 = agents.get(++agent);
-                state2 = picks.get(genome[i + 1] - 1);
-                agentFitness += getPairValue(state1, state2);
-                continue;
-            }
-
-            if (genome[i + 1] == 0) {
-                state1 = picks.get(genome[i] - 1);
-                agentFitness += getPairValue(state1, offload);
-
-                if (fitness < agentFitness) {
+                if (agentFitness > fitness) {
                     fitness = agentFitness;
                 }
                 agentFitness = 0;
+                previousState = agents.get(++agent);
                 continue;
             }
+            currentState = picks.get(genome[i] - 1);
+            agentFitness += getPairValue(pairsValueMap, previousState, currentState);
 
-            state1 = picks.get(genome[i] - 1);
-            state2 = picks.get(genome[i + 1] - 1);
-            agentFitness += getPairValue(state1, state2);
+            previousState = currentState;
         }
 
-        if (genome[genome.length - 1] != 0) {
-            state1 = picks.get(genome[genome.length - 1] - 1);
-            agentFitness += getPairValue(state1, offload);
-            if (fitness < agentFitness) {
-                fitness = agentFitness;
-            }
+        currentState = offload;
+        agentFitness += getPairValue(pairsValueMap, previousState, currentState);
+
+        if (agentFitness > fitness) {
+            fitness = agentFitness;
         }
     }
 
-    private double getPairValue(State state1, State state2) {
-        HashMap<String, Pair> pairsValueMap = Environment.getInstance().getPairsMap();
-
+    private double getPairValue(HashMap<String, Pair> pairsValueMap, State state1, State state2) {
         return pairsValueMap.get(getKey(state1, state2)).getValue();
     }
 

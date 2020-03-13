@@ -96,6 +96,10 @@ public class Environment {
 
         this.pairs = new LinkedList<>();
 
+        for (State agent : this.agents) {
+            pairs.add(new Pair(agent, offloadArea));
+        }
+
         for (State pick : picks) {
             for (State agent : this.agents) {
                 pairs.add(new Pair(agent, pick));
