@@ -1,6 +1,7 @@
 package ipleiria.estg.dei.ei.gui;
 
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.*;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.RankBased;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.Tournament;
 
@@ -25,7 +26,7 @@ public class PanelParameters extends PanelAtributesValue {
     JTextField textFieldN = new JTextField(POPULATION_SIZE,TEXT_FIELD_LENGHT);
     JTextField textFieldGenerations = new JTextField(GENERATIONS,TEXT_FIELD_LENGHT);
 
-    String[] selectionMethods= {"Tournament"};
+    String[] selectionMethods= {"Tournament", "Rank"};
     JComboBox comboBoxSelectionMethods = new JComboBox(selectionMethods);
     JTextField textFieldTournamentSize = new JTextField(TOURNMENT_SIZE,TEXT_FIELD_LENGHT);
 
@@ -103,6 +104,8 @@ public class PanelParameters extends PanelAtributesValue {
         switch (comboBoxSelectionMethods.getSelectedIndex()) {
             case 0:
                 return new Tournament(Integer.parseInt(textFieldN.getText()), Integer.parseInt(textFieldTournamentSize.getText()));
+            case 1:
+                return new RankBased(Integer.parseInt(textFieldN.getText()));
         }
         return null;
     }

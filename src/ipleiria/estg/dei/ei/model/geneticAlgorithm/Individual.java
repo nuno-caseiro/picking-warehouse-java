@@ -39,6 +39,11 @@ public class Individual implements Comparable<Individual>{
         this.fitness = original.fitness;
     }
 
+    public Individual(int[] genome) {
+        this.genome = genome;
+        computeFitness();
+    }
+
     public double getFitness() {
         return fitness;
     }
