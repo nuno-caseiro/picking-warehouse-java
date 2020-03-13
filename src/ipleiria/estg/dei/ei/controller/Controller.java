@@ -145,6 +145,12 @@ public class Controller {
                 picks.add(new State(3,0));
                 picks.add(new State(5,11));
                 picks.add(new State(9,12));
+                picks.add(new State(0,0));
+                picks.add(new State(4,2));
+                picks.add(new State(13,2));
+                picks.add(new State(12,9));
+                picks.add(new State(14,11));
+                picks.add(new State(0,9));
 
                 Environment.getInstance().setPicks(picks);
 
