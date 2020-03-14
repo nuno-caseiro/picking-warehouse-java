@@ -4,6 +4,8 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.Mutation;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.Recombination;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -37,7 +39,7 @@ public class GeneticAlgorithm {
         t = 0;
         population = new Population(popSize, numPicks, numAgents);
         bestInRun = population.evaluate();
-        //TODO fireGenerationEnded();
+        fireGenerationEnded(this);
 
         while (!stopCondition(t)) {
             Population populationAux = selection.run(population);
@@ -47,9 +49,9 @@ public class GeneticAlgorithm {
             Individual bestInGen = population.evaluate();
             computeBestInRun(bestInGen);
             t++;
-            //TODO fireGenerationEnded();
+            fireGenerationEnded(this);
         }
-        //TODO fireRunEnded();
+        fireRunEnded(this);
         return bestInRun;
     }
 
@@ -65,5 +67,48 @@ public class GeneticAlgorithm {
 
     public void stop() {
         stopped = true;
+    }
+
+    public Individual getBestInRun() {
+        return bestInRun;
+    }
+
+    public int getGenerationNr() {
+        return t;
+    }
+
+    public double getAverageFitness() {
+        return population.getAverageFitness();
+    }
+
+
+    //Listeners
+    private final transient List<GAListener> listeners = new ArrayList<>(3);
+
+    public synchronized void addGAListener(GAListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public synchronized void removeAGListener(GAListener listener) {
+        if (listeners != null && listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
+
+    public void fireGenerationEnded(GeneticAlgorithm e) {
+        for (GAListener listener : listeners) {
+            listener.generationEnded(e);
+        }
+        if (stopped) {
+            stop();
+        }
+    }
+
+    public void fireRunEnded(GeneticAlgorithm e) {
+        for (GAListener listener : listeners) {
+            listener.runEnded(e);
+        }
     }
 }

@@ -36,6 +36,7 @@ public class Environment {
         this.actions.add(new Action(1, 0, 1)); // move right
         this.agents = new LinkedList<>();
         this.listeners = new ArrayList<>();
+        this.picks= new LinkedList<>();
     }
 
     public static Environment getInstance() {
@@ -73,6 +74,16 @@ public class Environment {
         }
 
         this.matrix = matrix;
+
+        while(scanner.hasNextLine()){
+            int line = scanner.nextInt();
+            int col = scanner.nextInt();
+            State newPick= new State(line,col);
+            picks.add(newPick);
+        }
+
+        setPicks(picks);
+
     }
 
     public List<Action> getActions() {
