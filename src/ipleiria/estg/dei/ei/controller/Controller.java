@@ -2,6 +2,7 @@ package ipleiria.estg.dei.ei.controller;
 
 import ipleiria.estg.dei.ei.gui.MainFrame;
 import ipleiria.estg.dei.ei.model.Environment;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.AStar;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class Controller {
+public class Controller implements GAListener {
 
     private MainFrame view;
     private SwingWorker<Void, Void> worker;
@@ -58,7 +59,7 @@ public class Controller {
 
     private void runGA() {
 
-        // bestIndividualPanel.textArea.setText(""); //TODO
+        view.setBestIndividualPanelText("");
         view.getSeriesBestIndividual().clear();
         view.getSeriesAverage().clear();
 
@@ -73,6 +74,8 @@ public class Controller {
                 view.getPanelParameters().getMutationMethod(),
                 Environment.getInstance().getNumberOfAgents(),
                 Environment.getInstance().getNumberOfPicks(), random);
+
+        ga.addGAListener(this);
 
         worker = new SwingWorker<>() {
             @Override
@@ -141,7 +144,7 @@ public class Controller {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
 
-                List<State> picks = new LinkedList<>();
+               /* List<State> picks = new LinkedList<>();
                 picks.add(new State(3,0));
                 picks.add(new State(5,11));
                 picks.add(new State(9,12));
@@ -152,7 +155,7 @@ public class Controller {
                 picks.add(new State(14,11));
                 picks.add(new State(0,9));
 
-                Environment.getInstance().setPicks(picks);
+                Environment.getInstance().setPicks(picks);*/
 
                 view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true,false,true,false,false,true,false,false);
@@ -162,5 +165,17 @@ public class Controller {
         }catch (java.util.NoSuchElementException e2){
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    public void generationEnded(GeneticAlgorithm e) {
+        view.setBestIndividualPanelText(e.getBestInRun().toString());
+        view.getSeriesBestIndividual().add(e.getGenerationNr(), e.getBestInRun().getFitness());
+        view.getSeriesAverage().add(e.getGenerationNr(), e.getAverageFitness());
+    }
+
+    @Override
+    public void runEnded(GeneticAlgorithm e) {
+
     }
 }

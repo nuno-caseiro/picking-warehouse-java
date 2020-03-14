@@ -48,4 +48,16 @@ public class Population {
     public Individual getIndividual(int index) {
         return individuals.get(index);
     }
+
+    public List<Individual> getIndividuals() {
+        return individuals;
+    }
+
+    public double getAverageFitness() {
+        double fitnessSum = 0;
+        for (Individual individual : individuals) {
+            fitnessSum += individual.getFitness();
+        }
+        return fitnessSum / individuals.size();
+    }
 }

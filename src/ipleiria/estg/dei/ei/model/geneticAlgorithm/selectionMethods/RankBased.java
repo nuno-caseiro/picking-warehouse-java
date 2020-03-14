@@ -1,82 +1,71 @@
 package ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods;
 
+
+
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Population;
 import ipleiria.estg.dei.ei.utils.FitnessComparator;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Vector;
+import java.util.Comparator;
 
-public class RankBased extends SelectionMethod {
+public class RankBased extends SelectionMethod  {
+
+    double[] accumulated;
+    double ps = 2;
+
     public RankBased(int popSize) {
         super(popSize);
+        accumulated = new double[popSize];
     }
 
     @Override
     public Population run(Population original) {
-        int[] fitnesses = new int[original.size()]; 	//array of all fitnesses
-        double[] rankProb = new double[original.size()];		//rank probabilities
-        int[][] sortedinitPopulation = new int[original.size()][original.getIndividual(0).getNumGenes()]; //2D array to store individuals sorted by fitness
-        int rankSum = 0; 					//sum of all ranks
-        int counter = 0; 					//keep track of location in array
-        Random random = new Random();		//for randomness
+        original.getIndividuals().sort(new FitnessComparator());
 
-        //get fitnesses for all individuals
+        Population result = new Population(original.size());
+
+        double[] prob = new double[original.size()];
         for (int i = 0; i < original.size(); i++) {
-            fitnesses[i] = (int) original.getIndividual(i).getFitness(); //store fitnesses in array
-        }
-
-        List<Integer> aux = new Vector<>();
-        for (int i = 0; i < fitnesses.length; i++) {
-            aux.add(fitnesses[i]);
-        }
-
-        aux.sort(new FitnessComparator());
-
-        for (int i = 0; i < fitnesses.length; i++) {
-            fitnesses[i]=aux.get(i);
+            prob[i] = (1/(double)popSize)
+                    *(2-ps+2*(ps-1)*((i-1)/((double)popSize-1)));
         }
 
 
-        //sort initial population by fitness
-        for (int m = 0; m < original.size(); m++) {
-            for (int n = 0; n < original.size(); n++) {
-                if (fitnesses[m] == original.getIndividual(n).getFitness()) {
-                    sortedinitPopulation[m] = original.getIndividual(n).getGenome(); //store in new array
-                }
-            }
+        accumulated[0] = prob[0];
+        for (int i = 1; i < popSize; i++) {
+            accumulated[i] = accumulated[i - 1] + prob[i];
         }
 
-        //find total sum of ranks
-        for (int j = 1; j <= original.size(); j++) {
-            rankSum += j;
+        double rankSum = accumulated[popSize - 1];
+        for (int i = 0; i < popSize; i++) {
+            accumulated[i] /= rankSum;
         }
 
-        double test = 0;
-        //get probability for each rank
-        for (int k = 0; k < original.size(); k++) {
-            rankProb[k] = (double) k/rankSum; //store into array
+        for (int i = 0; i < popSize; i++) {
+            result.addIndividual(roulette(original));
         }
-        Population population = new Population(original.size());
-
-        while(counter != original.size()) { 				//while breeding pool is not full
-            //int choice = Math.abs(random.nextInt(original.size())); 	//generate a random int smaller than size
-            //double randomValue = 0 + (1 - 0) * random.nextDouble();
-            double r = 0 + (rankSum - 0) * random.nextDouble();
-            if(rankProb[counter] < r) { 				//if our rank probability is smaller than a random double
-                population.addIndividual(new Individual(sortedinitPopulation[counter]));
-                counter++; 	//increment location in breeding pool
-            }
-        }
-
-
-
-        return population;
-
-
+        
+        return result;
     }
 
+    private Individual roulette(Population population) {
+        double probability = GeneticAlgorithm.random.nextDouble();
 
+        for (int i = 0; i < popSize; i++) {
+            if (probability <= accumulated[i]) {
+                return new Individual(population.getIndividual(i));
+            }
+        }
+
+        //For the case where all individuals have fitness 0
+        return new Individual(population.getIndividual(GeneticAlgorithm.random.nextInt(popSize)));
+    }
+    
+    @Override
+    public String toString(){
+        return "Roulette wheel";
+    }    
 }
+
 
