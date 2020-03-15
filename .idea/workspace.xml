@@ -2,18 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="798a742a-e745-4a5b-8e86-9362898e8156" name="Default Changelist" comment="Merged branch master into implementModel">
-      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/GAListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/selectionMethods/RankBased.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/utils/FitnessComparator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationOX1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/controller/Controller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/dataSets/dataSet01.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/dataSets/dataSet01.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/MainFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/gui/PanelParameters.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/GeneticAlgorithm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/GeneticAlgorithm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/Individual.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/Individual.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/Population.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/Population.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationCX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationCX.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationDX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationDX.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +55,7 @@
       <recent name="ipleiria.estg.dei.ei.utils" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators" />
       <recent name="ipleiria.estg.dei.ei.model.geneticAlgorithm" />
       <recent name="ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods" />
       <recent name="ipleiria.estg.dei.ei.gui" />
@@ -115,16 +113,20 @@
     <option name="LAST_COMMIT_MESSAGE" value="Merged branch master into implementModel" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="440" y="180" key="#Console" timestamp="1584237069392">
+      <screen x="0" y="23" width="1680" height="983" />
+    </state>
+    <state x="440" y="180" key="#Console/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584237069392" />
     <state x="440" y="190" width="946" height="669" key="#Project_Structure" timestamp="1583077477842">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="440" y="190" width="946" height="669" key="#Project_Structure/0.0.1680.1050@0.0.1680.1050" timestamp="1583077477842" />
-    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1584215449273">
+    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1584237553397">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state x="653" y="221" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1080/0.0.1680.1050@0.0.1680.1050" timestamp="1584212903480" />
     <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584215449273" />
-    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584151698194" />
+    <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584237553397" />
     <state x="653" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1583085146176" />
     <state x="746" y="219" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1583462628876" />
     <state x="653" y="230" key="#com.intellij.ide.util.MemberChooser/0.23.1680.981@0.23.1680.981" timestamp="1583090140783" />
@@ -141,77 +143,81 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="486" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1583344521293" />
+    <state x="100" y="123" width="1480" height="783" key="DiffContextDialog" timestamp="1584239461332">
+      <screen x="0" y="23" width="1680" height="983" />
+    </state>
+    <state x="100" y="123" width="1480" height="783" key="DiffContextDialog/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584239461332" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1583461857357">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1583461857357" />
-    <state width="1877" height="298" key="GridCell.Tab.0.bottom" timestamp="1584232907961">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1638" height="122" key="GridCell.Tab.0.bottom" timestamp="1584241176078">
+      <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="232" key="GridCell.Tab.0.bottom/-1920.0.1920.1080/0.0.1680.1050@0.0.1680.1050" timestamp="1584213208529" />
     <state width="1638" height="232" key="GridCell.Tab.0.bottom/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584217251154" />
-    <state width="1638" height="232" key="GridCell.Tab.0.bottom/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211917542" />
+    <state width="1638" height="122" key="GridCell.Tab.0.bottom/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241176078" />
     <state width="1638" height="110" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590280" />
     <state width="1877" height="298" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584232907961" />
     <state width="1638" height="103" key="GridCell.Tab.0.bottom/0.23.1680.979@0.23.1680.979" timestamp="1582941684041" />
     <state width="1638" height="97" key="GridCell.Tab.0.bottom/0.23.1680.981@0.23.1680.981" timestamp="1583090426421" />
     <state width="1638" height="160" key="GridCell.Tab.0.bottom/0.23.1680.983@0.23.1680.983" timestamp="1584154351284" />
-    <state width="1877" height="298" key="GridCell.Tab.0.center" timestamp="1584232907961">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1638" height="122" key="GridCell.Tab.0.center" timestamp="1584241176077">
+      <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="232" key="GridCell.Tab.0.center/-1920.0.1920.1080/0.0.1680.1050@0.0.1680.1050" timestamp="1584213208528" />
     <state width="1638" height="232" key="GridCell.Tab.0.center/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584217251152" />
-    <state width="1638" height="232" key="GridCell.Tab.0.center/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211917540" />
+    <state width="1638" height="122" key="GridCell.Tab.0.center/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241176077" />
     <state width="1638" height="110" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
     <state width="1877" height="298" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584232907961" />
     <state width="1638" height="103" key="GridCell.Tab.0.center/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.center/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
     <state width="1638" height="160" key="GridCell.Tab.0.center/0.23.1680.983@0.23.1680.983" timestamp="1584154351283" />
-    <state width="1877" height="298" key="GridCell.Tab.0.left" timestamp="1584232907960">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1638" height="122" key="GridCell.Tab.0.left" timestamp="1584241176076">
+      <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="232" key="GridCell.Tab.0.left/-1920.0.1920.1080/0.0.1680.1050@0.0.1680.1050" timestamp="1584213208527" />
     <state width="1638" height="232" key="GridCell.Tab.0.left/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584217251151" />
-    <state width="1638" height="232" key="GridCell.Tab.0.left/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211917539" />
+    <state width="1638" height="122" key="GridCell.Tab.0.left/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241176076" />
     <state width="1638" height="110" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590278" />
     <state width="1877" height="298" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584232907960" />
     <state width="1638" height="103" key="GridCell.Tab.0.left/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.left/0.23.1680.981@0.23.1680.981" timestamp="1583090426419" />
     <state width="1638" height="160" key="GridCell.Tab.0.left/0.23.1680.983@0.23.1680.983" timestamp="1584154351283" />
-    <state width="1877" height="298" key="GridCell.Tab.0.right" timestamp="1584232907961">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1638" height="122" key="GridCell.Tab.0.right" timestamp="1584241176077">
+      <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="232" key="GridCell.Tab.0.right/-1920.0.1920.1080/0.0.1680.1050@0.0.1680.1050" timestamp="1584213208528" />
     <state width="1638" height="232" key="GridCell.Tab.0.right/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584217251153" />
-    <state width="1638" height="232" key="GridCell.Tab.0.right/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211917541" />
+    <state width="1638" height="122" key="GridCell.Tab.0.right/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241176077" />
     <state width="1638" height="110" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1583101590279" />
     <state width="1877" height="298" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584232907961" />
     <state width="1638" height="103" key="GridCell.Tab.0.right/0.23.1680.979@0.23.1680.979" timestamp="1582941684040" />
     <state width="1638" height="97" key="GridCell.Tab.0.right/0.23.1680.981@0.23.1680.981" timestamp="1583090426420" />
     <state width="1638" height="160" key="GridCell.Tab.0.right/0.23.1680.983@0.23.1680.983" timestamp="1584154351284" />
-    <state width="1638" height="190" key="GridCell.Tab.1.bottom" timestamp="1584216913538">
+    <state width="1638" height="67" key="GridCell.Tab.1.bottom" timestamp="1584241026843">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="190" key="GridCell.Tab.1.bottom/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584216913538" />
-    <state width="1638" height="261" key="GridCell.Tab.1.bottom/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211600081" />
+    <state width="1638" height="67" key="GridCell.Tab.1.bottom/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241026843" />
     <state width="1638" height="137" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
-    <state width="1638" height="190" key="GridCell.Tab.1.center" timestamp="1584216913537">
+    <state width="1638" height="67" key="GridCell.Tab.1.center" timestamp="1584241026842">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="190" key="GridCell.Tab.1.center/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584216913537" />
-    <state width="1638" height="261" key="GridCell.Tab.1.center/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211600080" />
+    <state width="1638" height="67" key="GridCell.Tab.1.center/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241026842" />
     <state width="1638" height="137" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
-    <state width="1638" height="190" key="GridCell.Tab.1.left" timestamp="1584216913536">
+    <state width="1638" height="67" key="GridCell.Tab.1.left" timestamp="1584241026841">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="190" key="GridCell.Tab.1.left/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584216913536" />
-    <state width="1638" height="261" key="GridCell.Tab.1.left/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211600080" />
+    <state width="1638" height="67" key="GridCell.Tab.1.left/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241026841" />
     <state width="1638" height="137" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732928" />
-    <state width="1638" height="190" key="GridCell.Tab.1.right" timestamp="1584216913537">
+    <state width="1638" height="67" key="GridCell.Tab.1.right" timestamp="1584241026843">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
     <state width="1638" height="190" key="GridCell.Tab.1.right/-1920.0.1920.1080/0.23.1680.983@0.23.1680.983" timestamp="1584216913537" />
-    <state width="1638" height="261" key="GridCell.Tab.1.right/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584211600081" />
+    <state width="1638" height="67" key="GridCell.Tab.1.right/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584241026843" />
     <state width="1638" height="137" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1583090732929" />
     <state x="184" y="86" key="MergeDialog" timestamp="1584232786082">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -221,10 +227,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="672" y="236" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584232787649" />
-    <state x="550" y="232" key="RollbackChangesDialog" timestamp="1584202392020">
+    <state x="550" y="232" key="RollbackChangesDialog" timestamp="1584235116756">
       <screen x="0" y="23" width="1680" height="983" />
     </state>
-    <state x="550" y="232" key="RollbackChangesDialog/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584148053556" />
+    <state x="550" y="232" key="RollbackChangesDialog/-1920.23.1920.1057/0.23.1680.983@0.23.1680.983" timestamp="1584235116756" />
     <state x="550" y="232" key="RollbackChangesDialog/0.23.1680.983@0.23.1680.983" timestamp="1584202392020" />
     <state x="656" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1582918820032">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -255,14 +261,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/geneticAlgorithm/geneticOperators/RecombinationDX.java</url>
-          <line>94</line>
-          <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/ipleiria/estg/dei/ei/model/Environment.java</url>
-          <line>81</line>
-          <option name="timeStamp" value="70" />
+          <line>95</line>
+          <option name="timeStamp" value="79" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

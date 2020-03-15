@@ -1,5 +1,7 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -13,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class MainFrame extends JFrame  {
+public class MainFrame extends JFrame implements GAListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,7 +72,6 @@ public class MainFrame extends JFrame  {
 
         panelButtons.add(buttonRunGA);
         buttonRunGA.setEnabled(false);
-        buttonRunGA.addActionListener(new ButtonRunGA_actionAdapter(this));
 
         panelButtons.add(buttonStop);
         buttonStop.setEnabled(false);
@@ -227,57 +228,6 @@ public class MainFrame extends JFrame  {
 
     }
 
-    public void jButtonRunGA_actionPerformed(ActionEvent actionEvent) {
-       /* try {
-            if (problemGA == null) {
-                JOptionPane.showMessageDialog(this, "You must first choose a problem", "Error!", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            bestIndividualPanel.textArea.setText("");
-            seriesBestIndividual.clear();
-            seriesAverage.clear();
-            manageButtons(false, false, false, true, true, true, false, false);
-            Random random = new Random(Integer.parseInt(getPanelParameters().textFieldSeed.getText()));
-            ga = new GeneticAlgorithm<>(
-                    Integer.parseInt(getPanelParameters().textFieldN.getText()),
-                    Integer.parseInt(getPanelParameters().textFieldGenerations.getText()),
-                    getPanelParameters().getSelectionMethod(),
-                    getPanelParameters().getRecombinationMethod(),
-                    getPanelParameters().getMutationMethod(),
-                    random);
-
-            ga.addGAListener(this);
-
-
-            worker = new SwingWorker<Void, Void>() {
-                @Override
-                public Void doInBackground() {
-                    try {
-
-                        bestInRun = ga.run(problemGA);
-
-                    } catch (Exception e) {
-                        e.printStackTrace(System.err);
-                    }
-                    return null;
-                }
-
-                @Override
-                public void done() {
-                    agentSearch = new CatchAgentSearch(state.clone());
-                    manageButtons(false, true, false, false, true, true, false, false);
-                }
-            };
-
-            worker.execute();
-
-        } catch (NumberFormatException e1) {
-            JOptionPane.showMessageDialog(this, "Wrong parameters!", "Error!", JOptionPane.ERROR_MESSAGE);
-        }*/
-
-    }
-
     public void jButtonRunSearch2_actionPerformed(ActionEvent actionEvent) {
         /*try {
             if (bestInRun == null) {
@@ -425,20 +375,17 @@ public class MainFrame extends JFrame  {
     public void setBestIndividualPanelText(String bestIndividualPanelText) {
         this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
     }
-}
-
-class ButtonRunGA_actionAdapter implements ActionListener{
-
-    final private MainFrame adaptee;
-
-    public ButtonRunGA_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
 
     @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.jButtonRunGA_actionPerformed(actionEvent);
+    public void generationEnded(GeneticAlgorithm e) {
+        this.setBestIndividualPanelText(e.getBestInRun().toString());
+        this.getSeriesBestIndividual().add(e.getGenerationNr(), e.getBestInRun().getFitness());
+        this.getSeriesAverage().add(e.getGenerationNr(), e.getAverageFitness());
+    }
+
+    @Override
+    public void runEnded(GeneticAlgorithm e) {
+
     }
 }
 

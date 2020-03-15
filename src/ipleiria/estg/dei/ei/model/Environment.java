@@ -63,9 +63,9 @@ public class Environment {
         for (int i = 0; i < lines; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[i][j] = scanner.nextInt();
-                if (matrix[i][j] == Properties.agent) {
+                /*if (matrix[i][j] == Properties.agent) {
                     agents.add(new State(i,j));
-                }
+                }*/
                 if (matrix[i][j] == Properties.offloadArea) {
                     offloadArea = new State(i,j);
                 }
@@ -75,15 +75,40 @@ public class Environment {
 
         this.matrix = matrix;
 
-        while(scanner.hasNextLine()){
+        int nrPicks =scanner.nextInt();
+        scanner.nextLine();
+        int nrAgents = scanner.nextInt();
+        scanner.nextLine();
+
+
+        for (int i = 0; i < nrPicks; i++) {
             int line = scanner.nextInt();
             int col = scanner.nextInt();
             State newPick= new State(line,col);
             picks.add(newPick);
+            scanner.nextLine();
         }
 
+
+
+
+        for (int i = 0; i < nrAgents; i++) {
+            int line = scanner.nextInt();
+            int col = scanner.nextInt();
+            State agent = new State(line,col);
+            agents.add(agent);
+        }
+
+
+        setAgentsCellsColour(agents);
         setPicks(picks);
 
+    }
+
+    public void setAgentsCellsColour(List<State> agents){
+        for (State agent : agents) {
+            matrix[agent.getLine()][agent.getColumn()] = Properties.agent;
+        }
     }
 
     public List<Action> getActions() {

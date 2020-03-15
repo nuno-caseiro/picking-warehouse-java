@@ -29,7 +29,7 @@ public class RecombinationDX extends Recombination {
         ind1.setGenome(genome1);
         ind2.setGenome(genome2);*/
 
-
+        int size = ind1.getGenome().length;
 
 
         cut1P1=0; // GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
@@ -49,33 +49,43 @@ public class RecombinationDX extends Recombination {
         segment1 = new Vector<Integer>();
         segment2 = new Vector<Integer>();
         child1 = new Vector<Integer>();
+        child2 = new Vector<Integer>();
 
         create_Segments(cut1P1,cut2P1,ind1,segment1);
         create_Segments(cut1P2,cut2P2,ind2,segment2);
 
         child1.addAll(segment2);
-        for(int i= cut2P1+1; i<ind2.getNumGenes();i++){
+        for(int i= cut2P1+1; i<size;i++){
             child1.add(ind1.getGene(i));
         }
 
-       /* System.out.println("Start");
+        child2.addAll(segment1);
+        for(int i= cut2P2+1; i<size;i++){
+            child2.add(ind2.getGene(i));
+        }
+
+        System.out.println("Start");
         System.out.println(ind1.toString());
         System.out.println(ind2.toString());
         System.out.println(segment1.toString());
-        System.out.println(segment2.toString());*/
+        System.out.println(segment2.toString());
 
         checkDuplicates(child1);
-        insertRemainingNumbers(child1,ind1,segment2.size());
+        insertRemainingNumbers(child1,segment1,segment2.size()-1, size);
         replaceIndividual(ind1,child1);
 
+        checkDuplicates(child2);
+        insertRemainingNumbers(child2,segment2,segment2.size()-1, size);
+        replaceIndividual(ind2,child2);
 
-//        System.out.println("----Child----");
-//      System.out.println(child1.toString());
+
+        System.out.println("----Child----");
+        System.out.println(child1.toString());
 
     }
 
     private void replaceIndividual(Individual ind, List<Integer> child) {
-        for (int i = 0; i < ind.getNumGenes(); i++) {
+        for (int i = 0; i < ind.getGenome().length; i++) {
             ind.setGene(i,child.get(i));
         }
     }
@@ -101,18 +111,15 @@ public class RecombinationDX extends Recombination {
         child.removeIf(integer -> integer == 0);
     }
 
-    private void insertRemainingNumbers(List<Integer> child, Individual ind, int minRandom){
-        while (child.size()!=ind.getNumGenes()){
+    private void insertRemainingNumbers(List<Integer> child, List<Integer> seg1, int minRandom, int size){
+        while (child.size()!=size){
             child.add(0);
         }
 
-        for (int i=1; i<=ind.getNumGenes();i++){
-            if(!child.contains(i)){
-                int random= GeneticAlgorithm.random.nextInt(ind.getNumGenes());
-                while (random<minRandom){
-                    random= GeneticAlgorithm.random.nextInt(ind.getNumGenes());
-                }
-                child.add(random,i);
+        for (int i = 0; i < seg1.size(); i++) {
+            if(!child.contains(seg1.get(i))){
+                int random = GeneticAlgorithm.random.nextInt(size - minRandom) + minRandom;
+                child.add(random,seg1.get(i));
             }
         }
 
