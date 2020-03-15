@@ -64,7 +64,7 @@ public class RankBased extends SelectionMethod  {
     
     @Override
     public String toString(){
-        return "Roulette wheel";
+        return "Rank";
     }    
 }
 
