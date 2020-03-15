@@ -133,7 +133,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     public void createEnvironment() {
         //TODO
 //        environment = new State(mainFrame.getState().getMatrix());
-        Environment.getInstance().addEnvironmentListener(this);
+//        Environment.getInstance().addEnvironmentListener(this);
 
         buildImage(Environment.getInstance().getMatrix());
         environmentUpdated();

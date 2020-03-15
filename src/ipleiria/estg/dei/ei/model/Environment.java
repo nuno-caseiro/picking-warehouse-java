@@ -216,30 +216,84 @@ public class Environment {
         }
     }
 
-    public void executeSolution() {
+    public void executeSolution() throws InterruptedException {
         int[] genome = bestInRun.getGenome();
-        List<Integer> agentStartIndex = new ArrayList<>();
-        agentStartIndex.add(0);
+        List<List<State>> agentsPicks = separateGenomeByAgents(genome);
+        List<List<Action>> agentsActions = new ArrayList<>();
+        List<Action> agentActions;
+        State state1;
+        State state2;
 
-        for (int i = 0; i < genome.length; i++) {
-            if (genome[i] == 0) {
-                agentStartIndex.add(i);
+        for (List<State> agentPicks : agentsPicks) {
+            agentActions = new ArrayList<>();
+            for (int i = 0; i < agentPicks.size() - 1; i++) {
+                state1 = agentPicks.get(i);
+                state2 = agentPicks.get(i + 1);
+
+                agentActions.addAll(pairsMap.get(getKey(state1, state2)).getActions());
+            }
+            agentsActions.add(agentActions);
+        }
+
+        int numIterations = 0;
+        for (List<Action> l : agentsActions) {
+            if (l.size() > numIterations) {
+                numIterations = l.size();
             }
         }
 
-//        for (int i = 0; i < genome.length; i++) {
-//            for (int index : agentStartIndex) {
-//                if (index == -1) {
-//                    continue;
-//                }
-//                if (index + 1 > genome.length - 1 || genome[index + 1] == 0) {
-//                    continue;
-//                }
-//                agentStartIndex.remove(in)
-//            }
-//        }
+        int agent;
+        for (int i = 0; i < numIterations; i++) {
+            agent = 0;
+            for (List<Action> l : agentsActions) {
+                if (i < l.size()) {
+                    executeAction(l.get(i), agent);
+                }
+                agent++;
+            }
+            Thread.sleep(1000);
+            fireUpdatedEnvironment();
+        }
 
-        fireUpdatedEnvironment();
+
+    }
+
+    private void executeAction(Action action, int agent) {
+        State a = agents.get(agent);
+        matrix[a.getLine()][a.getColumn()] = 0;
+
+        int newLine = a.getLine() + action.getVerticalMovement();
+        int newColumn = a.getColumn() + action.getHorizontalMovement();
+
+        matrix[newLine][newColumn] = Properties.agent;
+        a.setLine(newLine);
+        a.setColumn(newColumn);
+    }
+
+    private String getKey(State state1, State state2) {
+        return state1.getLine() + "-" + state1.getColumn() + "/" + state2.getLine() + "-" + state2.getColumn();
+    }
+
+    private List<List<State>> separateGenomeByAgents(int[] genome) {
+        List<List<State>> agents = new ArrayList<>();
+        List<State> agentPicks = new ArrayList<>();
+        int agent = 0;
+
+        agentPicks.add(this.agents.get(agent));
+        for (int value : genome) {
+            if (value < 0) {
+                agentPicks.add(offloadArea);
+                agents.add(agentPicks);
+                agentPicks = new LinkedList<>();
+                agentPicks.add(this.agents.get(++agent));
+                continue;
+            }
+            agentPicks.add(picks.get(value - 1));
+        }
+        agentPicks.add(offloadArea);
+        agents.add(agentPicks);
+
+        return agents;
     }
 
     public Color getCellColor(int line, int column) {

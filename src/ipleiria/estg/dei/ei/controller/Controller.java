@@ -94,7 +94,7 @@ public class Controller {
 
             @Override
             public void done() {
-                view.manageButtons(true, true, false, false, true, true, false, false);
+                view.manageButtons(true, true, false, false, true, true, false, true);
             }
         };
         worker.execute();
@@ -139,6 +139,7 @@ public class Controller {
     private void loadDataSet() {
         JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets"));
         int returnVal = fc.showOpenDialog(view);
+        Environment.getInstance().addEnvironmentListener(view.getSimulationPanel());
 
         try {
             if (returnVal == JFileChooser.APPROVE_OPTION) {

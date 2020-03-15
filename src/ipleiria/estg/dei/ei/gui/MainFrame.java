@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import org.jfree.chart.ChartFactory;
