@@ -30,6 +30,19 @@ public class RecombinationPartialMapped extends Recombination {
         crossOver(child1, ind1);
         crossOver(child2, ind2);
 
+//        System.out.println(ind1.toString());
+//        System.out.println(ind2.toString());
+//        System.out.println("+++++++++++++++++++++");
+//        for (int v : child1) {
+//            System.out.print(v + ", ");
+//        }
+//        System.out.println();
+//        for (int v : child2) {
+//            System.out.print(v + ", ");
+//        }
+//        System.out.println();
+//        System.out.println("*********************");
+
         for (int i = 0; i < ind1.getNumGenes(); i++) {
             ind1.setGene(i, child1[i]);
             ind2.setGene(i, child2[i]);

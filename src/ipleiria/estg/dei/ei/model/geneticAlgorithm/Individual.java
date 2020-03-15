@@ -23,7 +23,7 @@ public class Individual implements Comparable<Individual>{
         }
 
         for (int i = 0; i < numPicks; i++) {
-            genes.add(i +1);
+            genes.add(i + 1);
         }
 
         for (int i = 0; i < genomeSize; i++) {
@@ -35,7 +35,7 @@ public class Individual implements Comparable<Individual>{
 
     public Individual (Individual original) {
         this.genome = new int[original.genome.length];
-        System.arraycopy(original.genome, 0, genome, 0, genome.length);
+        System.arraycopy(original.genome, 0, this.genome, 0, this.genome.length);
         this.fitness = original.fitness;
     }
 
@@ -99,6 +99,7 @@ public class Individual implements Comparable<Individual>{
         List<State> agents = Environment.getInstance().getAgents();
         State offload = Environment.getInstance().getOffloadArea();
         double agentFitness = 0;
+        this.fitness = 0;
         int agent = 0;
         State previousState = agents.get(agent);
         State currentState;
