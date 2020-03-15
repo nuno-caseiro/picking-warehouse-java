@@ -65,6 +65,9 @@ public class Controller {
         view.manageButtons(true, true, false, true, true, true, false, false);
         Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
 
+        System.out.println(view.getPanelParameters().getTextFieldSeed().getText());
+        System.out.println(view.getPanelParameters().getMutationMethod());
+        System.out.println(view.getPanelParameters().getRecombinationMethod());
         GeneticAlgorithm ga = new GeneticAlgorithm(
                 Integer.parseInt(view.getPanelParameters().getTextFieldN().getText()),
                 Integer.parseInt(view.getPanelParameters().getTextFieldGenerations().getText()),
@@ -81,7 +84,6 @@ public class Controller {
                     Individual bestInRun = ga.run();
                     Environment.getInstance().setBestInRun(bestInRun);
                     System.out.println(bestInRun);
-
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
@@ -151,6 +153,17 @@ public class Controller {
                 picks.add(new State(12,9));
                 picks.add(new State(14,11));
                 picks.add(new State(0,9));
+
+                picks.add(new State(0,3));
+                picks.add(new State(1,8));
+                picks.add(new State(5,8));
+                picks.add(new State(8,4));
+                picks.add(new State(9,6));
+                picks.add(new State(11,6));
+                picks.add(new State(14,4));
+                picks.add(new State(9,8));
+                picks.add(new State(12,14));
+                picks.add(new State(3,14));
 
                 Environment.getInstance().setPicks(picks);
 

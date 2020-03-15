@@ -118,4 +118,9 @@ public class RecombinationCX extends Recombination {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "CX";
+    }
 }

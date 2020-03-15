@@ -119,4 +119,9 @@ public class RecombinationDX extends Recombination {
         child.removeIf(integer -> integer == 0);
 
     }
+
+    @Override
+    public String toString() {
+        return "DX";
+    }
 }
