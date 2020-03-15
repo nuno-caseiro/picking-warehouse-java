@@ -8,27 +8,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Random;
+
 
 public class MainFrame extends JFrame  {
 
     private static final long serialVersionUID = 1L;
-
-    //TODO
-    /*private CatchProblemForGA problemGA;
-    private CatchState state;
-    private CatchAgentSearch agentSearch;
-    private Solution solution;
-    private GeneticAlgorithm<CatchIndividual, CatchProblemForGA> ga;
-    private CatchIndividual bestInRun;
-    private CatchExperimentsFactory experimentsFactory;*/
 
     private PanelTextArea problemPanel;
     private PanelTextArea bestIndividualPanel;
@@ -80,7 +67,6 @@ public class MainFrame extends JFrame  {
 
         panelButtons.add(buttonRunSearch);
         buttonRunSearch.setEnabled(false);
-        buttonRunSearch.addActionListener(new ButtonRunSearch_actionAdapter(this));
 
         panelButtons.add(buttonRunGA);
         buttonRunGA.setEnabled(false);
@@ -219,56 +205,6 @@ public class MainFrame extends JFrame  {
         seriesAverage.clear();
     }
 
-
-
-    public void jButtonRunSearch_actionPerformed(ActionEvent actionEvent) {
-//TODO
-    /*    try{
-            if(agentSearch.getEnvironment() == null){
-                JOptionPane.showMessageDialog(this, "You must first choose a problem", "Error!", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            bestIndividualPanel.textArea.setText("");
-            seriesBestIndividual.clear();
-            seriesAverage.clear();
-
-
-            manageButtons(false,false,false,false,false,true,false,false);
-
-            worker = new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    try{
-                        LinkedList<Pair> pairs = agentSearch.getPairs();
-                        for(Pair p : pairs){
-                            CatchState state = ((CatchState) agentSearch.getEnvironment()).clone();
-                            state.setGoal(p.getCell2().getLine(), p.getCell2().getColumn());
-                            state.setCellCatch(p.getCell1().getLine(), p.getCell1().getColumn());
-                            CatchProblemSearch problem = new CatchProblemSearch(state,p.getCell2());
-                            Solution s = agentSearch.solveProblem(problem);
-                            p.setValue((int) s.getCost());
-                        }
-
-                        problemGA = new CatchProblemForGA(agentSearch.getInitialBox(),pairs,agentSearch.getCellCatch(), agentSearch.getDoor());
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    problemPanel.textArea.setText(agentSearch.toString());
-                    manageButtons(false,true,false,false,false,true,false,false);
-                }
-            };
-            worker.execute();
-        }catch (NumberFormatException e1){
-            JOptionPane.showMessageDialog(this, "Wrong parameters!", "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-*/
-    }
 
     public void manageButtons(
             boolean dataSet,
@@ -413,21 +349,6 @@ public class MainFrame extends JFrame  {
         }*/
     }
 
-    //TODO GAListener
-    /*public void generationEnded(GAEvent e) {
-        GeneticAlgorithm<CatchIndividual, CatchProblemForGA> source = e.getSource();
-        bestIndividualPanel.textArea.setText(source.getBestInRun().toString());
-        seriesBestIndividual.add(source.getGeneration(), source.getBestInRun().getFitness());
-        seriesAverage.add(source.getGeneration(), source.getAverageFitness());
-        if (worker.isCancelled()) {
-            e.setStopped(true);
-        }
-    }*/
-
-//    public void jButtonStop_actionPerformed(ActionEvent actionEvent) {
-//        worker.cancel(true);
-//    }
-
     public void buttonExperiments_actionPerformed(ActionEvent actionEvent) {
         //TODO
       /*  JFileChooser fc = new JFileChooser(new File("."));
@@ -500,22 +421,9 @@ public class MainFrame extends JFrame  {
         worker.execute();*/
     }
 
-    //TODO experimentEnd and getters & setters
 
-}
-
-class ButtonRunSearch_actionAdapter implements ActionListener{
-
-    final private MainFrame adaptee;
-
-    public ButtonRunSearch_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.jButtonRunSearch_actionPerformed(actionEvent);
+    public void setBestIndividualPanelText(String bestIndividualPanelText) {
+        this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
     }
 }
 
@@ -547,21 +455,6 @@ class ButtonRunSearch2_actionAdapter implements ActionListener{
         adaptee.jButtonRunSearch2_actionPerformed(actionEvent);
     }
 }
-
-//class ButtonStop_actionAdapter implements ActionListener{
-//
-//    final private MainFrame adaptee;
-//
-//    public ButtonStop_actionAdapter(MainFrame adaptee) {
-//        this.adaptee = adaptee;
-//    }
-//
-//
-//    @Override
-//    public void actionPerformed(ActionEvent actionEvent) {
-//        adaptee.jButtonStop_actionPerformed(actionEvent);
-//    }
-//}
 
 class ButtonExperiments_actionAdapter implements ActionListener{
 

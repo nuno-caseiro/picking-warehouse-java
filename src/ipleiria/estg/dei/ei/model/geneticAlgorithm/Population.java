@@ -26,6 +26,9 @@ public class Population {
 
         for (Individual individual : individuals) {
             individual.computeFitness();
+            if (individual.getFitness() == 0) {
+                System.out.println(individual.toString());
+            }
             if (individual.compareTo(bestInPopulation) > 0) {
                 bestInPopulation = individual;
             }
@@ -48,5 +51,13 @@ public class Population {
 
     public List<Individual> getIndividuals() {
         return individuals;
+    }
+
+    public double getAverageFitness() {
+        double fitnessSum = 0;
+        for (Individual individual : individuals) {
+            fitnessSum += individual.getFitness();
+        }
+        return fitnessSum / individuals.size();
     }
 }
