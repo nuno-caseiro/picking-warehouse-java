@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class Controller implements GAListener {
+public class Controller {
 
     private MainFrame view;
     private SwingWorker<Void, Void> worker;
@@ -48,7 +48,8 @@ public class Controller implements GAListener {
             }
 
             @Override
-            public void done() { }
+            public void done() {
+            }
         };
         worker.execute();
     }
@@ -75,7 +76,7 @@ public class Controller implements GAListener {
                 Environment.getInstance().getNumberOfAgents(),
                 Environment.getInstance().getNumberOfPicks(), random);
 
-        ga.addGAListener(this);
+        ga.addGAListener(view);
 
         worker = new SwingWorker<>() {
             @Override
@@ -139,8 +140,8 @@ public class Controller implements GAListener {
         JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets"));
         int returnVal = fc.showOpenDialog(view);
 
-        try{
-            if(returnVal == JFileChooser.APPROVE_OPTION){
+        try {
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
 
@@ -158,24 +159,14 @@ public class Controller implements GAListener {
                 Environment.getInstance().setPicks(picks);*/
 
                 view.getSimulationPanel().createEnvironment();
-                view.manageButtons(true,false,true,false,false,true,false,false);
+                view.manageButtons(true, false, true, false, false, true, false, false);
             }
-        }catch (IOException e1){
+        } catch (IOException e1) {
             e1.printStackTrace(System.err);
-        }catch (java.util.NoSuchElementException e2){
+        } catch (java.util.NoSuchElementException e2) {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    @Override
-    public void generationEnded(GeneticAlgorithm e) {
-        view.setBestIndividualPanelText(e.getBestInRun().toString());
-        view.getSeriesBestIndividual().add(e.getGenerationNr(), e.getBestInRun().getFitness());
-        view.getSeriesAverage().add(e.getGenerationNr(), e.getAverageFitness());
-    }
-
-    @Override
-    public void runEnded(GeneticAlgorithm e) {
-
-    }
 }
+
+
