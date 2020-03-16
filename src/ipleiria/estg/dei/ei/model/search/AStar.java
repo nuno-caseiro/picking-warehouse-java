@@ -85,7 +85,7 @@ public class AStar {
             return false;
         }
 
-        return matrix[nextLine][nextColumn] != Properties.obstacle;
+        return matrix[nextLine][nextColumn] != Properties.obstacle && matrix[nextLine][nextColumn] != Properties.pick;
     }
 
     private void addSuccessorsToFrontier(List<State> successors, Node parent, State goalState) {
