@@ -9,20 +9,22 @@ import ipleiria.estg.dei.ei.model.search.State;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
+
 import ipleiria.estg.dei.ei.utils.Properties;
 
 public class Environment {
 
     private static Environment INSTANCE = new Environment();
     private int[][] matrix;
+    private int[][] originalMatrix;
     private List<Action> actions;
     private List<State> picks;
+    private List<State> shelfPicks;
     private List<Pair> pairs;
     private List<State> agents;
+    private List<State> originalAgents;
     private State offloadArea;
     private Individual bestInRun;
     private HashMap<String, Pair> pairsMap;
@@ -35,8 +37,10 @@ public class Environment {
         this.actions.add(new Action(1, 0, -1)); // move left
         this.actions.add(new Action(1, 0, 1)); // move right
         this.agents = new LinkedList<>();
+        this.originalAgents = new LinkedList<>();
         this.listeners = new ArrayList<>();
         this.picks= new LinkedList<>();
+        this.shelfPicks= new LinkedList<>();
     }
 
     public static Environment getInstance() {
@@ -53,6 +57,8 @@ public class Environment {
 
     public void readInitialStateFromFile(File file) throws IOException {
         java.util.Scanner scanner = new java.util.Scanner(file);
+        picks.clear();
+        agents.clear();
 
         int lines = scanner.nextInt();
         scanner.nextLine();
@@ -72,37 +78,37 @@ public class Environment {
             }
             scanner.nextLine();
         }
-
         this.matrix = matrix;
 
-        int nrPicks =scanner.nextInt();
+        int nrPicks = scanner.nextInt();
         scanner.nextLine();
         int nrAgents = scanner.nextInt();
         scanner.nextLine();
 
-
         for (int i = 0; i < nrPicks; i++) {
             int line = scanner.nextInt();
             int col = scanner.nextInt();
-            State newPick= new State(line,col);
-            picks.add(newPick);
+            picks.add(new State(line,col - 1));
+            shelfPicks.add(new State(line,col));
             scanner.nextLine();
         }
-
-
-
 
         for (int i = 0; i < nrAgents; i++) {
             int line = scanner.nextInt();
             int col = scanner.nextInt();
             State agent = new State(line,col);
             agents.add(agent);
+            originalAgents.add(new State(line,col));
         }
 
-
         setAgentsCellsColour(agents);
-        setPicks(picks);
+        setPicks();
 
+        int[][] copyMatrix = new int[lines][columns];
+        for (int i = 0; i < lines; i++) {
+            System.arraycopy(this.matrix[i], 0, copyMatrix[i], 0, columns);
+        }
+        this.originalMatrix = copyMatrix;
     }
 
     public void setAgentsCellsColour(List<State> agents){
@@ -123,11 +129,9 @@ public class Environment {
         return picks;
     }
 
-    public void setPicks(List<State> picks) {
-        this.picks = picks;
-
-        for (State pick : picks) {
-            matrix[pick.getLine()][pick.getColumn()] = 4;
+    public void setPicks() {
+        for (State shelfPick : shelfPicks) {
+            matrix[shelfPick.getLine()][shelfPick.getColumn()] = 4;
         }
 
         this.pairs = new LinkedList<>();
@@ -208,15 +212,25 @@ public class Environment {
             sb1.append(pair.getState1().getColumn());
             String key2 = sb1.toString();
 
-            Pair reverseActionsPair = pair.clone();
-            reverseActionsPair.reverseActions();
-
-            pairsMap.put(key1, pair.clone());
-            pairsMap.put(key2, reverseActionsPair);
+            pairsMap.put(key1, pair);
+            pairsMap.put(key2, new Pair(pair));
         }
     }
 
+    public List<State> getOriginalAgents() {
+        return originalAgents;
+    }
+
     public void executeSolution() throws InterruptedException {
+        for (int i = 0; i < this.matrix.length; i++) {
+            System.arraycopy(this.originalMatrix[i], 0, this.matrix[i], 0, this.matrix[0].length);
+        }
+
+        this.agents.clear();
+        for (State s : this.originalAgents) {
+            agents.add(new State(s.getLine(), s.getColumn()));
+        }
+
         int[] genome = bestInRun.getGenome();
         List<List<State>> agentsPicks = separateGenomeByAgents(genome);
         List<List<Action>> agentsActions = new ArrayList<>();
@@ -242,6 +256,7 @@ public class Environment {
             }
         }
 
+        fireUpdatedEnvironment();
         int agent;
         for (int i = 0; i < numIterations; i++) {
             agent = 0;
@@ -251,7 +266,7 @@ public class Environment {
                 }
                 agent++;
             }
-            Thread.sleep(1000);
+            Thread.sleep(500);
             fireUpdatedEnvironment();
         }
 
@@ -260,14 +275,34 @@ public class Environment {
 
     private void executeAction(Action action, int agent) {
         State a = agents.get(agent);
-        matrix[a.getLine()][a.getColumn()] = 0;
+        int line = a.getLine();
+        int column = a.getColumn();
 
-        int newLine = a.getLine() + action.getVerticalMovement();
-        int newColumn = a.getColumn() + action.getHorizontalMovement();
+//        matrix[line][column] = 0;
+
+        if (matrix[line][column + 1] == Properties.pick) {
+            matrix[line][column + 1] = Properties.obstacle;
+        }
+
+        int newLine = line + action.getVerticalMovement();
+        int newColumn = column + action.getHorizontalMovement();
 
         matrix[newLine][newColumn] = Properties.agent;
         a.setLine(newLine);
         a.setColumn(newColumn);
+
+        if (!stateHasAgent(line, column)) {
+            matrix[line][column] = 0;
+        }
+    }
+
+    private boolean stateHasAgent(int line, int column) {
+        for (State agent : this.agents) {
+            if (agent.getLine() == line && agent.getColumn() == column) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getKey(State state1, State state2) {

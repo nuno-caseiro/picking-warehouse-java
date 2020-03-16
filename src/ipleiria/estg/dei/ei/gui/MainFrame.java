@@ -377,6 +377,11 @@ public class MainFrame extends JFrame implements GAListener {
         this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
     }
 
+    public void setProblemPanelText(String s) {
+        this.problemPanel.textArea.setText("");
+        this.problemPanel.textArea.setText(s);
+    }
+
     @Override
     public void generationEnded(GeneticAlgorithm e) {
         this.setBestIndividualPanelText(e.getBestInRun().toString());

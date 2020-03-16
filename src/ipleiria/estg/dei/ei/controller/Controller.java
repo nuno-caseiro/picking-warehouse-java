@@ -40,6 +40,7 @@ public class Controller {
             @Override
             public Void doInBackground() {
                 try {
+                    view.manageButtons(false, false, false, false, false, true, false, false);
                     Environment.getInstance().executeSolution();
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
@@ -49,6 +50,7 @@ public class Controller {
 
             @Override
             public void done() {
+                view.manageButtons(true, true, false, false, false, true, false, true);
             }
         };
         worker.execute();
@@ -129,7 +131,7 @@ public class Controller {
                 for (Pair p : Environment.getInstance().getPairs()) {
                     str.append(p);
                 }
-                System.out.println(str.toString());
+                view.setProblemPanelText(str.toString());
                 view.manageButtons(true, true, false, false, false, true, false, false);
             }
         };
@@ -145,19 +147,6 @@ public class Controller {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
-
-               /* List<State> picks = new LinkedList<>();
-                picks.add(new State(3,0));
-                picks.add(new State(5,11));
-                picks.add(new State(9,12));
-                picks.add(new State(0,0));
-                picks.add(new State(4,2));
-                picks.add(new State(13,2));
-                picks.add(new State(12,9));
-                picks.add(new State(14,11));
-                picks.add(new State(0,9));
-
-                Environment.getInstance().setPicks(picks);*/
 
                 view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true, false, true, false, false, true, false, false);

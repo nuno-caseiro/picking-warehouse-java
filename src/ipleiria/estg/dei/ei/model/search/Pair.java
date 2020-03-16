@@ -1,6 +1,7 @@
 package ipleiria.estg.dei.ei.model.search;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Pair {
@@ -15,11 +16,12 @@ public class Pair {
         this.state2 = state2;
     }
 
-    public Pair(State state1, State state2, double value, List<Action> actions) {
-        this.state1 = state1;
-        this.state2 = state2;
-        this.value = value;
-        this.actions = actions;
+    // create the inverse pair
+    public Pair(Pair pair) {
+        this.state1 = pair.state2;
+        this.state2 = pair.state1;
+        this.value = pair.value;
+        this.actions = reverseActions(new LinkedList<>(pair.actions));
     }
 
     public State getState1() {
@@ -54,23 +56,15 @@ public class Pair {
         this.actions = actions;
     }
 
-    public void reverseActions() {
-        State aux = state2;
-
-        state2 = state1;
-        state1 = aux;
-
+    private List<Action> reverseActions(List<Action> actions) {
         Collections.reverse(actions);
 
         for (Action action : actions) {
             action.flipVerticalMovement();
             action.flipHorizontalMovement();
         }
-    }
 
-    @Override
-    public Pair clone() {
-        return new Pair(state1, state2, value, actions);
+        return actions;
     }
 
     @Override
