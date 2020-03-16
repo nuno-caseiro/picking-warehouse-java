@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import org.jfree.chart.ChartFactory;
@@ -374,6 +375,11 @@ public class MainFrame extends JFrame implements GAListener {
 
     public void setBestIndividualPanelText(String bestIndividualPanelText) {
         this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
+    }
+
+    public void setProblemPanelText(String s) {
+        this.problemPanel.textArea.setText("");
+        this.problemPanel.textArea.setText(s);
     }
 
     @Override

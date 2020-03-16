@@ -30,4 +30,9 @@ public class Action {
     public void flipHorizontalMovement() {
         horizontalMovement *= -1;
     }
+
+    @Override
+    public String toString() {
+        return verticalMovement + " " + horizontalMovement;
+    }
 }

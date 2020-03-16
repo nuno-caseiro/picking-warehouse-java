@@ -96,7 +96,7 @@ public class Individual implements Comparable<Individual>{
     public void computeFitness() {
         List<State> picks = Environment.getInstance().getPicks();
         HashMap<String, Pair> pairsValueMap = Environment.getInstance().getPairsMap();
-        List<State> agents = Environment.getInstance().getAgents();
+        List<State> agents = Environment.getInstance().getOriginalAgents();
         State offload = Environment.getInstance().getOffloadArea();
         double agentFitness = 0;
         this.fitness = 0;
