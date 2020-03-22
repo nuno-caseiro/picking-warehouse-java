@@ -1,12 +1,13 @@
 package ipleiria.estg.dei.ei.utils;
 
+import ipleiria.estg.dei.ei.model.search.GraphNode;
 import ipleiria.estg.dei.ei.model.search.Node;
 import ipleiria.estg.dei.ei.model.search.State;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
-public class NodePriorityQueue extends PriorityQueue<Node> {
+public class NodePriorityQueue extends PriorityQueue<GraphNode> {
     private HashSet<String> contains;
 
     public NodePriorityQueue() {
@@ -14,8 +15,8 @@ public class NodePriorityQueue extends PriorityQueue<Node> {
     }
 
     @Override
-    public boolean add(Node node) {
-        contains.add(node.getState().toString());
+    public boolean add(GraphNode node) {
+        contains.add(node.toString());
         return super.add(node);
     }
 
@@ -26,8 +27,8 @@ public class NodePriorityQueue extends PriorityQueue<Node> {
     }
 
     @Override
-    public Node poll() {
-        Node node = super.poll();
+    public GraphNode poll() {
+        GraphNode node = super.poll();
         if (node != null) {
             contains.remove(node.toString());
         }
@@ -35,7 +36,7 @@ public class NodePriorityQueue extends PriorityQueue<Node> {
         return node;
     }
 
-    public boolean containsState(State state) {
+    public boolean containsState(GraphNode state) {
         return contains.contains(state.toString());
     }
 }

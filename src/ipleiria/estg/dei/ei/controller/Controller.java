@@ -2,19 +2,13 @@ package ipleiria.estg.dei.ei.controller;
 
 import ipleiria.estg.dei.ei.gui.MainFrame;
 import ipleiria.estg.dei.ei.model.Environment;
-import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
-import ipleiria.estg.dei.ei.model.search.AStar;
-import ipleiria.estg.dei.ei.model.search.Action;
-import ipleiria.estg.dei.ei.model.search.Node;
-import ipleiria.estg.dei.ei.model.search.Pair;
-import ipleiria.estg.dei.ei.model.search.State;
+import ipleiria.estg.dei.ei.model.search.*;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -110,13 +104,14 @@ public class Controller {
             protected Void doInBackground() throws Exception {
                 try {
                     AStar aStar = new AStar();
-                    for (Pair pair : Environment.getInstance().getPairs()) {
-                        List<Action> actions = aStar.search(new Node(pair.getState1()), new Node(pair.getState2()));
+                    for (PairGraph pair : Environment.getInstance().getPairGraph()) {
+                        List<GraphNode> actions = aStar.search(pair.getNode1(),pair.getNode2());
                         pair.setValue(aStar.computePathCost(actions));
-                        pair.setActions(actions);
+                        pair.setPath(actions);
                     }
 
-                    Environment.getInstance().setPairsMap();
+                   // Environment.getInstance().setPairsMap();
+                    Environment.getInstance().setPairsGraphMap();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -128,7 +123,7 @@ public class Controller {
             protected void done() {
                 StringBuilder str = new StringBuilder();
                 str.append("Pairs:\n");
-                for (Pair p : Environment.getInstance().getPairs()) {
+                for (PairGraph p : Environment.getInstance().getPairGraph()) {
                     str.append(p);
                 }
                 view.setProblemPanelText(str.toString());
@@ -147,6 +142,8 @@ public class Controller {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
+                Environment.getInstance().createGraph();
+                Environment.getInstance().setPicksGraph();
 
                 view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true, false, true, false, false, true, false, false);

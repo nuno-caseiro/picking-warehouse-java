@@ -1,10 +1,7 @@
 package ipleiria.estg.dei.ei.model;
 
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
-import ipleiria.estg.dei.ei.model.search.Action;
-import ipleiria.estg.dei.ei.model.search.Pair;
-import ipleiria.estg.dei.ei.model.search.Pick;
-import ipleiria.estg.dei.ei.model.search.State;
+import ipleiria.estg.dei.ei.model.search.*;
 
 import java.awt.*;
 import java.io.File;
@@ -28,7 +25,16 @@ public class Environment {
     private State offloadArea;
     private Individual bestInRun;
     private HashMap<String, Pair> pairsMap;
+    private HashMap<String, PairGraph> pairsGraphMap;
     private ArrayList<EnvironmentListener> listeners;
+    private List<GraphNode> agentsGraph;
+    private List<GraphNode> pickGraph;
+    private GraphNode offLoadGraph ;
+    private List<PairGraph> pairGraph;
+    private HashMap<Integer,GraphNode> vertices;
+
+
+    int numberNode = 1;
 
     private Environment() {
         this.actions = new LinkedList<>();
@@ -41,6 +47,11 @@ public class Environment {
         this.listeners = new ArrayList<>();
         this.picks= new LinkedList<>();
         this.shelfPicks= new LinkedList<>();
+        this.agentsGraph= new LinkedList<>();
+        this.pickGraph= new LinkedList<>();
+        this.pairGraph= new LinkedList<>();
+        this.vertices = new HashMap<>();
+
     }
 
     public static Environment getInstance() {
@@ -109,6 +120,112 @@ public class Environment {
             System.arraycopy(this.matrix[i], 0, copyMatrix[i], 0, columns);
         }
         this.originalMatrix = copyMatrix;
+
+
+    }
+
+    public void createGraph(){
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if(matrix[i][j] == 5 || matrix[i][j] == 3 || matrix[i][j]== 4 || matrix[i][j]== 2){
+
+                    GraphNode graphNode = new GraphNode(numberNode,null,i,j);
+                    if(matrix[i][j]== 2){
+                        agentsGraph.add(graphNode);
+                    }
+                    if(matrix[i][j]== 4){
+                        pickGraph.add(graphNode);
+                    }
+                    if(matrix[i][j]== 3){
+                        offLoadGraph = graphNode;
+                    }
+                    int number = numberNode;
+                    numberNode++;
+                    vertices.put(number,graphNode);
+                }
+            }
+        }
+
+        for (int i = 1; i < vertices.size(); i++) {
+            findAdjacentNodes(vertices.get(i));
+        }
+
+    }
+
+    public void findAdjacentNodes(GraphNode graphNode){
+
+
+        int line = graphNode.getLine();
+        int col = graphNode.getCol();
+
+        //left
+        while(--col > -1 ){
+            if(matrix[line][col]==1){
+                break;
+            }
+            if(matrix[line][col]==5 || matrix[line][col] == 3 || matrix[line][col]== 4 || matrix[line][col]== 2){
+                GraphNode graphNode1 = findNode(line,col);
+                graphNode.addNeighbor(graphNode1);
+                break;
+            }
+        }
+
+        line = graphNode.getLine();
+        col = graphNode.getCol();
+
+        //right
+        while(++col < matrix.length){
+            if(matrix[line][col]==1){
+                break;
+            }
+            if(matrix[line][col]==5 || matrix[line][col] == 3 || matrix[line][col]== 4 || matrix[line][col]== 2){
+                GraphNode graphNode1 = findNode(line,col);
+                graphNode.addNeighbor(graphNode1);
+                break;
+            }
+        }
+
+        line = graphNode.getLine();
+        col = graphNode.getCol();
+        //up
+        while(--line> -1){
+            if(matrix[line][col]==1){
+                break;
+            }
+            if(matrix[line][col]==5|| matrix[line][col] == 3 || matrix[line][col]== 4 || matrix[line][col]== 2){
+                GraphNode graphNode1 = findNode(line,col);
+                graphNode.addNeighbor(graphNode1);
+                break;
+            }
+        }
+
+        line = graphNode.getLine();
+        col = graphNode.getCol();
+
+        //down
+        while(++line<matrix.length){
+            if(matrix[line][col]==1){
+                break;
+            }
+
+            if(matrix[line][col]==5 || matrix[line][col] == 3 || matrix[line][col]== 4 || matrix[line][col]== 2){
+                GraphNode graphNode1 = findNode(line,col);
+                graphNode.addNeighbor(graphNode1);
+                break;
+            }
+        }
+
+    }
+
+    public GraphNode findNode(int line, int col){
+        for (int i = 1; i <= vertices.size(); i++) {
+            GraphNode graphNode = vertices.get(i);
+            if(graphNode.getLine()==line && graphNode.getCol() == col){
+                return graphNode;
+            }
+        }
+        return null;
     }
 
     public void setAgentsCellsColour(List<State> agents){
@@ -150,6 +267,26 @@ public class Environment {
         for (int i = 0; i < picks.size() - 1; i++) {
             for (int j = i + 1; j < picks.size(); j++) {
                 pairs.add(new Pair(picks.get(i), picks.get(j)));
+            }
+        }
+    }
+
+    public void setPicksGraph(){
+        for (GraphNode agent : this.agentsGraph) {
+            pairGraph.add(new PairGraph(agent, offLoadGraph));
+        }
+
+
+        for (GraphNode pick : pickGraph) {
+            for (GraphNode agent : this.agentsGraph) {
+                pairGraph.add(new PairGraph(agent, pick));
+            }
+            pairGraph.add(new PairGraph(pick, offLoadGraph));
+        }
+
+        for (int i = 0; i < pickGraph.size() - 1; i++) {
+            for (int j = i + 1; j < pickGraph.size(); j++) {
+                pairGraph.add(new PairGraph(pickGraph.get(i), pickGraph.get(j)));
             }
         }
     }
@@ -215,6 +352,39 @@ public class Environment {
             pairsMap.put(key1, pair);
             pairsMap.put(key2, new Pair(pair));
         }
+    }
+
+    public void setPairsGraphMap(){
+
+        pairsGraphMap = new HashMap<>();
+
+        StringBuilder sb;
+        StringBuilder sb1;
+        for (PairGraph pair : pairGraph) {
+            sb = new StringBuilder();
+            sb.append(pair.getNode1().getLine());
+            sb.append("-");
+            sb.append(pair.getNode1().getCol());
+            sb.append("/");
+            sb.append(pair.getNode2().getLine());
+            sb.append("-");
+            sb.append(pair.getNode2().getCol());
+            String key1 = sb.toString();
+
+            sb1 = new StringBuilder();
+            sb1.append(pair.getNode2().getLine());
+            sb1.append("-");
+            sb1.append(pair.getNode2().getCol());
+            sb1.append("/");
+            sb1.append(pair.getNode1().getLine());
+            sb1.append("-");
+            sb1.append(pair.getNode1().getCol());
+            String key2 = sb1.toString();
+
+            pairsGraphMap.put(key1, pair);
+            pairsGraphMap.put(key2, new PairGraph(pair));
+        }
+
     }
 
     public List<State> getOriginalAgents() {
@@ -361,5 +531,25 @@ public class Environment {
         for (EnvironmentListener listener : listeners) {
             listener.environmentUpdated();
         }
+    }
+
+    public List<GraphNode> getPickGraph() {
+        return pickGraph;
+    }
+
+    public List<PairGraph> getPairGraph() {
+        return pairGraph;
+    }
+
+    public HashMap<Integer, GraphNode> getVertices() {
+        return vertices;
+    }
+
+    public List<GraphNode> getAgentsGraph() {
+        return agentsGraph;
+    }
+
+    public HashMap<String, PairGraph> getPairsGraphMap() {
+        return pairsGraphMap;
     }
 }
