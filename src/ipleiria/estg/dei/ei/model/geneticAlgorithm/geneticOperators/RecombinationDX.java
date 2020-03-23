@@ -9,15 +9,16 @@ public class RecombinationDX extends Recombination {
 
     public RecombinationDX(double probability) { super(probability); }
 
-    int cut1P1;
-    int cut2P1;
-
-    int cut1P2;
-    int cut2P2;
+    int indexFirstGeneOfCut1;
+    int indexLastGeneOfCut1;
+    int indexFirstGeneOfCut2;
+    int indexLastGeneOfCut2;
 
     private List<Integer> child1,child2;
     private HashMap<Integer,List<Integer>> segments1;
     private HashMap<Integer,List<Integer>> segments2;
+    List<Integer> agentGenes1;
+    List<Integer> agentGenes2;
 
 
 
@@ -31,12 +32,9 @@ public class RecombinationDX extends Recombination {
         ind2.setGenome(genome2);*/
 
         int size = ind1.getGenome().length;
-
-
-        cut1P1=0; // GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
-        cut1P2=0;
-
-
+        System.out.println("Start");
+        System.out.println(ind1.toString());
+        System.out.println(ind2.toString());
 
        segments1= new HashMap<>();
        segments2= new HashMap<>();
@@ -49,29 +47,32 @@ public class RecombinationDX extends Recombination {
 
 
 
-        createChild(ind1,ind2);
-
-        /*System.out.println("Start");
-        System.out.println(ind1.toString());
-        System.out.println(ind2.toString());
-        System.out.println(segment1.toString());
-        System.out.println(segment2.toString());
-
+        createChild(ind1,ind2, 1);
         checkDuplicates(child1);
-        insertRemainingNumbers(child1,segment1,segment2.size()-1, size);
+        insertRemainingNumbers(child1,ind1);
         replaceIndividual(ind1,child1);
 
+        createChild(ind2,ind1, 2);
         checkDuplicates(child2);
-        insertRemainingNumbers(child2,segment2,segment2.size()-1, size);
+        insertRemainingNumbers(child2,ind2);
         replaceIndividual(ind2,child2);
 
 
+        //System.out.println(segment1.toString());
+        //System.out.println(segment2.toString());
+
+
+
+
+
+
         System.out.println("----Child----");
-        System.out.println(child1.toString());*/
+        System.out.println(child1.toString());
+        System.out.println(child2.toString());
 
     }
 
-    private void createChild( Individual individual1, Individual individual2) {
+    private void createChild( Individual individual1, Individual individual2, Integer nr) {
 
 
         List<Integer> child = new LinkedList<>();
@@ -85,51 +86,52 @@ public class RecombinationDX extends Recombination {
             randomAgent = random.nextInt(segments1.size()) ;
         }
 
-        List<Integer> agentGenes1 = segments1.get(randomAgent);
-        int indexFirstGeneOfCut1 = individual1.getIndexOf(agentGenes1.get(0));
-        int indexLastGeneOfCut1 = individual1.getIndexOf(agentGenes1.get(agentGenes1.size()-1));
+        agentGenes1 = segments1.get(randomAgent);
+         indexFirstGeneOfCut1 = individual1.getIndexOf(agentGenes1.get(0));
+         indexLastGeneOfCut1 = individual1.getIndexOf(agentGenes1.get(agentGenes1.size()-1));
 
 
-        List<Integer> agentGenes2 = segments2.get(randomAgent);
-        System.out.println(randomAgent);
+         agentGenes2 = segments2.get(randomAgent);
 
-        int indexFirstGeneOfCut2 = individual2.getIndexOf(agentGenes2.get(0));
-        int indexLastGeneOfCut2 = individual2.getIndexOf(agentGenes2.get(agentGenes2.size()-1));
+         indexFirstGeneOfCut2 = individual2.getIndexOf(agentGenes2.get(0));
+         indexLastGeneOfCut2 = individual2.getIndexOf(agentGenes2.get(agentGenes2.size()-1));
 
         int j = 0;
 
-        for(int i= indexFirstGeneOfCut2; i< indexLastGeneOfCut2+1; i++){
+
+        for(int i= indexFirstGeneOfCut1; i< indexLastGeneOfCut1+1; i++){
             replaceGene(child,i,agentGenes2.get(j));
            // child.add(i,agentGenes2.get(j));
             j++;
+            if(j==agentGenes2.size()){
+                break;
+            }
         }
 
         int k= indexLastGeneOfCut1+1;
 
-        for(int i = indexLastGeneOfCut2+1; i< individual1.getNumGenes() ; i++){
+        for(int i = indexLastGeneOfCut1+1; i<= individual1.getNumGenes() ; i++){
+            if(k==individual1.getNumGenes()){
+                k=0;
+            }
+            if(i == individual1.getNumGenes() ){
+                i=0;
+            }
+            while (child.get(i)!=0 && i!=individual1.getNumGenes()-1){
+                i++;
+            }
             replaceGene(child,i,individual1.getGene(k));
             k++;
+            if(!notComplete(child) ){
+                break;
+            }
         }
 
-          /*  if(i==individual1.getNumGenes() && child.get(0)==0){
-               int o = i-1;
-               int x = 0;
-                while(o!=indexFirstGeneOfCut1){
-                    if(o==individual1.getNumGenes()){
-                        o=0;
-                    }
-                    replaceGene(child,x,individual1.getGene(o));
-                    o++;
-                    x++;
-
-                }
-
-            }else{
-                if(i!=individual1.getNumGenes()){*/
-
-                //}
-          //  }
-
+       if(nr==1){
+           child1=child;
+       }else{
+           child2=child;
+       }
 
     }
 
@@ -138,6 +140,8 @@ public class RecombinationDX extends Recombination {
             ind.setGene(i,child.get(i));
         }
     }
+
+
 
     private void create_Segments(Individual ind, HashMap<Integer,List<Integer>> segments) {
         List<Integer> segment = new LinkedList<>();
@@ -165,7 +169,14 @@ public class RecombinationDX extends Recombination {
             }
         }
 
-
+    public boolean notComplete(List<Integer> child){
+        for (Integer integer : child) {
+            if(integer==0){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     private void checkDuplicates(List<Integer> child){
@@ -174,28 +185,37 @@ public class RecombinationDX extends Recombination {
             for(int j= i+1; j<child.size();j++){
                 int y = child.get(j);
                 if(x==y){
+                    if(j==indexFirstGeneOfCut1 || j==indexLastGeneOfCut1){
+                        child.set(i,0);
+                        break;
+                    }
                     child.set(j,0);
                     break;
                 }
             }
         }
 
-        child.removeIf(integer -> integer == 0);
+        //child.removeIf(integer -> integer == 0);
     }
 
-    private void insertRemainingNumbers(List<Integer> child, List<Integer> seg1, int minRandom, int size){
-        while (child.size()!=size){
-            child.add(0);
+    private void insertRemainingNumbers(List<Integer> child, Individual individual){
+        List<Integer> remainingNumbers = new LinkedList<>();
+
+        for (int i = 0; i < individual.getGenome().length; i++) {
+           if(!child.contains(individual.getGene(i))){
+               remainingNumbers.add(individual.getGene(i));
+           }
         }
 
-        for (int i = 0; i < seg1.size(); i++) {
-            if(!child.contains(seg1.get(i))){
-                int random = GeneticAlgorithm.random.nextInt(size - minRandom) + minRandom;
-                child.add(random,seg1.get(i));
+        Random random = new Random();
+
+        for (int i = 0; i < child.size(); i++) {
+            if(child.get(i)==0){
+                replaceGene(child,i,remainingNumbers.get(0));
+                remainingNumbers.remove(0);
             }
         }
 
-        child.removeIf(integer -> integer == 0);
 
     }
 
