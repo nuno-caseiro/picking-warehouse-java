@@ -23,9 +23,9 @@ public class Controller {
 //
     public void initController() {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
-//        view.getButtonRunSearch().addActionListener(e -> search());
-//        view.getButtonRunGA().addActionListener(e -> runGA());
-//        view.getButtonStop().addActionListener(e -> stop());
+        view.getButtonRunSearch().addActionListener(e -> search());
+        view.getButtonRunGA().addActionListener(e -> runGA());
+        view.getButtonStop().addActionListener(e -> stop());
 //        view.getButtonSimulate().addActionListener(e -> simulate());
     }
 //
@@ -50,51 +50,51 @@ public class Controller {
 //        worker.execute();
 //    }
 //
-//    private void stop() {
-//        worker.cancel(true);
-//    }
-//
-//    private void runGA() {
-//
-//        view.setBestIndividualPanelText("");
-//        view.getSeriesBestIndividual().clear();
-//        view.getSeriesAverage().clear();
-//
-//        view.manageButtons(true, true, false, true, true, true, false, false);
-//        Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
-//
-//        GeneticAlgorithm ga = new GeneticAlgorithm(
-//                Integer.parseInt(view.getPanelParameters().getTextFieldN().getText()),
-//                Integer.parseInt(view.getPanelParameters().getTextFieldGenerations().getText()),
-//                view.getPanelParameters().getSelectionMethod(),
-//                view.getPanelParameters().getRecombinationMethod(),
-//                view.getPanelParameters().getMutationMethod(),
-//                Environment.getInstance().getNumberOfAgents(),
-//                Environment.getInstance().getNumberOfPicks(), random);
-//
-//        ga.addGAListener(view);
-//
-//        worker = new SwingWorker<>() {
-//            @Override
-//            public Void doInBackground() {
-//                try {
-//                    Individual bestInRun = ga.run();
-//                    Environment.getInstance().setBestInRun(bestInRun);
-//                    System.out.println(bestInRun);
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace(System.err);
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public void done() {
-//                view.manageButtons(true, true, false, false, true, true, false, true);
-//            }
-//        };
-//        worker.execute();
-//    }
+    private void stop() {
+        worker.cancel(true);
+    }
+
+    private void runGA() {
+
+        view.setBestIndividualPanelText("");
+        view.getSeriesBestIndividual().clear();
+        view.getSeriesAverage().clear();
+
+        view.manageButtons(true, true, false, true, true, true, false, false);
+        Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
+
+        GeneticAlgorithm ga = new GeneticAlgorithm(
+                Integer.parseInt(view.getPanelParameters().getTextFieldN().getText()),
+                Integer.parseInt(view.getPanelParameters().getTextFieldGenerations().getText()),
+                view.getPanelParameters().getSelectionMethod(),
+                view.getPanelParameters().getRecombinationMethod(),
+                view.getPanelParameters().getMutationMethod(),
+                Environment.getInstance().getNumberOfAgents(),
+                Environment.getInstance().getNumberOfPicks(), random);
+
+        ga.addGAListener(view);
+
+        worker = new SwingWorker<>() {
+            @Override
+            public Void doInBackground() {
+                try {
+                    Individual bestInRun = ga.run();
+                    Environment.getInstance().setBestInRun(bestInRun);
+                    System.out.println(bestInRun);
+
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+                return null;
+            }
+
+            @Override
+            public void done() {
+                view.manageButtons(true, true, false, false, true, true, false, true);
+            }
+        };
+        worker.execute();
+    }
 
     private void search() {
 
@@ -104,13 +104,12 @@ public class Controller {
                 try {
                     AStar aStar = new AStar();
                     for (Pair pair : Environment.getInstance().getPairs()) {
-                        List<GraphNode> actions = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
-//                        pair.setValue(aStar.computePathCost(actions));
-//                        pair.setPath(actions);
+                        List<Node> pathNodes = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
+                        pair.setValue(pathNodes.get(pathNodes.size() - 1).getG());
+                        pair.setPath(pathNodes);
                     }
 
-                   // Environment.getInstance().setPairsMap();
-                    Environment.getInstance().setPairsGraphMap();
+                    Environment.getInstance().setPairsMap();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -122,7 +121,7 @@ public class Controller {
             protected void done() {
                 StringBuilder str = new StringBuilder();
                 str.append("Pairs:\n");
-                for (PairGraph p : Environment.getInstance().getPairGraph()) {
+                for (Pair p : Environment.getInstance().getPairs()) {
                     str.append(p);
                 }
                 view.setProblemPanelText(str.toString());

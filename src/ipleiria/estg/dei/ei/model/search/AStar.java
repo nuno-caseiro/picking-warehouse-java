@@ -18,7 +18,7 @@ public class AStar {
         this.heuristic = new Heuristic();
     }
 
-    public List<GraphNode> search(Node initialNode, Node goalNode) {
+    public List<Node> search(Node initialNode, Node goalNode) {
         frontier.clear();
         explored.clear();
         frontier.add(initialNode);
@@ -32,30 +32,20 @@ public class AStar {
             explored.add(node.getNodeNumber());
             List<Node> successors = Environment.getInstance().getAdjacentNodes(node.getNodeNumber());
             addSuccessorsToFrontier(successors, node, goalNode);
-
         }
         return null;
     }
 
     private List<Node> computeSolution(Node node) {
-        List<Node> solution = new ArrayList<>();
+        LinkedList<Node> solution = new LinkedList<>();
 
-        solution.add(node);
+        solution.addFirst(node);
         while (node.hasParent()) {
-            solution.addFirst(node);
             node = node.getParent();
+            solution.addFirst(node);
         }
 
         return solution;
-    }
-
-    public double computePathCost(List<GraphNode> path) {
-        double cost = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            cost += heuristic.compute(path.get(i),path.get(i+1).getLine(),path.get(i+1).getCol());
-        }
-
-        return cost;
     }
 
     private void addSuccessorsToFrontier(List<Node> successors, Node parent, Node goalNode) {

@@ -1,8 +1,6 @@
 package ipleiria.estg.dei.ei.utils;
 
-import ipleiria.estg.dei.ei.model.search.GraphNode;
 import ipleiria.estg.dei.ei.model.search.Node;
-import ipleiria.estg.dei.ei.model.search.State;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;

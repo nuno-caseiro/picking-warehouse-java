@@ -9,6 +9,7 @@ public class Pair {
     private int node1;
     private int node2;
     private double value;
+    private List<Node> path;
 
     public Pair(int node1, int node2) {
         this.node1 = node1;
@@ -36,5 +37,14 @@ public class Pair {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public void setPath(List<Node> path) {
+        this.path = path;
+    }
+
+    @Override
+    public String toString() {
+        return node1 + " -> " + node2 + " = " + value + "\n";
     }
 }

@@ -24,8 +24,8 @@ public class Environment {
 //    private List<State> agents;
 //    private List<State> originalAgents;
 //    private State offloadArea;
-//    private Individual bestInRun;
-//    private HashMap<String, Pair> pairsMap;
+    private Individual bestInRun;
+    private HashMap<String, Pair> pairsMap;
 //    private HashMap<String, PairGraph> pairsGraphMap;
     private ArrayList<EnvironmentListener> listeners;
 //    private List<GraphNode> agentsGraph;
@@ -322,13 +322,13 @@ public class Environment {
 //
 
 //
-//    public int getNumberOfAgents() {
-//        return agents.size();
-//    }
-//
-//    public int getNumberOfPicks() {
-//        return picks.size();
-//    }
+    public int getNumberOfAgents() {
+        return agents.size();
+    }
+
+    public int getNumberOfPicks() {
+        return picks.size();
+    }
 //
 //    public List<Pair> getPairs() {
 //        return pairs;
@@ -337,92 +337,53 @@ public class Environment {
 //    public Individual getBestInRun() {
 //        return bestInRun;
 //    }
-//
-//    public void setBestInRun(Individual bestInRun) {
-//        this.bestInRun = bestInRun;
-//    }
-//
+
+    public void setBestInRun(Individual bestInRun) {
+        this.bestInRun = bestInRun;
+    }
+
 //    public List<State> getAgents() {
 //        return agents;
 //    }
-//
-//    public State getOffloadArea() {
-//        return offloadArea;
-//    }
-//
-//    public HashMap<String, Pair> getPairsMap() {
-//        return pairsMap;
-//    }
-//
-//    public void setPairsMap() {
-//        pairsMap = new HashMap<>();
-//
-//        StringBuilder sb;
-//        StringBuilder sb1;
-//        for (Pair pair : pairs) {
-//            sb = new StringBuilder();
-//            sb.append(pair.getState1().getLine());
-//            sb.append("-");
-//            sb.append(pair.getState1().getColumn());
-//            sb.append("/");
-//            sb.append(pair.getState2().getLine());
-//            sb.append("-");
-//            sb.append(pair.getState2().getColumn());
-//            String key1 = sb.toString();
-//
-//            sb1 = new StringBuilder();
-//            sb1.append(pair.getState2().getLine());
-//            sb1.append("-");
-//            sb1.append(pair.getState2().getColumn());
-//            sb1.append("/");
-//            sb1.append(pair.getState1().getLine());
-//            sb1.append("-");
-//            sb1.append(pair.getState1().getColumn());
-//            String key2 = sb1.toString();
-//
-//            pairsMap.put(key1, pair);
-//            pairsMap.put(key2, new Pair(pair));
-//        }
-//    }
-//
-//    public void setPairsGraphMap(){
-//
-//        pairsGraphMap = new HashMap<>();
-//
-//        StringBuilder sb;
-//        StringBuilder sb1;
-//        for (PairGraph pair : pairGraph) {
-//            sb = new StringBuilder();
-//            sb.append(pair.getNode1().getLine());
-//            sb.append("-");
-//            sb.append(pair.getNode1().getCol());
-//            sb.append("/");
-//            sb.append(pair.getNode2().getLine());
-//            sb.append("-");
-//            sb.append(pair.getNode2().getCol());
-//            String key1 = sb.toString();
-//
-//            sb1 = new StringBuilder();
-//            sb1.append(pair.getNode2().getLine());
-//            sb1.append("-");
-//            sb1.append(pair.getNode2().getCol());
-//            sb1.append("/");
-//            sb1.append(pair.getNode1().getLine());
-//            sb1.append("-");
-//            sb1.append(pair.getNode1().getCol());
-//            String key2 = sb1.toString();
-//
-//            pairsGraphMap.put(key1, pair);
-//            pairsGraphMap.put(key2, new PairGraph(pair));
-//        }
-//
-//    }
-//
-//    public List<State> getOriginalAgents() {
-//        return originalAgents;
-//    }
-//
-//    public void executeSolution() throws InterruptedException {
+
+    public void setPairsMap() {
+        pairsMap = new HashMap<>();
+
+        StringBuilder sb;
+        StringBuilder sb1;
+        for (Pair pair : pairs) {
+            sb = new StringBuilder();
+            sb.append(pair.getNode1());
+            sb.append("-");
+            sb.append(pair.getNode2());
+            String key1 = sb.toString();
+
+            sb1 = new StringBuilder();
+            sb1.append(pair.getNode2());
+            sb1.append("-");
+            sb1.append(pair.getNode1());
+            String key2 = sb1.toString();
+
+            pairsMap.put(key1, pair);
+            pairsMap.put(key2, new Pair(pair));
+        }
+    }
+
+    public HashMap<String, Pair> getPairsMap() {
+        return pairsMap;
+    }
+
+    //
+
+    public List<Integer> getAgents() {
+        return agents;
+    }
+
+    public int getOffloadArea() {
+        return offloadArea;
+    }
+
+    //    public void executeSolution() throws InterruptedException {
 //        for (int i = 0; i < this.matrix.length; i++) {
 //            System.arraycopy(this.originalMatrix[i], 0, this.matrix[i], 0, this.matrix[0].length);
 //        }
