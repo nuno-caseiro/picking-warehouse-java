@@ -94,40 +94,40 @@ public class Individual implements Comparable<Individual>{
     }
 
     public void computeFitness() {
-        List<State> picks = Environment.getInstance().getPicks();
-        HashMap<String, Pair> pairsValueMap = Environment.getInstance().getPairsMap();
-        List<State> agents = Environment.getInstance().getOriginalAgents();
-        State offload = Environment.getInstance().getOffloadArea();
-        double agentFitness = 0;
-        this.fitness = 0;
-        int agent = 0;
-        State previousState = agents.get(agent);
-        State currentState;
-
-        for (int i = 0; i < genome.length; i++) {
-            if (genome[i] < 0) {
-                currentState = offload;
-                agentFitness += getPairValue(pairsValueMap, previousState, currentState);
-
-                if (agentFitness > fitness) {
-                    fitness = agentFitness;
-                }
-                agentFitness = 0;
-                previousState = agents.get(++agent);
-                continue;
-            }
-            currentState = picks.get(genome[i] - 1);
-            agentFitness += getPairValue(pairsValueMap, previousState, currentState);
-
-            previousState = currentState;
-        }
-
-        currentState = offload;
-        agentFitness += getPairValue(pairsValueMap, previousState, currentState);
-
-        if (agentFitness > fitness) {
-            fitness = agentFitness;
-        }
+//        List<State> picks = Environment.getInstance().getPicks();
+//        HashMap<String, Pair> pairsValueMap = Environment.getInstance().getPairsMap();
+//        List<State> agents = Environment.getInstance().getOriginalAgents();
+//        State offload = Environment.getInstance().getOffloadArea();
+//        double agentFitness = 0;
+//        this.fitness = 0;
+//        int agent = 0;
+//        State previousState = agents.get(agent);
+//        State currentState;
+//
+//        for (int i = 0; i < genome.length; i++) {
+//            if (genome[i] < 0) {
+//                currentState = offload;
+//                agentFitness += getPairValue(pairsValueMap, previousState, currentState);
+//
+//                if (agentFitness > fitness) {
+//                    fitness = agentFitness;
+//                }
+//                agentFitness = 0;
+//                previousState = agents.get(++agent);
+//                continue;
+//            }
+//            currentState = picks.get(genome[i] - 1);
+//            agentFitness += getPairValue(pairsValueMap, previousState, currentState);
+//
+//            previousState = currentState;
+//        }
+//
+//        currentState = offload;
+//        agentFitness += getPairValue(pairsValueMap, previousState, currentState);
+//
+//        if (agentFitness > fitness) {
+//            fitness = agentFitness;
+//        }
     }
 
     private double getPairValue(HashMap<String, Pair> pairsValueMap, State state1, State state2) {

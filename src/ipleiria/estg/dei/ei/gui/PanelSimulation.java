@@ -43,38 +43,6 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         return buttonSimulate;
     }
 
-    //    @Override
-//    public void environmentUpdated() {
-        //TODO
-      /*  int n = environment.getSize();
-        Graphics g = image.getGraphics();
-
-        //Fill the cells color
-        for(int y = 0; y < n; y++){
-            for (int x = 0; x < n; x++){
-                g.setColor(environment.getCellColor(y,x));
-                g.fillRect(x * CELL_SIZE, y * CELL_SIZE , CELL_SIZE, CELL_SIZE);
-            }
-        }
-
-        //Draw the grid lines
-        g.setColor(Color.BLACK);
-        for(int i = 0; i <= n; i++){
-            g.drawLine(0, i * CELL_SIZE, n * CELL_SIZE, i * CELL_SIZE);
-            g.drawLine(i * CELL_SIZE, 0,n * CELL_SIZE, i * CELL_SIZE);
-        }
-
-        g = environmentPanel.getGraphics();
-        g.drawImage(image, GRID_TO_PANEL_GAP, GRID_TO_PANEL_GAP, null);
-        panelInformation.getTextFieldBox().setText(Integer.toString(mainFrame.getAgentSearch().getInitialBox().size()-environment.getNumBox()));
-        panelInformation.getTextFieldSteps().setText(Integer.toString(environment.getSteps()));
-
-        try{
-            Thread.sleep(100);
-        } catch (InterruptedException ignore) {
-        }*/
-//    }
-
     public void setJButtonSimulateEnabled(boolean enabled){
         if(worker != null){
             worker.cancel(true);
@@ -98,7 +66,7 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
             return;
 
         }
-        createEnvironment();
+//        createEnvironment(); xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
         final PanelSimulation simulationPanel = this;
 
@@ -138,8 +106,8 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
         buildImage(Environment.getInstance().getMatrix());
         environmentUpdated();
     }
-
-    //TODO
+//
+//    //TODO
     public void buildImage(int[][] matrix){
         image = new BufferedImage(matrix[0].length * CELL_SIZE +1, matrix.length * CELL_SIZE + 1, BufferedImage.TYPE_INT_RGB);
     }

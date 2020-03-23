@@ -20,94 +20,93 @@ public class Controller {
     public Controller(MainFrame view) {
         this.view = view;
     }
-
+//
     public void initController() {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
-        view.getButtonRunSearch().addActionListener(e -> search());
-        view.getButtonRunGA().addActionListener(e -> runGA());
-        view.getButtonStop().addActionListener(e -> stop());
-        view.getButtonSimulate().addActionListener(e -> simulate());
+//        view.getButtonRunSearch().addActionListener(e -> search());
+//        view.getButtonRunGA().addActionListener(e -> runGA());
+//        view.getButtonStop().addActionListener(e -> stop());
+//        view.getButtonSimulate().addActionListener(e -> simulate());
     }
+//
+//    private void simulate() {
+//        worker = new SwingWorker<>() {
+//            @Override
+//            public Void doInBackground() {
+//                try {
+//                    view.manageButtons(false, false, false, false, false, true, false, false);
+//                    Environment.getInstance().executeSolution();
+//                } catch (Exception e) {
+//                    e.printStackTrace(System.err);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public void done() {
+//                view.manageButtons(true, true, false, false, false, true, false, true);
+//            }
+//        };
+//        worker.execute();
+//    }
+//
+//    private void stop() {
+//        worker.cancel(true);
+//    }
+//
+//    private void runGA() {
+//
+//        view.setBestIndividualPanelText("");
+//        view.getSeriesBestIndividual().clear();
+//        view.getSeriesAverage().clear();
+//
+//        view.manageButtons(true, true, false, true, true, true, false, false);
+//        Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
+//
+//        GeneticAlgorithm ga = new GeneticAlgorithm(
+//                Integer.parseInt(view.getPanelParameters().getTextFieldN().getText()),
+//                Integer.parseInt(view.getPanelParameters().getTextFieldGenerations().getText()),
+//                view.getPanelParameters().getSelectionMethod(),
+//                view.getPanelParameters().getRecombinationMethod(),
+//                view.getPanelParameters().getMutationMethod(),
+//                Environment.getInstance().getNumberOfAgents(),
+//                Environment.getInstance().getNumberOfPicks(), random);
+//
+//        ga.addGAListener(view);
+//
+//        worker = new SwingWorker<>() {
+//            @Override
+//            public Void doInBackground() {
+//                try {
+//                    Individual bestInRun = ga.run();
+//                    Environment.getInstance().setBestInRun(bestInRun);
+//                    System.out.println(bestInRun);
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace(System.err);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public void done() {
+//                view.manageButtons(true, true, false, false, true, true, false, true);
+//            }
+//        };
+//        worker.execute();
+//    }
 
-    private void simulate() {
+    private void search() {
+
         worker = new SwingWorker<>() {
             @Override
-            public Void doInBackground() {
-                try {
-                    view.manageButtons(false, false, false, false, false, true, false, false);
-                    Environment.getInstance().executeSolution();
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-            }
-
-            @Override
-            public void done() {
-                view.manageButtons(true, true, false, false, false, true, false, true);
-            }
-        };
-        worker.execute();
-    }
-
-    private void stop() {
-        worker.cancel(true);
-    }
-
-    private void runGA() {
-
-        view.setBestIndividualPanelText("");
-        view.getSeriesBestIndividual().clear();
-        view.getSeriesAverage().clear();
-
-        view.manageButtons(true, true, false, true, true, true, false, false);
-        Random random = new Random(Integer.parseInt(view.getPanelParameters().getTextFieldSeed().getText()));
-
-        GeneticAlgorithm ga = new GeneticAlgorithm(
-                Integer.parseInt(view.getPanelParameters().getTextFieldN().getText()),
-                Integer.parseInt(view.getPanelParameters().getTextFieldGenerations().getText()),
-                view.getPanelParameters().getSelectionMethod(),
-                view.getPanelParameters().getRecombinationMethod(),
-                view.getPanelParameters().getMutationMethod(),
-                Environment.getInstance().getNumberOfAgents(),
-                Environment.getInstance().getNumberOfPicks(), random);
-
-        ga.addGAListener(view);
-
-        worker = new SwingWorker<>() {
-            @Override
-            public Void doInBackground() {
-                try {
-                    Individual bestInRun = ga.run();
-                    Environment.getInstance().setBestInRun(bestInRun);
-                    System.out.println(bestInRun);
-
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-            }
-
-            @Override
-            public void done() {
-                view.manageButtons(true, true, false, false, true, true, false, true);
-            }
-        };
-        worker.execute();
-    }
-
-    private void search() { //TODO agents and offload area loaded statically(in matrix)
-
-
-        worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                 try {
                     AStar aStar = new AStar();
-                    for (PairGraph pair : Environment.getInstance().getPairGraph()) {
-                        List<GraphNode> actions = aStar.search(pair.getNode1(),pair.getNode2());
-                        pair.setValue(aStar.computePathCost(actions));
-                        pair.setPath(actions);
+                    for (Pair pair : Environment.getInstance().getPairs()) {
+                        List<GraphNode> actions = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
+//                        pair.setValue(aStar.computePathCost(actions));
+//                        pair.setPath(actions);
                     }
 
                    // Environment.getInstance().setPairsMap();
@@ -142,8 +141,6 @@ public class Controller {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
-                Environment.getInstance().createGraph();
-                Environment.getInstance().setPicksGraph();
 
                 view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true, false, true, false, false, true, false, false);
