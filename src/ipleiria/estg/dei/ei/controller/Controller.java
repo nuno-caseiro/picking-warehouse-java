@@ -102,8 +102,16 @@ public class Controller {
         worker.execute();
     }
 
-    private void search() { //TODO agents and offload area loaded statically(in matrix)
+    private void search() {
 
+
+        String textFieldSelectivePressure = view.getPanelParameters().getTextFieldSelectivePressure().getText();
+        Double selectivePressure = Double.parseDouble(textFieldSelectivePressure);
+
+        if(selectivePressure<1 ||selectivePressure>2){
+            JOptionPane.showMessageDialog(view, "Selective pressure should be between 1 and 2.");
+
+        }else{
 
         worker = new SwingWorker<>() {
             @Override
@@ -136,6 +144,8 @@ public class Controller {
             }
         };
         worker.execute();
+        }
+
     }
 
     private void loadDataSet() {
