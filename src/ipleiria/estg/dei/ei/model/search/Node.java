@@ -1,6 +1,9 @@
 package ipleiria.estg.dei.ei.model.search;
 
 
+import ipleiria.estg.dei.ei.utils.Properties;
+import ipleiria.estg.dei.ei.utils.PropertiesNode;
+
 import java.util.Objects;
 
 // Note: this class has a natural ordering that is inconsistent with equals.
@@ -13,11 +16,20 @@ public class Node implements Comparable<Node> {
     private int line;
     private int column;
     private int nodeNumber;
+    private String type;
+
+    public Node(int line, int column, int nodeNumber, String type) {
+        this.line = line;
+        this.column = column;
+        this.nodeNumber = nodeNumber;
+        this.type = type;
+    }
 
     public Node(int line, int column, int nodeNumber) {
         this.line = line;
         this.column = column;
         this.nodeNumber = nodeNumber;
+
     }
 
     public Node(double costFromAdjacentNode, int line, int column, int nodeNumber) {

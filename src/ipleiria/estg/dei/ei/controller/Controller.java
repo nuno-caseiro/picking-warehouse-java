@@ -20,7 +20,8 @@ public class Controller {
     public Controller(MainFrame view) {
         this.view = view;
     }
-//
+
+    //
     public void initController() {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
         view.getButtonRunSearch().addActionListener(e -> search());
@@ -28,7 +29,8 @@ public class Controller {
         view.getButtonStop().addActionListener(e -> stop());
 //        view.getButtonSimulate().addActionListener(e -> simulate());
     }
-//
+
+    //
 //    private void simulate() {
 //        worker = new SwingWorker<>() {
 //            @Override
@@ -141,7 +143,13 @@ public class Controller {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
 
-                view.getSimulationPanel().createEnvironment();
+                returnVal = fc.showOpenDialog(view);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File dataSetPick = fc.getSelectedFile();
+                    Environment.getInstance().loadPicksFromFile(dataSetPick);
+                }
+
+                //   view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true, false, true, false, false, true, false, false);
             }
         } catch (IOException e1) {

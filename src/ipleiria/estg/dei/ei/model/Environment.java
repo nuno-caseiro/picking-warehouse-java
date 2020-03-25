@@ -4,9 +4,7 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -15,7 +13,7 @@ import ipleiria.estg.dei.ei.utils.Properties;
 public class Environment {
 
     private static Environment INSTANCE = new Environment();
-//    private int[][] matrix;
+    //    private int[][] matrix;
 //    private int[][] originalMatrix;
 //    private List<Action> actions;
 //    private List<State> picks;
@@ -26,9 +24,9 @@ public class Environment {
 //    private State offloadArea;
     private Individual bestInRun;
     private HashMap<String, Pair> pairsMap;
-//    private HashMap<String, PairGraph> pairsGraphMap;
+    //    private HashMap<String, PairGraph> pairsGraphMap;
     private ArrayList<EnvironmentListener> listeners;
-//    private List<GraphNode> agentsGraph;
+    //    private List<GraphNode> agentsGraph;
 //    private List<GraphNode> pickGraph;
 //    private GraphNode offLoadGraph;
 //    private List<PairGraph> pairGraph;
@@ -42,6 +40,7 @@ public class Environment {
     private List<Integer> picks;
     private List<Pair> pairs;
     private int[][] matrix;
+    private HashMap<String, Edge> edges;
 
 
 //    int numberNode = 1;
@@ -67,17 +66,19 @@ public class Environment {
         this.pairs = new ArrayList<>();
         this.nodeLookup = new HashMap<>();
         this.nodes = new HashMap<>();
+        this.edges = new HashMap<>();
     }
 
     public static Environment getInstance() {
         return INSTANCE;
     }
 
-    public void readInitialStateFromFile(File file) throws FileNotFoundException {
+    public void readInitialStateFromFile(File file) throws IOException {
 
-        createMatrixFromFile(file);
-        createGraph();
-        setPairs();
+        // createMatrixFromFile(file);
+        // createGraph();
+        createGraphFromFile(file);
+
 
 //        for (int i = 0; i < graphSize; i++) {
 //            System.out.println(nodes.get(i));
@@ -104,10 +105,68 @@ public class Environment {
 //        this.originalMatrix = copyMatrix;
     }
 
+    private void createGraphFromFile(File file) throws IOException {
+
+        BufferedReader csvReader = new BufferedReader(new FileReader(file));
+        String row = "";
+        while ((row = csvReader.readLine()) != null && !row.contains("Sucessors")) {
+            String[] data = row.split(";");
+            if (data[0].contains("Nodes")) {
+                continue;
+            }
+            this.nodeLookup.put(Integer.parseInt(data[2]) + "-" + Integer.parseInt(data[3]), Integer.parseInt(data[0]));
+            this.nodes.put(Integer.parseInt(data[0]), new Node(Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[0]), data[1]));
+
+        }
+
+        while ((row = csvReader.readLine()) != null && !row.contains("Edges")) {
+            String[] data = row.split(";");
+            ArrayList<Node> successors = new ArrayList<>();
+            this.adjacencyList.put(Integer.parseInt(data[0]), successors);
+
+            for (int i = 1; i < data.length; i += 2) {
+                Node node = nodes.get(Integer.parseInt(data[i]));
+                successors.add(new Node(Integer.parseInt(data[i + 1]), node.getLine(), node.getColumn(), node.getNodeNumber()));
+            }
+        }
+
+        while ((row = csvReader.readLine()) != null && !row.contains("Agents")) {
+            String[] data = row.split(";");
+            Node node1 = nodes.get(Integer.parseInt(data[0]));
+            Node node2 = nodes.get(Integer.parseInt(data[1]));
+            edges.put(node1.getNodeNumber() + "-" + node2.getNodeNumber(), new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
+        }
+
+        while ((row = csvReader.readLine()) != null & !row.contains("OffLoad")) {
+            String[] data = row.split(";");
+            agents.add(Integer.parseInt(data[1]));
+        }
+
+        row = csvReader.readLine();
+        String[] data = row.split(";");
+
+        offloadArea = Integer.parseInt(data[1]);
+        csvReader.close();
+
+    }
+
+    public void loadPicksFromFile(File file) throws IOException {
+
+        BufferedReader csvReader = new BufferedReader(new FileReader(file));
+        String row = "";
+        while ((row = csvReader.readLine()) != null) {
+            String[] data = row.split(";");
+            this.picks.add(Integer.parseInt(data[1]));
+        }
+        csvReader.close();
+
+        setPairs();
+
+    }
+
     private void createMatrixFromFile(File file) throws FileNotFoundException {
         java.util.Scanner scanner = new java.util.Scanner(file);
-//        picks.clear();
-//        agents.clear();
+
 
         int lines = scanner.nextInt();
         scanner.nextLine();
@@ -126,20 +185,20 @@ public class Environment {
 
         for (int i = 0; i < lines; i++) {
             for (int j = 0; j < columns; j++) {
-                if  (matrix[i][j] == 1 && i - 1 >= 0 && matrix[i-1][j] == 0) {
+                if (matrix[i][j] == 1 && i - 1 >= 0 && matrix[i - 1][j] == 0) {
                     if (j - 1 >= 0) {
-                        matrix[i-1][j-1] = Properties.node;
+                        matrix[i - 1][j - 1] = Properties.node;
                     }
                     if (j + 1 < columns) {
-                        matrix[i-1][j+1] = Properties.node;
+                        matrix[i - 1][j + 1] = Properties.node;
                     }
                 }
-                if  (matrix[i][j] == 1 && i + 1 < lines && matrix[i+1][j] == 0) {
+                if (matrix[i][j] == 1 && i + 1 < lines && matrix[i + 1][j] == 0) {
                     if (j - 1 >= 0) {
-                        matrix[i+1][j-1] = Properties.node;
+                        matrix[i + 1][j - 1] = Properties.node;
                     }
                     if (j + 1 < columns) {
-                        matrix[i+1][j+1] = Properties.node;
+                        matrix[i + 1][j + 1] = Properties.node;
                     }
                 }
             }
@@ -178,6 +237,7 @@ public class Environment {
         this.matrix = matrix;
     }
 
+
     private void createGraph() {
         int lines = matrix.length;
         int columns = matrix[0].length;
@@ -198,25 +258,28 @@ public class Environment {
             for (int j = 0; j < columns; j++) {
                 if (matrix[i][j] >= 2) {
                     ArrayList<Node> successors = new ArrayList<>();
-                    nodeNumber = getNodeNumber(i,j);
+                    nodeNumber = getNodeNumber(i, j);
                     this.adjacencyList.put(nodeNumber, successors);
 
                     switch (matrix[i][j]) {
-                        case Properties.agent: this.agents.add(nodeNumber);
+                        case Properties.agent:
+                            this.agents.add(nodeNumber);
                             break;
-                        case Properties.offloadArea: this.offloadArea = nodeNumber;
+                        case Properties.offloadArea:
+                            this.offloadArea = nodeNumber;
                             break;
-                        case Properties.pick: this.picks.add(nodeNumber);
+                        case Properties.pick:
+                            this.picks.add(nodeNumber);
                     }
 
                     // UP
-                    for (int k = i - 1; k >= 0 ; k--) {
+                    for (int k = i - 1; k >= 0; k--) {
                         if (matrix[k][j] == Properties.obstacle) {
                             break;
                         }
 
                         if (matrix[k][j] >= 2) {
-                            successors.add(new Node(Math.abs(i-k), k, j, getNodeNumber(k,j)));
+                            successors.add(new Node(Math.abs(i - k), k, j, getNodeNumber(k, j)));
                             break;
                         }
                     }
@@ -228,7 +291,7 @@ public class Environment {
                         }
 
                         if (matrix[k][j] >= 2) {
-                            successors.add(new Node(Math.abs(i-k), k, j, getNodeNumber(k,j)));
+                            successors.add(new Node(Math.abs(i - k), k, j, getNodeNumber(k, j)));
                             break;
                         }
                     }
@@ -240,7 +303,7 @@ public class Environment {
                         }
 
                         if (matrix[i][k] >= 2) {
-                            successors.add(new Node(Math.abs(j-k), i, k, getNodeNumber(i,k)));
+                            successors.add(new Node(Math.abs(j - k), i, k, getNodeNumber(i, k)));
                             break;
                         }
                     }
@@ -252,7 +315,7 @@ public class Environment {
                         }
 
                         if (matrix[i][k] >= 2) {
-                            successors.add(new Node(Math.abs(j-k), i, k, getNodeNumber(i,k)));
+                            successors.add(new Node(Math.abs(j - k), i, k, getNodeNumber(i, k)));
                             break;
                         }
                     }
@@ -321,7 +384,7 @@ public class Environment {
 //    }
 //
 
-//
+    //
     public int getNumberOfAgents() {
         return agents.size();
     }
@@ -502,8 +565,8 @@ public class Environment {
                 return Properties.COLORAGENT;
             case Properties.offloadArea:
                 return Properties.COLOROFFLOADAREA;
-                case  Properties.pick:
-                    return Properties.COLORPICK;
+            case Properties.pick:
+                return Properties.COLORPICK;
             default:
                 return Properties.COLOREMPTY;
         }
