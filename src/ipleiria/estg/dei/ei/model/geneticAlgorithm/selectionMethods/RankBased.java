@@ -19,6 +19,12 @@ public class RankBased extends SelectionMethod  {
         accumulated = new double[popSize];
     }
 
+    public RankBased(int popSize, double ps ){
+        super(popSize);
+        accumulated = new double[popSize];
+        this.ps= ps;
+    }
+
     @Override
     public Population run(Population original) {
         original.getIndividuals().sort(new FitnessComparator());

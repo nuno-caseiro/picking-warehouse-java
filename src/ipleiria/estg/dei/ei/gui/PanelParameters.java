@@ -18,6 +18,7 @@ public class PanelParameters extends PanelAtributesValue {
     public static final String POPULATION_SIZE= "100";
     public static final String GENERATIONS= "100";
     public static final String TOURNMENT_SIZE= "4";
+    public static final String SELECTIVE_PRESSURE= "2";
     public static final String PROB_RECOMBINATION= "0.7";
     public static final String PROB_MUTATION= "0.2";
     private MainFrame mainFrame;
@@ -29,6 +30,7 @@ public class PanelParameters extends PanelAtributesValue {
     String[] selectionMethods= {"Tournament", "Rank"};
     JComboBox comboBoxSelectionMethods = new JComboBox(selectionMethods);
     JTextField textFieldTournamentSize = new JTextField(TOURNMENT_SIZE,TEXT_FIELD_LENGHT);
+    JTextField textFieldSelectivePressure = new JTextField(SELECTIVE_PRESSURE,TEXT_FIELD_LENGHT);
 
     String[] recombinationMethods = {"PMX", "OX" , "OX1", "DX" , "CX"};
     JComboBox comboBoxRecombinationMethods = new JComboBox(recombinationMethods);
@@ -66,6 +68,10 @@ public class PanelParameters extends PanelAtributesValue {
         valueComponents.add(textFieldTournamentSize);
         textFieldTournamentSize.addKeyListener(new IntegerTextField_KeyAdapter(null));
 
+        labels.add(new JLabel("Selective pressure: "));
+        valueComponents.add(textFieldSelectivePressure);
+        textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
+
         labels.add(new JLabel("Recombination method: "));
         valueComponents.add(comboBoxRecombinationMethods);
 
@@ -83,6 +89,9 @@ public class PanelParameters extends PanelAtributesValue {
         comboBoxSearch.addActionListener(new JComboBoxSearch_ActionAdapter(this));
 
         mainFrame.manageButtons(true,false,false,false,false,false,false,false);
+
+        textFieldTournamentSize.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 0);
+        textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
 
         configure();
     }
@@ -105,7 +114,7 @@ public class PanelParameters extends PanelAtributesValue {
             case 0:
                 return new Tournament(Integer.parseInt(textFieldN.getText()), Integer.parseInt(textFieldTournamentSize.getText()));
             case 1:
-                return new RankBased(Integer.parseInt(textFieldN.getText()));
+                return new RankBased(Integer.parseInt(textFieldN.getText()),Double.parseDouble(textFieldSelectivePressure.getText()));
         }
         return null;
     }
@@ -146,10 +155,15 @@ public class PanelParameters extends PanelAtributesValue {
 
     public void actionPerformedSelectionMethods(ActionEvent actionEvent) {
         textFieldTournamentSize.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 0);
+        textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
     }
 
     public void actionPerformedSearch(ActionEvent actionEvent) {
         mainFrame.cleanBoards();
+    }
+
+    public JTextField getTextFieldSelectivePressure() {
+        return textFieldSelectivePressure;
     }
 }
 
@@ -164,7 +178,35 @@ class IntegerTextField_KeyAdapter implements KeyListener{
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         char c = keyEvent.getKeyChar();
-        if(!Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE){
+        if(!Character.isDigit(c)  || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE){
+            keyEvent.consume();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
+    }
+}
+
+class RankTextField_KeyAdapter implements KeyListener{
+
+    final private MainFrame adaptee;
+
+    RankTextField_KeyAdapter(MainFrame adaptee) {
+        this.adaptee = adaptee;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+        char c = keyEvent.getKeyChar();
+
+        if(c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE  ){
             keyEvent.consume();
         }
     }
