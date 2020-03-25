@@ -2,19 +2,13 @@ package ipleiria.estg.dei.ei.controller;
 
 import ipleiria.estg.dei.ei.gui.MainFrame;
 import ipleiria.estg.dei.ei.model.Environment;
-import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
-import ipleiria.estg.dei.ei.model.search.AStar;
-import ipleiria.estg.dei.ei.model.search.Action;
-import ipleiria.estg.dei.ei.model.search.Node;
-import ipleiria.estg.dei.ei.model.search.Pair;
-import ipleiria.estg.dei.ei.model.search.State;
+import ipleiria.estg.dei.ei.model.search.*;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,35 +21,37 @@ public class Controller {
         this.view = view;
     }
 
+    //
     public void initController() {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
         view.getButtonRunSearch().addActionListener(e -> search());
         view.getButtonRunGA().addActionListener(e -> runGA());
         view.getButtonStop().addActionListener(e -> stop());
-        view.getButtonSimulate().addActionListener(e -> simulate());
+//        view.getButtonSimulate().addActionListener(e -> simulate());
     }
 
-    private void simulate() {
-        worker = new SwingWorker<>() {
-            @Override
-            public Void doInBackground() {
-                try {
-                    view.manageButtons(false, false, false, false, false, true, false, false);
-                    Environment.getInstance().executeSolution();
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-            }
-
-            @Override
-            public void done() {
-                view.manageButtons(true, true, false, false, false, true, false, true);
-            }
-        };
-        worker.execute();
-    }
-
+    //
+//    private void simulate() {
+//        worker = new SwingWorker<>() {
+//            @Override
+//            public Void doInBackground() {
+//                try {
+//                    view.manageButtons(false, false, false, false, false, true, false, false);
+//                    Environment.getInstance().executeSolution();
+//                } catch (Exception e) {
+//                    e.printStackTrace(System.err);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public void done() {
+//                view.manageButtons(true, true, false, false, false, true, false, true);
+//            }
+//        };
+//        worker.execute();
+//    }
+//
     private void stop() {
         worker.cancel(true);
     }
@@ -104,7 +100,6 @@ public class Controller {
 
     private void search() {
 
-
         String textFieldSelectivePressure = view.getPanelParameters().getTextFieldSelectivePressure().getText();
         Double selectivePressure = Double.parseDouble(textFieldSelectivePressure);
 
@@ -115,13 +110,13 @@ public class Controller {
 
         worker = new SwingWorker<>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                 try {
                     AStar aStar = new AStar();
                     for (Pair pair : Environment.getInstance().getPairs()) {
-                        List<Action> actions = aStar.search(new Node(pair.getState1()), new Node(pair.getState2()));
-                        pair.setValue(aStar.computePathCost(actions));
-                        pair.setActions(actions);
+                        List<Node> pathNodes = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
+                        pair.setValue(pathNodes.get(pathNodes.size() - 1).getG());
+                        pair.setPath(pathNodes);
                     }
 
                     Environment.getInstance().setPairsMap();
@@ -158,7 +153,13 @@ public class Controller {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
 
-                view.getSimulationPanel().createEnvironment();
+                returnVal = fc.showOpenDialog(view);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File dataSetPick = fc.getSelectedFile();
+                    Environment.getInstance().loadPicksFromFile(dataSetPick);
+                }
+
+                //   view.getSimulationPanel().createEnvironment();
                 view.manageButtons(true, false, true, false, false, true, false, false);
             }
         } catch (IOException e1) {

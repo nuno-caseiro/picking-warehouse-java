@@ -7,6 +7,7 @@ public interface Properties {
     int agent = 2;
     int offloadArea = 3;
     int pick = 4;
+    int node = 5;
 
     Color COLOROBSTACLE = Color.gray;
     Color COLORAGENT = Color.red;
