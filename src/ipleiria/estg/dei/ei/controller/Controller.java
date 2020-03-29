@@ -21,7 +21,7 @@ public class Controller {
         this.view = view;
     }
 
-    //
+
     public void initController() {
         view.getButtonDataSet().addActionListener(e -> loadDataSet());
         view.getButtonRunSearch().addActionListener(e -> search());
@@ -51,7 +51,7 @@ public class Controller {
 //        };
 //        worker.execute();
 //    }
-//
+
     private void stop() {
         worker.cancel(true);
     }
@@ -82,6 +82,7 @@ public class Controller {
                 try {
                     Individual bestInRun = ga.run();
                     Environment.getInstance().setBestInRun(bestInRun);
+                    System.out.println(Environment.getInstance().getPicks());
                     System.out.println(bestInRun);
 
                 } catch (Exception e) {
@@ -101,44 +102,42 @@ public class Controller {
     private void search() {
 
         String textFieldSelectivePressure = view.getPanelParameters().getTextFieldSelectivePressure().getText();
-        Double selectivePressure = Double.parseDouble(textFieldSelectivePressure);
+        double selectivePressure = Double.parseDouble(textFieldSelectivePressure);
 
         if(selectivePressure<1 ||selectivePressure>2){
             JOptionPane.showMessageDialog(view, "Selective pressure should be between 1 and 2.");
-
         }else{
+            worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    try {
+                        AStar aStar = new AStar();
+                        for (Pair pair : Environment.getInstance().getPairs()) {
+                            List<Node> pathNodes = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
+                            pair.setValue(pathNodes.get(pathNodes.size() - 1).getG());
+                            pair.setPath(pathNodes);
+                        }
 
-        worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() {
-                try {
-                    AStar aStar = new AStar();
-                    for (Pair pair : Environment.getInstance().getPairs()) {
-                        List<Node> pathNodes = aStar.search(Environment.getInstance().getNode(pair.getNode1()), Environment.getInstance().getNode(pair.getNode2()));
-                        pair.setValue(pathNodes.get(pathNodes.size() - 1).getG());
-                        pair.setPath(pathNodes);
+                        Environment.getInstance().setPairsMap();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                    Environment.getInstance().setPairsMap();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    return null;
                 }
 
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                StringBuilder str = new StringBuilder();
-                str.append("Pairs:\n");
-                for (Pair p : Environment.getInstance().getPairs()) {
-                    str.append(p);
+                @Override
+                protected void done() {
+                    StringBuilder str = new StringBuilder();
+                    str.append("Pairs:\n");
+                    for (Pair p : Environment.getInstance().getPairs()) {
+                        str.append(p);
+                    }
+                    view.setProblemPanelText(str.toString());
+                    view.manageButtons(true, true, false, false, false, true, false, false);
                 }
-                view.setProblemPanelText(str.toString());
-                view.manageButtons(true, true, false, false, false, true, false, false);
-            }
-        };
-        worker.execute();
+            };
+            worker.execute();
         }
 
     }

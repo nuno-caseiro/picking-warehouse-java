@@ -35,6 +35,10 @@ public class Pair {
         return value;
     }
 
+    public List<Node> getPath() {
+        return path;
+    }
+
     public void setValue(double value) {
         this.value = value;
     }

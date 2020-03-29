@@ -52,7 +52,7 @@ public class AStar {
         for (Node node : successors) {
             double g = parent.getG() + node.getCostFromAdjacentNode();
 
-            if (!frontier.containsState(node) && !explored.contains(node.getNodeNumber())) {
+            if (!frontier.containsNode(node) && !explored.contains(node.getNodeNumber())) {
                 frontier.add(new Node(parent, g + heuristic.compute(node, goalNode.getLine(), goalNode.getColumn()), g, node.getLine(), node.getColumn(), node.getNodeNumber()));
             }
         }

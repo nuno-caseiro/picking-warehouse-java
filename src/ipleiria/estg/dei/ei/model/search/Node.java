@@ -39,6 +39,13 @@ public class Node implements Comparable<Node> {
         this.nodeNumber = nodeNumber;
     }
 
+    public Node(Node node) {
+        this.costFromAdjacentNode = node.costFromAdjacentNode;
+        this.line = node.line;
+        this.column = node.column;
+        this.nodeNumber = node.nodeNumber;
+    }
+
     public Node(Node parent, double f, double g, int line, int column, int nodeNumber) {
         this.parent = parent;
         this.f = f;
@@ -80,6 +87,22 @@ public class Node implements Comparable<Node> {
         return parent != null;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void addCost(double cost) {
+        this.costFromAdjacentNode += cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return nodeNumber == node.nodeNumber;
+    }
+
     @Override
     public int compareTo(Node o) {
         return (this.f < o.f) ? -1 : (f == o.f) ? 0 : 1;
@@ -87,6 +110,6 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        return nodeNumber + " -> " + line + "-" + column + "/" + costFromAdjacentNode;
+        return nodeNumber + "";
     }
 }
