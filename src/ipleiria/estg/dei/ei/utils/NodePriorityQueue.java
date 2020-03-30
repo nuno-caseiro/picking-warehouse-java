@@ -14,7 +14,7 @@ public class NodePriorityQueue extends PriorityQueue<Node> {
 
     @Override
     public boolean add(Node node) {
-        contains.add(node.getNodeNumber()); //TODO
+        contains.add(node.getNodeNumber());
         return super.add(node);
     }
 
@@ -34,7 +34,7 @@ public class NodePriorityQueue extends PriorityQueue<Node> {
         return node;
     }
 
-    public boolean containsState(Node node) {
+    public boolean containsNode(Node node) {
         return contains.contains(node.getNodeNumber());
     }
 }

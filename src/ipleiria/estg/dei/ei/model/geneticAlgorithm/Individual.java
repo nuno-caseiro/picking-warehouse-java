@@ -58,8 +58,9 @@ public class Individual implements Comparable<Individual>{
 
     public int getIndexOf(int value){
         for (int i = 0; i < genome.length; i++) {
-            if (genome[i] == value)
+            if (genome[i] == value) {
                 return i;
+            }
         }
         return -1;
     }
