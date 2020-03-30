@@ -20,12 +20,15 @@ public class Environment {
     private int graphSize;
     private HashMap<Integer, List<Node>> picksGraph;
     private HashMap<Integer, Node> nodes;
+    private List<Node> decisionNodes;
     private List<Integer> picks;
     private List<Integer> agents;
     private int offloadArea;
     private List<Pair> pairs;
-    private HashMap<String, Edge> edges;
-    private int[][] matrix; // TODO eliminate
+//    private HashMap<String, Edge> edges;
+    private List<Edge> edges;
+    private int maxLine;
+    private int maxColumn;
 
     private Environment() {
         this.listeners = new ArrayList<>();
@@ -36,7 +39,11 @@ public class Environment {
         this.picks = new ArrayList<>();
         this.pairs = new ArrayList<>();
         this.nodes = new HashMap<>();
-        this.edges = new HashMap<>();
+//        this.edges = new HashMap<>();
+        this.edges = new LinkedList<>();
+        this.decisionNodes = new LinkedList<>();
+        this.maxLine = 0;
+        this.maxColumn = 0;
     }
 
     public static Environment getInstance() {
@@ -56,8 +63,21 @@ public class Environment {
             if (data[0].contains("Nodes")) {
                 continue;
             }
-            this.nodes.put(Integer.parseInt(data[0]), new Node(Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[0]), data[1]));
 
+            Node node = new Node(Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[0]), data[1]);
+            this.nodes.put(Integer.parseInt(data[0]), node);
+
+            if (node.getType().equals("D") ) {
+                decisionNodes.add(node);
+            }
+
+            if (node.getLine() > this.maxLine) {
+                this.maxLine = node.getLine();
+            }
+
+            if (node.getColumn() > this.maxColumn) {
+                this.maxColumn = node.getColumn();
+            }
         }
 
         while ((row = csvReader.readLine()) != null && !row.contains("Edges")) {
@@ -76,7 +96,8 @@ public class Environment {
             String[] data = row.split(";");
             Node node1 = nodes.get(Integer.parseInt(data[0]));
             Node node2 = nodes.get(Integer.parseInt(data[1]));
-            edges.put(node1.getNodeNumber() + "-" + node2.getNodeNumber(), new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
+//            edges.put(node1.getNodeNumber() + "-" + node2.getNodeNumber(), new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
+            edges.add(new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
         }
 
         while ((row = csvReader.readLine()) != null & !row.contains("OffLoad")) {
@@ -90,11 +111,12 @@ public class Environment {
         offloadArea = Integer.parseInt(data[1]);
         csvReader.close();
 
+        fireCreateEnvironment();
 
-        for (int i = 1; i < this.graphSize + 1; i++) {
-            System.out.println(i + "->" + this.originalGraph.get(i));
-        }
-        System.out.println("----------------------------------------------------");
+//        for (int i = 1; i < this.graphSize + 1; i++) {
+//            System.out.println(i + "->" + this.originalGraph.get(i));
+//        }
+//        System.out.println("----------------------------------------------------");
     }
 
     public void loadPicksFromFile(File file) throws IOException {
@@ -156,9 +178,7 @@ public class Environment {
             this.picksGraph.remove(i);
         }
 
-        for (int i = 1; i <= this.graphSize; i++) {
-            System.out.println(i + "->" + this.picksGraph.get(i));
-        }
+        fireCreateSimulation();
     }
 
     public void setPairs() {
@@ -181,12 +201,35 @@ public class Environment {
         }
     }
 
+    public void executeSolution() {
+
+
+
+        fireUpdateEnvironment();
+    }
+
     public List<Integer> getPicks() {
         return picks;
     }
 
-    public int[][] getMatrix() {
-        return matrix;
+    public List<Location> getPickNodes() {
+        List<Location> picks = new LinkedList<>();
+        for (int i : this.picks) {
+            Node node = this.nodes.get(i);
+            picks.add(new Location(node.getLine(), node.getColumn()));
+        }
+
+        return picks;
+    }
+
+    public List<Location> getAgentNodes() {
+        List<Location> agents = new LinkedList<>();
+        for (int i : this.agents) {
+            Node node = this.nodes.get(i);
+            agents.add(new Location(node.getLine(), node.getColumn()));
+        }
+
+        return agents;
     }
 
     public List<Pair> getPairs() {
@@ -207,6 +250,22 @@ public class Environment {
 
     public int getNumberOfPicks() {
         return picks.size();
+    }
+
+    public List<Edge> getEdges() {
+        return edges;
+    }
+
+    public int getMaxLine() {
+        return maxLine;
+    }
+
+    public int getMaxColumn() {
+        return maxColumn;
+    }
+
+    public List<Node> getDecisionNodes() {
+        return decisionNodes;
     }
 
     public void setBestInRun(Individual bestInRun) {
@@ -248,20 +307,8 @@ public class Environment {
         return offloadArea;
     }
 
-    public Color getCellColor(int line, int column) {
-
-        switch (matrix[line][column]) {
-            case Properties.obstacle:
-                return Properties.COLOROBSTACLE;
-            case Properties.agent:
-                return Properties.COLORAGENT;
-            case Properties.offloadArea:
-                return Properties.COLOROFFLOADAREA;
-            case Properties.pick:
-                return Properties.COLORPICK;
-            default:
-                return Properties.COLOREMPTY;
-        }
+    public Node getOffloadAreaNode() {
+        return this.nodes.get(this.offloadArea);
     }
 
     public synchronized void addEnvironmentListener(EnvironmentListener l) {
@@ -269,14 +316,26 @@ public class Environment {
             listeners.add(l);
         }
     }
-//
+
 //    public synchronized void removeEnvironmentListener(EnvironmentListener l) {
 //        listeners.remove(l);
 //    }
 //
-//    public void fireUpdatedEnvironment() {
-//        for (EnvironmentListener listener : listeners) {
-//            listener.environmentUpdated();
-//        }
-//    }
+    public void fireUpdateEnvironment() {
+        for (EnvironmentListener listener : listeners) {
+            listener.updateEnvironment();
+        }
+    }
+
+    public void fireCreateEnvironment() {
+        for (EnvironmentListener listener : listeners) {
+            listener.createEnvironment();
+        }
+    }
+
+    public void fireCreateSimulation() {
+        for (EnvironmentListener listener : listeners) {
+            listener.createSimulation();
+        }
+    }
 }

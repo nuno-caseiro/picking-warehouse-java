@@ -143,7 +143,7 @@ public class MainFrame extends JFrame implements GAListener {
         bigLeftPanel.add(southPanel,BorderLayout.SOUTH);
         this.getContentPane().add(bigLeftPanel);
 
-        simulationPanel = new PanelSimulation(this);
+        simulationPanel = new PanelSimulation();
         simulationPanel.setJButtonSimulateEnabled(false);
 
         //Global structure

@@ -2,7 +2,11 @@ package ipleiria.estg.dei.ei.model;
 
 public interface EnvironmentListener {
 
-    void environmentUpdated();
+    void updateEnvironment();
+
+    void createEnvironment();
+
+    void createSimulation();
 }
 
 

@@ -27,30 +27,29 @@ public class Controller {
         view.getButtonRunSearch().addActionListener(e -> search());
         view.getButtonRunGA().addActionListener(e -> runGA());
         view.getButtonStop().addActionListener(e -> stop());
-//        view.getButtonSimulate().addActionListener(e -> simulate());
+        view.getButtonSimulate().addActionListener(e -> simulate());
     }
 
-    //
-//    private void simulate() {
-//        worker = new SwingWorker<>() {
-//            @Override
-//            public Void doInBackground() {
-//                try {
-//                    view.manageButtons(false, false, false, false, false, true, false, false);
-//                    Environment.getInstance().executeSolution();
-//                } catch (Exception e) {
-//                    e.printStackTrace(System.err);
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public void done() {
-//                view.manageButtons(true, true, false, false, false, true, false, true);
-//            }
-//        };
-//        worker.execute();
-//    }
+    private void simulate() {
+        worker = new SwingWorker<>() {
+            @Override
+            public Void doInBackground() {
+                try {
+                    view.manageButtons(false, false, false, false, false, true, false, false);
+                    Environment.getInstance().executeSolution();
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+                return null;
+            }
+
+            @Override
+            public void done() {
+                view.manageButtons(true, true, false, false, false, true, false, true);
+            }
+        };
+        worker.execute();
+    }
 
     private void stop() {
         worker.cancel(true);

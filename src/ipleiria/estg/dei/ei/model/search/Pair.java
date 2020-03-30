@@ -21,6 +21,12 @@ public class Pair {
         this.node1 = pair.node2;
         this.node2 = pair.node1;
         this.value = pair.value;
+
+        this.path = new LinkedList<>();
+        for (Node node : pair.path) {
+            this.path.add(new Node(node));
+        }
+        Collections.reverse(this.path);
     }
 
     public int getNode1() {
