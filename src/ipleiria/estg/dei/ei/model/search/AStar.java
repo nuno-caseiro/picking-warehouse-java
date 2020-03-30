@@ -39,10 +39,9 @@ public class AStar {
     private List<Node> computeSolution(Node node) {
         LinkedList<Node> solution = new LinkedList<>();
 
-        solution.addFirst(node);
         while (node.hasParent()) {
-            node = node.getParent();
             solution.addFirst(node);
+            node = node.getParent();
         }
 
         return solution;

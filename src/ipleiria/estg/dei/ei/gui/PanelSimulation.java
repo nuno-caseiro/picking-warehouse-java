@@ -2,19 +2,21 @@ package ipleiria.estg.dei.ei.gui;
 
 import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.EnvironmentListener;
+import ipleiria.estg.dei.ei.model.search.Location;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class PanelSimulation extends JPanel implements EnvironmentListener {
 
-    public static final int PANEL_HEIGHT = 675;
+    public static final int PANEL_HEIGHT = 650;
     public static final int PANEL_WIDTH = 400;
     public static final int NODE_SIZE = 30;
-    public static final int NODE_PADDING = 15;
+    public static final int NODE_PADDING = 14;
     private JPanel environmentPanel;
     private WarehouseLayout warehouseLayout;
     private Simulate simulate;
@@ -62,7 +64,14 @@ public class PanelSimulation extends JPanel implements EnvironmentListener {
     }
 
     @Override
-    public void updateEnvironment() {
+    public void createSimulationPicks() {
+        this.simulate.initializePicks();
+        this.simulate.repaint();
+    }
 
+    @Override
+    public void updateEnvironment(List<Location> agents) {
+        this.simulate.updateAgentLocations(agents);
+        this.simulate.repaint();
     }
 }

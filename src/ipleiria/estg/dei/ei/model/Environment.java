@@ -32,18 +32,6 @@ public class Environment {
 
     private Environment() {
         this.listeners = new ArrayList<>();
-        this.originalGraph = new HashMap<>();
-        this.graphSize = 0;
-        this.picksGraph = new HashMap<>();
-        this.agents = new ArrayList<>();
-        this.picks = new ArrayList<>();
-        this.pairs = new ArrayList<>();
-        this.nodes = new HashMap<>();
-//        this.edges = new HashMap<>();
-        this.edges = new LinkedList<>();
-        this.decisionNodes = new LinkedList<>();
-        this.maxLine = 0;
-        this.maxColumn = 0;
     }
 
     public static Environment getInstance() {
@@ -55,6 +43,14 @@ public class Environment {
     }
 
     private void createGraphFromFile(File file) throws IOException {
+        this.nodes = new HashMap<>();
+        this.originalGraph = new HashMap<>();
+        this.decisionNodes = new LinkedList<>();
+        this.edges = new LinkedList<>();
+        this.agents = new ArrayList<>();
+        this.graphSize = 0;
+        this.maxLine = 0;
+        this.maxColumn = 0;
 
         BufferedReader csvReader = new BufferedReader(new FileReader(file));
         String row = "";
@@ -68,7 +64,7 @@ public class Environment {
             this.nodes.put(Integer.parseInt(data[0]), node);
 
             if (node.getType().equals("D") ) {
-                decisionNodes.add(node);
+                this.decisionNodes.add(node);
             }
 
             if (node.getLine() > this.maxLine) {
@@ -113,13 +109,14 @@ public class Environment {
 
         fireCreateEnvironment();
 
-//        for (int i = 1; i < this.graphSize + 1; i++) {
-//            System.out.println(i + "->" + this.originalGraph.get(i));
-//        }
-//        System.out.println("----------------------------------------------------");
+        for (int i = 1; i < this.graphSize + 1; i++) {
+            System.out.println(i + "->" + this.originalGraph.get(i));
+        }
+        System.out.println("----------------------------------------------------");
     }
 
     public void loadPicksFromFile(File file) throws IOException {
+        this.picks = new ArrayList<>();
 
         BufferedReader csvReader = new BufferedReader(new FileReader(file));
         String row = "";
@@ -135,6 +132,7 @@ public class Environment {
     }
 
     private void createPicksGraph() {
+        this.picksGraph = new HashMap<>();
 
         for (int i = 1; i <= this.graphSize; i++) {
             List<Node> successors = new LinkedList<>();
@@ -178,10 +176,16 @@ public class Environment {
             this.picksGraph.remove(i);
         }
 
+        for (int i = 1; i < this.graphSize + 1; i++) {
+            System.out.println(i + "->" + this.picksGraph.get(i));
+        }
+        System.out.println("----------------------------------------------------");
+
         fireCreateSimulation();
     }
 
     public void setPairs() {
+        this.pairs = new ArrayList<>();
 
         for (int agent : this.agents) {
             pairs.add(new Pair(agent, offloadArea));
@@ -201,11 +205,117 @@ public class Environment {
         }
     }
 
-    public void executeSolution() {
+    public void executeSolution() throws InterruptedException {
+        int[] genome = bestInRun.getGenome();
+        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
+        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
+
+        int numIterations = 0;
+        for (List<Location> l : solutionLocations) {
+            if (l.size() > numIterations) {
+                numIterations = l.size();
+            }
+        }
+
+        fireCreateSimulationPicks();
+
+        Node offloadNode = this.nodes.get(offloadArea);
+        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
+        List<Location> iterationAgentsLocations;
+        for (int i = 0; i < numIterations; i++) {
+            iterationAgentsLocations = new LinkedList<>();
+            for (List<Location> l : solutionLocations) {
+                if (i < l.size()) {
+                    iterationAgentsLocations.add(l.get(i));
+                } else {
+                    iterationAgentsLocations.add(offloadLocation);
+                }
+            }
+            Thread.sleep(500);
+            fireUpdateEnvironment(iterationAgentsLocations);
+        }
+    }
+
+    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
+        List<List<Location>> solutionLocations = new ArrayList<>();
+        List<Location> agentLocations = new ArrayList<>();
+
+        Node n1;
+        Node n2;
+        int action;
+        int line;
+        int column;
+        for (List<Node> l : agentsPathNodes) {
+            for (int i = 0; i < l.size() - 1; i++) {
+                n1 = this.nodes.get(l.get(i).getNodeNumber());
+                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
+                line = n1.getLine();
+                column = n1.getColumn();
 
 
+                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
+                    action = 1;
+                } else {
+                    action = -1;
+                }
 
-        fireUpdateEnvironment();
+                if (n1.getLine() == n2.getLine()) {
+
+                    do {
+                        column += action;
+                        agentLocations.add(new Location(line, column));
+                    } while (column != n2.getColumn());
+
+                } else {
+
+                    do {
+                        line += action;
+                        agentLocations.add(new Location(line, column));
+                    } while (line != n2.getLine());
+
+                }
+            }
+            solutionLocations.add(agentLocations);
+            agentLocations = new ArrayList<>();
+        }
+
+        return solutionLocations;
+    }
+
+    private List<List<Node>> separateGenomeByAgents(int[] genome) {
+        List<List<Node>> agents = new ArrayList<>();
+        List<Node> agentPicks = new ArrayList<>();
+        int agent = 0;
+
+        List<List<Node>> agentsPaths = new ArrayList<>();
+        List<Node> agentPath = new ArrayList<>();
+
+        agentPicks.add(this.nodes.get(this.agents.get(agent)));
+        for (int value : genome) {
+            if (value < 0) {
+                agentPicks.add(this.nodes.get(this.offloadArea));
+                agents.add(agentPicks);
+                agentPicks = new ArrayList<>();
+                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
+                continue;
+            }
+            agentPicks.add(this.nodes.get(picks.get(value - 1)));
+        }
+        agentPicks.add(this.nodes.get(this.offloadArea));
+        agents.add(agentPicks);
+
+        agent = 0;
+
+        for (List<Node> l : agents) {
+            agentPath.add(this.nodes.get(this.agents.get(agent++)));
+            for (int i = 0; i < l.size() - 1; i++) {
+                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()).getPath());
+            }
+            agentsPaths.add(agentPath);
+            agentPath = new ArrayList<>();
+        }
+
+        return agentsPaths;
     }
 
     public List<Integer> getPicks() {
@@ -223,7 +333,7 @@ public class Environment {
     }
 
     public List<Location> getAgentNodes() {
-        List<Location> agents = new LinkedList<>();
+        List<Location> agents = new ArrayList<>();
         for (int i : this.agents) {
             Node node = this.nodes.get(i);
             agents.add(new Location(node.getLine(), node.getColumn()));
@@ -273,7 +383,7 @@ public class Environment {
     }
 
     public void setPairsMap() {
-        pairsMap = new HashMap<>();
+        this.pairsMap = new HashMap<>();
 
         StringBuilder sb;
         StringBuilder sb1;
@@ -320,10 +430,10 @@ public class Environment {
 //    public synchronized void removeEnvironmentListener(EnvironmentListener l) {
 //        listeners.remove(l);
 //    }
-//
-    public void fireUpdateEnvironment() {
+
+    public void fireUpdateEnvironment(List<Location> agents) {
         for (EnvironmentListener listener : listeners) {
-            listener.updateEnvironment();
+            listener.updateEnvironment(agents);
         }
     }
 
@@ -336,6 +446,12 @@ public class Environment {
     public void fireCreateSimulation() {
         for (EnvironmentListener listener : listeners) {
             listener.createSimulation();
+        }
+    }
+
+    public void fireCreateSimulationPicks() {
+        for (EnvironmentListener listener : listeners) {
+            listener.createSimulationPicks();
         }
     }
 }

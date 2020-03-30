@@ -36,4 +36,9 @@ public class Location {
         return line == location.line &&
                 column == location.column;
     }
+
+    @Override
+    public String toString() {
+        return line + "," + column;
+    }
 }

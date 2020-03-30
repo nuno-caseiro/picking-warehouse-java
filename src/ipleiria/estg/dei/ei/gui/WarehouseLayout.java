@@ -63,10 +63,6 @@ public class WarehouseLayout extends JLayeredPane {
             if (n1.getLine() == n2.getLine()) {
                 g2d.drawLine((n1.getColumn() * this.cellSize) + this.nodeSize, (n1.getLine() * this.cellSize) + (this.nodeSize / 2), (n2.getColumn() * this.cellSize), (n2.getLine() * this.cellSize) + (this.nodeSize / 2));
 
-//                if ((n1.getLine() * this.cellSize) < (this.maxLine * this.cellSize)) {
-//                    g.drawRect((n1.getColumn() * this.cellSize) + this.cellSize, (n1.getLine() * this.cellSize) + this.cellSize, this.nodeSize, this.cellSize);
-//                }
-
             } else {
                 g2d.drawLine((n1.getColumn() * this.cellSize) + (this.nodeSize / 2), (n1.getLine() * this.cellSize) + this.nodeSize, (n2.getColumn() * this.cellSize) + (this.nodeSize / 2), (n2.getLine() * this.cellSize));
 
