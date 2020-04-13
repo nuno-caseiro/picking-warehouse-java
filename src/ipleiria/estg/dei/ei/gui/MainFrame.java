@@ -1,43 +1,35 @@
 package ipleiria.estg.dei.ei.gui;
 
-import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 
 public class MainFrame extends JFrame implements GAListener {
 
     private static final long serialVersionUID = 1L;
 
-    private PanelTextArea problemPanel;
-    private PanelTextArea bestIndividualPanel;
-
-    private JButton buttonDataSet = new JButton("Data set");
-    private JButton buttonRunGA = new JButton("GA");
-    private JButton buttonRunSearch = new JButton("Search1");
-    private JButton buttonStop = new JButton("Stop");
-    private JButton buttonRunSearch2 = new JButton("Search2");
-    private JButton buttonExperiments = new JButton("Experiments");
-    private JButton buttonRunExperiments = new JButton("Run experiments");
-    private PanelParameters panelParameters = new PanelParameters(this);
-    private JTextField textFieldExperimentsStatus = new JTextField("", 10);
-    private XYSeries seriesBestIndividual;
-    private XYSeries seriesAverage;
-    private SwingWorker<Void, Void> worker; // An abstract class to perform lengthy GUI-interaction tasks in a background thread.
-
+    private MenuBarHorizontal menuBarHorizontal;
+    private ToolBarVertical toolBarVertical;
+    private ToolBarHorizontal toolBarHorizontal;
+    private GeneticAlgorithmPanel gaPanel;
+    private PanelProblemData problemData;
     private PanelSimulation simulationPanel;
-    
+    private PanelGeneticAlgorithmHistory gaHistoryPanel;
+    private JPanel simulationGlobalPanel;
+    private boolean mainPageShow;
+    private boolean problemDataShow;
+    private boolean gaPanelShow;
+    private boolean simulationPanelShow;
+    private boolean gaHistoryPanelShow;
+
+    private MainPagePanel mainPagePanel;
+    private JPanel mainPanel;
+
+
     public MainFrame() throws HeadlessException {
         try{
            jbInit();
@@ -49,344 +41,168 @@ public class MainFrame extends JFrame implements GAListener {
     public void jbInit() throws Exception{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("PICKING");
+        this.setPreferredSize(new Dimension(1024, 768));
 
-        //North Left Panel
-        JPanel panelNorthLeft = new JPanel(new BorderLayout());     //BorderLayout: container with 5 regions north, south, east, west, and center
-        panelNorthLeft.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
-                BorderFactory.createEmptyBorder(1,1,1,1)));  //defines border of panelNorthLeft
-
-        panelNorthLeft.add(getPanelParameters(), BorderLayout.WEST);
-        JPanel panelButtons = new JPanel();
-
-        panelButtons.add(buttonDataSet);
-        buttonDataSet.setVisible(true);
-        buttonDataSet.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        panelButtons.add(buttonRunSearch);
-        buttonRunSearch.setEnabled(false);
-
-        panelButtons.add(buttonRunGA);
-        buttonRunGA.setEnabled(false);
-
-        panelButtons.add(buttonStop);
-        buttonStop.setEnabled(false);
-
-//        panelButtons.add(buttonRunSearch2);
-//        buttonRunSearch2.setEnabled(false);
-//        buttonRunSearch2.addActionListener(new ButtonRunSearch2_actionAdapter(this));
-
-        panelNorthLeft.add(panelButtons,BorderLayout.SOUTH);
-
-        //North Right Panel - Chart creation
-
-        seriesBestIndividual = new XYSeries("Best");
-        seriesAverage = new XYSeries("Average");
-
-        XYSeriesCollection dataSet = new XYSeriesCollection(); // Represents a collection of XYSeries objects that can be used as a dataset.
-        dataSet.addSeries(seriesBestIndividual);
-        dataSet.addSeries(seriesAverage);
-        JFreeChart chart = ChartFactory.createXYLineChart("Evolution", //Title
-                "generation", //x-axis label
-                "fitness", // y-axis label
-                dataSet, //Dataset
-                PlotOrientation.VERTICAL, //Plot orientation
-                true, //Show legend
-                true, //Use tooltips
-                false); //Configure chart to generate urls
-
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
-                BorderFactory.createEmptyBorder(1,1,1,1)
-        ));
-        //default size
-        chartPanel.setPreferredSize(new java.awt.Dimension(400,200));
-
-        //North Panel
-        JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(panelNorthLeft, BorderLayout.WEST);
-        northPanel.add(chartPanel, BorderLayout.CENTER);
-
-        //Center panel
-        problemPanel = new PanelTextArea("Problem data: ",15,40);
-        bestIndividualPanel= new PanelTextArea("Best solution: ", 15,40);
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.add(problemPanel,BorderLayout.WEST);
-        centerPanel.add(bestIndividualPanel, BorderLayout.CENTER);
-
-        //South Panel
-        JPanel southPanel = new JPanel();
-        southPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
-                BorderFactory.createEmptyBorder(1,1,1,1)));
-
-        southPanel.add(buttonExperiments);
-        buttonExperiments.setEnabled(true);
-        buttonExperiments.addActionListener(new ButtonExperiments_actionAdapter(this));
-        southPanel.add(buttonRunExperiments);
-        buttonRunExperiments.setEnabled(false);
-        buttonRunExperiments.addActionListener(new ButtonRunExperiments_actionAdapter(this));
-        southPanel.add(new JLabel("Status: "));
-        southPanel.add(textFieldExperimentsStatus);
-        textFieldExperimentsStatus.setEditable(false);
-
-        //Big left panel
-        JPanel bigLeftPanel = new JPanel(new BorderLayout());
-        bigLeftPanel.add(northPanel,BorderLayout.NORTH);
-        bigLeftPanel.add(centerPanel, BorderLayout.CENTER);
-        bigLeftPanel.add(southPanel,BorderLayout.SOUTH);
-        this.getContentPane().add(bigLeftPanel);
-
+        gaPanel = new GeneticAlgorithmPanel(this);
+        problemData = new PanelProblemData();
         simulationPanel = new PanelSimulation();
-        simulationPanel.setJButtonSimulateEnabled(false);
+        mainPagePanel = new MainPagePanel();
+        gaHistoryPanel = new PanelGeneticAlgorithmHistory();
 
-        //Global structure
-        JPanel globalPanel = new JPanel(new BorderLayout());
-        globalPanel.add(bigLeftPanel,BorderLayout.WEST);
-        globalPanel.add(simulationPanel,BorderLayout.EAST);
-        this.getContentPane().add(globalPanel);
+        this.menuBarHorizontal = new MenuBarHorizontal();
+        this.toolBarVertical = new ToolBarVertical();
+        this.toolBarHorizontal= new ToolBarHorizontal();
 
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(toolBarHorizontal,BorderLayout.NORTH);
+        mainPanel.add(toolBarVertical,BorderLayout.WEST);
+        mainPanel.add(mainPagePanel,BorderLayout.CENTER);
+
+        this.setJMenuBar(menuBarHorizontal);
+        this.getContentPane().add(mainPanel);
         this.setVisible(true);
         pack();
     }
 
-    public PanelParameters getPanelParameters() {
-        return panelParameters;
+    public void manageButtons(boolean layout, boolean picks,boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {
+        this.menuBarHorizontal.manageButtons(layout,picks,runSearch,runGA,stopRunGA,runEnvironment);
+        this.toolBarHorizontal.manageButtons(layout,picks,runSearch,runGA,stopRunGA,runEnvironment);
     }
 
-    public JButton getButtonDataSet() {
-        return buttonDataSet;
+    public void changeShowVar(int panelNumber, boolean show){
+        switch (panelNumber){
+            case 0:
+                this.mainPageShow=show;
+                this.problemDataShow=false;
+                this.gaPanelShow=false;
+                this.simulationPanelShow=false;
+                this.gaHistoryPanelShow=false;
+                break;
+            case 1:
+                this.mainPageShow=false;
+                this.problemDataShow=show;
+                this.gaPanelShow=false;
+                this.simulationPanelShow=false;
+                this.gaHistoryPanelShow=false;
+                break;
+            case 2:
+                this.mainPageShow=false;
+                this.problemDataShow= false;
+                this.gaPanelShow=show;
+                this.simulationPanelShow=false;
+                this.gaHistoryPanelShow=false;
+                break;
+            case 3:
+                this.mainPageShow=false;
+                this.problemDataShow=false;
+                this.gaPanelShow=false;
+                this.simulationPanelShow=show;
+                this.gaHistoryPanelShow=false;
+                break;
+            case 4:
+                this.mainPageShow=false;
+                this.problemDataShow=false;
+                this.gaPanelShow=false;
+                this.simulationPanelShow=false;
+                this.gaHistoryPanelShow=show;
+                break;
+            default:
+                show= false;
+        }
     }
 
-    public JButton getButtonRunSearch() {
-        return buttonRunSearch;
+    public void showPanel(int panelNumber){
+        boolean show;
+        JComponent panel = new JPanel();
+
+        switch (panelNumber){
+            case 0:
+                show=this.mainPageShow;
+                panel=this.mainPagePanel;
+                break;
+            case 1:
+                show=this.problemDataShow;
+                panel=this.problemData;
+                break;
+            case 2:
+                show=this.gaPanelShow;
+                panel=this.gaPanel;
+                break;
+            case 3:
+                show=this.simulationPanelShow;
+                panel=this.simulationPanel;
+                break;
+            case 4:
+                show=this.gaHistoryPanelShow;
+                panel= this.gaHistoryPanel;
+                break;
+            default:
+                show= false;
+        }
+
+        show= !show;
+        changeShowVar(panelNumber,show);
+
+        if(show){
+            for (Component component : this.mainPanel.getComponents()) {
+                if(!component.equals(toolBarVertical) && !component.equals(toolBarHorizontal)){
+                    this.mainPanel.remove(component);
+                }
+            }
+            this.mainPanel.add(panel,BorderLayout.CENTER);
+            this.validate();
+            this.pack();
+            this.repaint();
+        }else{
+            for (Component component : this.mainPanel.getComponents()) {
+                if(!component.equals(toolBarVertical) && !component.equals(toolBarHorizontal)){
+                    this.mainPanel.remove(component);
+                }
+            }
+            this.mainPanel.add(this.mainPagePanel);
+            this.revalidate();
+            this.pack();
+            this.repaint();
+        }
     }
 
-    public JButton getButtonSimulate() {
-        return simulationPanel.getButtonSimulate();
+    public void setBestIndividualPanelText(String bestIndividualPanelText) {
+        gaPanel.setBestIndividualPanel(bestIndividualPanelText);
     }
 
-    public PanelTextArea getProblemPanel() {
-        return problemPanel;
-    }
-
-    public PanelTextArea getBestIndividualPanel() {
-        return bestIndividualPanel;
-    }
-
-    public XYSeries getSeriesAverage() {
-        return seriesAverage;
-    }
-
-    public XYSeries getSeriesBestIndividual() {
-        return seriesBestIndividual;
-    }
-
-    public JButton getButtonRunGA() {
-        return buttonRunGA;
-    }
-
-    public JButton getButtonStop() {
-        return buttonStop;
+    public MenuBarHorizontal getMenuBarHorizontal() {
+        return menuBarHorizontal;
     }
 
     public PanelSimulation getSimulationPanel() {
         return simulationPanel;
     }
 
-    public void cleanBoards() {
-        problemPanel.textArea.setText("");
-        bestIndividualPanel.textArea.setText("");
-        seriesBestIndividual.clear();
-        seriesAverage.clear();
+    public ToolBarVertical getToolBarVertical() {
+        return toolBarVertical;
     }
 
 
-    public void manageButtons(
-            boolean dataSet,
-            boolean runGA,
-            boolean runSearch,
-            boolean stopRun,
-            boolean runSearch2,
-            boolean experiments,
-            boolean runExperiments,
-            boolean runEnvironment) {
-        buttonDataSet.setEnabled(dataSet);
-        buttonRunGA.setEnabled(runGA);
-        buttonRunSearch.setEnabled(runSearch);
-        buttonStop.setEnabled(stopRun);
-        buttonRunSearch2.setEnabled(runSearch2);
-        buttonExperiments.setEnabled(experiments);
-        buttonRunExperiments.setEnabled(runExperiments);
-        if(simulationPanel != null)
-            simulationPanel.setJButtonSimulateEnabled(runEnvironment);
-
+    public GeneticAlgorithmPanel getGaPanel() {
+        return gaPanel;
     }
 
-    public void jButtonRunSearch2_actionPerformed(ActionEvent actionEvent) {
-        /*try {
-            if (bestInRun == null) {
-                JOptionPane.showMessageDialog(this, "You must first obtain a solution", "Error!", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            manageButtons(false, false, false, false, false, true, false, false);
-
-            worker = new SwingWorker<Void, Void>() {
-                @Override
-                public Void doInBackground() {
-                    try {
-                        CatchState auxState = state.clone();
-                        Solution auxSolution = null;
-                        solution = null;
-                        LinkedList<Cell> visitedBoxes = new LinkedList<>();
-                        int genome[] = bestInRun.getGenome();
-                        for (int i = 0; i <= genome.length; i++) {
-                            Cell cell;
-                            if (i != genome.length){
-                                cell = (Cell) agentSearch.getInitialBox().get(genome[i] - 1);
-                                if (visitedBoxes.contains(cell)){
-                                    continue;
-                                }
-                            }
-                            else{
-                                cell = agentSearch.getDoor();
-                            }
-                            CatchProblemSearch problem = new CatchProblemSearch(auxState, cell);
-                            auxSolution = agentSearch.solveProblem(problem);
-
-                            if (auxSolution == null) {
-                                solution = null;
-                                break;
-                            }
-                            if ((i != genome.length)){
-                                auxState = (CatchState) agentSearch.executeSolution(agentSearch.getInitialBox(), visitedBoxes);
-                            }
-                            if (i == 0){
-                                solution = auxSolution;
-                            }
-                            else{
-                                solution.updateActions(auxSolution.getActions());
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    agentSearch.setSolution(solution);
-
-                    return null;
-                }
-
-                @Override
-                public void done() {
-                    bestIndividualPanel.textArea.append(agentSearch.getSearchReport());
-                    problemPanel.textArea.setText("");
-                    manageButtons(true, false, false, false, false, true, false, true);
-
-                }
-            };
-
-            worker.execute();
-
-        } catch (NumberFormatException e1) {
-            JOptionPane.showMessageDialog(this, "Wrong parameters!", "Error!", JOptionPane.ERROR_MESSAGE);
-        }*/
+    public PanelProblemData getProblemData() {
+        return problemData;
     }
 
-    public void buttonExperiments_actionPerformed(ActionEvent actionEvent) {
-        //TODO
-      /*  JFileChooser fc = new JFileChooser(new File("."));
-        int returnVal = fc.showOpenDialog(this);
-
-        try {
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                experimentsFactory = new CatchExperimentsFactory(fc.getSelectedFile());
-
-                manageButtons(true, problemGA != null, false, false, false, true, true, false);
-
-                if (experimentsFactory.getFile()==null) {
-                    experimentsFactory=null;
-                    throw  new java.util.NoSuchElementException();
-                }
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace(System.err);
-            manageButtons(true, problemGA != null, false, false, false, true, false, false);
-        } catch (java.util.NoSuchElementException e2) {
-            JOptionPane.showMessageDialog(this, "File format not valid", "Error!", JOptionPane.ERROR_MESSAGE);
-            manageButtons(true, problemGA != null, false, false, false, true, false, false);
-        }*/
+    public ToolBarHorizontal getToolBarHorizontal() {
+        return toolBarHorizontal;
     }
 
-    public void buttonRunExperiments_actionPerformed(ActionEvent actionEvent) {
-        //TODO
-       /* manageButtons(false, false, false, false, false, false, false, false);
-        textFieldExperimentsStatus.setText("Running");
-
-        worker = new SwingWorker<Void, Void>() {
-            @Override
-            public Void doInBackground() {
-                try {
-                    int[][] matrix = CatchAgentSearch.readInitialStateFromFile(new File(experimentsFactory.getFile()));
-                    CatchAgentSearch agentSearch = new CatchAgentSearch(new CatchState(matrix));
-
-                    LinkedList<Pair> pairs = agentSearch.getPairs();
-                    for (Pair p : pairs) {
-                        CatchState state = ((CatchState) agentSearch.getEnvironment()).clone();
-                        state.setGoal(p.getCell2().getLine(), p.getCell2().getColumn());
-                        state.setCellCatch(p.getCell1().getLine(), p.getCell1().getColumn());
-                        CatchProblemSearch problem = new CatchProblemSearch(state, p.getCell2());
-                        Solution s = agentSearch.solveProblem(problem);
-                        p.setValue((int) s.getCost());
-                    }
-
-                    while (experimentsFactory.hasMoreExperiments()) {
-                        try {
-
-                            Experiment experiment = experimentsFactory.nextExperiment(agentSearch.getInitialBox(), pairs, agentSearch.getCellCatch(), agentSearch.getDoor());
-                            experiment.run();
-
-                        } catch (IOException e1) {
-                            e1.printStackTrace(System.err);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-            }
-
-            @Override
-            public void done() {
-                manageButtons(true, problemGA != null, false, false, false, true, false, false);
-                textFieldExperimentsStatus.setText("Finished");
-            }
-        };
-        worker.execute();*/
-    }
-
-
-    public void setBestIndividualPanelText(String bestIndividualPanelText) {
-        this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
-    }
-
-    public void setProblemPanelText(String s) {
-        this.problemPanel.textArea.setText("");
-        this.problemPanel.textArea.setText(s);
+    public PanelGeneticAlgorithmHistory getGaHistoryPanel() {
+        return gaHistoryPanel;
     }
 
     @Override
     public void generationEnded(GeneticAlgorithm e) {
         this.setBestIndividualPanelText(e.getBestInRun().toString());
-        this.getSeriesBestIndividual().add(e.getGenerationNr(), e.getBestInRun().getFitness());
-        this.getSeriesAverage().add(e.getGenerationNr(), e.getAverageFitness());
+        this.getGaPanel().setValuesOfGenerationEnded(e);
     }
 
     @Override
@@ -395,58 +211,4 @@ public class MainFrame extends JFrame implements GAListener {
     }
 }
 
-class ButtonRunSearch2_actionAdapter implements ActionListener{
 
-    final private MainFrame adaptee;
-
-    public ButtonRunSearch2_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.jButtonRunSearch2_actionPerformed(actionEvent);
-    }
-}
-
-class ButtonExperiments_actionAdapter implements ActionListener{
-
-    final private MainFrame adaptee;
-
-    public ButtonExperiments_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.buttonExperiments_actionPerformed(actionEvent);
-    }
-}
-
-class ButtonRunExperiments_actionAdapter implements ActionListener
-{
-    final private MainFrame adaptee;
-
-    public ButtonRunExperiments_actionAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.buttonRunExperiments_actionPerformed(actionEvent);
-    }
-}
-
-class PanelTextArea extends JPanel{
-    public JTextArea textArea;
-
-    public PanelTextArea(String title, int rows, int columns) {
-        textArea = new JTextArea(rows,columns);
-        setLayout(new BorderLayout());
-        add(new JLabel(title),BorderLayout.NORTH);
-        JScrollPane scrollPane = new JScrollPane(textArea); // provides a scrollable view of a component
-        textArea.setEditable(false);
-        add(scrollPane);
-    }
-}

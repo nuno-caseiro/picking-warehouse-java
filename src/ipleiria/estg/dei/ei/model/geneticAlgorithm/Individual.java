@@ -85,9 +85,9 @@ public class Individual implements Comparable<Individual>{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("fitness: ");
+        sb.append("Fitness: ");
         sb.append(fitness);
-        sb.append("\npath: ");
+        sb.append("\nPath: ");
         for (int value : genome) {
             sb.append(value).append(" ");
         }

@@ -4,8 +4,12 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.*;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.RankBased;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.Tournament;
+import ipleiria.estg.dei.ei.utils.IntegerTextField_KeyAdapter;
+import ipleiria.estg.dei.ei.utils.JComboBoxSelectionMethods_ActionAdapter;
+import ipleiria.estg.dei.ei.utils.RankTextField_KeyAdapter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -39,9 +43,6 @@ public class PanelParameters extends PanelAtributesValue {
     String[] mutationMethods={"Insert", "Inversion", "Scramble"};
     JComboBox comboBoxMutationMethods = new JComboBox(mutationMethods);
     JTextField textFieldProbMutation = new JTextField(PROB_MUTATION,TEXT_FIELD_LENGHT);
-
-    String[] methodsSearch={"A*"};
-    JComboBox comboBoxSearch = new JComboBox(methodsSearch);
 
     public PanelParameters(MainFrame mf){
 
@@ -84,11 +85,11 @@ public class PanelParameters extends PanelAtributesValue {
         labels.add(new JLabel("Mutation prob.: "));
         valueComponents.add(textFieldProbMutation);
 
-        labels.add(new JLabel("Search Methods: "));
-        valueComponents.add(comboBoxSearch);
-        comboBoxSearch.addActionListener(new JComboBoxSearch_ActionAdapter(this));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(""),
+                BorderFactory.createEmptyBorder(1,1,1,1)
+        ));
 
-        mainFrame.manageButtons(true,false,false,false,false,false,false,false);
 
         textFieldTournamentSize.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 0);
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
@@ -158,8 +159,42 @@ public class PanelParameters extends PanelAtributesValue {
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
     }
 
-    public void actionPerformedSearch(ActionEvent actionEvent) {
-        mainFrame.cleanBoards();
+
+
+    public String[] getSelectionMethods() {
+        return selectionMethods;
+    }
+
+    public JComboBox getComboBoxSelectionMethods() {
+        return comboBoxSelectionMethods;
+    }
+
+    public JTextField getTextFieldTournamentSize() {
+        return textFieldTournamentSize;
+    }
+
+    public String[] getRecombinationMethods() {
+        return recombinationMethods;
+    }
+
+    public JComboBox getComboBoxRecombinationMethods() {
+        return comboBoxRecombinationMethods;
+    }
+
+    public JTextField getTextFieldProbRecombination() {
+        return textFieldProbRecombination;
+    }
+
+    public String[] getMutationMethods() {
+        return mutationMethods;
+    }
+
+    public JComboBox getComboBoxMutationMethods() {
+        return comboBoxMutationMethods;
+    }
+
+    public JTextField getTextFieldProbMutation() {
+        return textFieldProbMutation;
     }
 
     public JTextField getTextFieldSelectivePressure() {
@@ -167,85 +202,3 @@ public class PanelParameters extends PanelAtributesValue {
     }
 }
 
-class IntegerTextField_KeyAdapter implements KeyListener{
-
-    final private MainFrame adaptee;
-
-    IntegerTextField_KeyAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void keyTyped(KeyEvent keyEvent) {
-        char c = keyEvent.getKeyChar();
-        if(!Character.isDigit(c)  || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE){
-            keyEvent.consume();
-        }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent keyEvent) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent keyEvent) {
-
-    }
-}
-
-class RankTextField_KeyAdapter implements KeyListener{
-
-    final private MainFrame adaptee;
-
-    RankTextField_KeyAdapter(MainFrame adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void keyTyped(KeyEvent keyEvent) {
-        char c = keyEvent.getKeyChar();
-
-        if(c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE  ){
-            keyEvent.consume();
-        }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent keyEvent) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent keyEvent) {
-
-    }
-}
-
-class JComboBoxSelectionMethods_ActionAdapter implements ActionListener{
-
-    final private PanelParameters adaptee;
-
-    public JComboBoxSelectionMethods_ActionAdapter(PanelParameters adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.actionPerformedSelectionMethods(actionEvent);
-    }
-}
-
-class JComboBoxSearch_ActionAdapter implements ActionListener{
-
-    final private PanelParameters adaptee;
-
-    public JComboBoxSearch_ActionAdapter(PanelParameters adaptee) {
-        this.adaptee = adaptee;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        adaptee.actionPerformedSearch(actionEvent);
-    }
-}
