@@ -159,6 +159,8 @@ public class PanelParameters extends PanelAtributesValue {
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
     }
 
+
+
     public String[] getSelectionMethods() {
         return selectionMethods;
     }

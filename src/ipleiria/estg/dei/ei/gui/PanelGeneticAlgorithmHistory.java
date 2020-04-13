@@ -23,6 +23,7 @@ public class PanelGeneticAlgorithmHistory extends JPanel {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         gaHistoryTextArea.textArea.append(timestamp+"\n");
         gaHistoryTextArea.textArea.append(bestInRun.toString()+"\n");
+        gaHistoryTextArea.textArea.append("Seed: "+ panelParameters.getTextFieldSeed().getText()+"\n");
         gaHistoryTextArea.textArea.append("Population size: "+ panelParameters.getTextFieldN().getText()+"\n");
         gaHistoryTextArea.textArea.append("Number of generations: "+ panelParameters.getTextFieldGenerations().getText()+"\n");
         gaHistoryTextArea.textArea.append("Selection method: "+ panelParameters.getComboBoxSelectionMethods().getSelectedItem().toString()+"\n");
