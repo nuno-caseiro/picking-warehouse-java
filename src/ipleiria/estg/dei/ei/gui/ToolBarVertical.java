@@ -4,15 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class MenuBarVertical extends JToolBar {
+public class ToolBarVertical extends JToolBar {
     private JButton problemData;
     private JButton ga;
     private JButton simulate;
+    private JButton gaHistory;
 
-   public MenuBarVertical() throws IOException {
+   public ToolBarVertical() throws IOException {
        setOrientation(JToolBar.VERTICAL);
        setBackground(Color.white);
-       setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(""), BorderFactory.createEmptyBorder(1,1,1,1)));
+       setFloatable(false);
+       setBorder(BorderFactory.createMatteBorder(0,1,1,1,Color.GRAY));
 
        this.problemData= new JButton("",new ImageIcon(getClass().getResource("assets/searchIcon.png")));
        add(this.problemData);
@@ -22,6 +24,9 @@ public class MenuBarVertical extends JToolBar {
 
        this.simulate= new JButton("",new ImageIcon(getClass().getResource("assets/simulationIcon.png")));
        add(this.simulate);
+
+       this.gaHistory= new JButton("",new ImageIcon(getClass().getResource("assets/gaHistoryIcon.png")));
+       add(this.gaHistory);
    }
 
     public JButton getProblemData() {
@@ -34,5 +39,9 @@ public class MenuBarVertical extends JToolBar {
 
     public JButton getSimulate() {
         return simulate;
+    }
+
+    public JButton getGaHistory() {
+        return gaHistory;
     }
 }
