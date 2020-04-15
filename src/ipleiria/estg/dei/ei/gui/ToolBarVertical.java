@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ToolBarVertical extends JToolBar {
-    private JButton problemData;
+//    private JButton problemData;
     private JButton ga;
     private JButton simulate;
     private JButton gaHistory;
@@ -16,8 +16,8 @@ public class ToolBarVertical extends JToolBar {
        setFloatable(false);
        setBorder(BorderFactory.createMatteBorder(0,1,1,1,Color.GRAY));
 
-       this.problemData= new JButton("",new ImageIcon(getClass().getResource("assets/searchIcon.png")));
-       add(this.problemData);
+//       this.problemData= new JButton("",new ImageIcon(getClass().getResource("assets/searchIcon.png")));
+//       add(this.problemData);
 
        this.ga = new JButton("",new ImageIcon(getClass().getResource("assets/gaIcon.png")));
        add(this.ga);
@@ -29,9 +29,9 @@ public class ToolBarVertical extends JToolBar {
        add(this.gaHistory);
    }
 
-    public JButton getProblemData() {
-        return problemData;
-    }
+//    public JButton getProblemData() {
+//        return problemData;
+//    }
 
     public JButton getGa() {
         return ga;

@@ -21,7 +21,7 @@ public class MainFrame extends JFrame implements GAListener {
     private PanelGeneticAlgorithmHistory gaHistoryPanel;
     private JPanel simulationGlobalPanel;
     private boolean mainPageShow;
-    private boolean problemDataShow;
+//    private boolean problemDataShow;
     private boolean gaPanelShow;
     private boolean simulationPanelShow;
     private boolean gaHistoryPanelShow;
@@ -73,35 +73,35 @@ public class MainFrame extends JFrame implements GAListener {
         switch (panelNumber){
             case 0:
                 this.mainPageShow=show;
-                this.problemDataShow=false;
+//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
                 break;
             case 1:
                 this.mainPageShow=false;
-                this.problemDataShow=show;
+//                this.problemDataShow=show;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
                 break;
             case 2:
                 this.mainPageShow=false;
-                this.problemDataShow= false;
+//                this.problemDataShow= false;
                 this.gaPanelShow=show;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
                 break;
             case 3:
                 this.mainPageShow=false;
-                this.problemDataShow=false;
+//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=show;
                 this.gaHistoryPanelShow=false;
                 break;
             case 4:
                 this.mainPageShow=false;
-                this.problemDataShow=false;
+//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=show;
@@ -121,8 +121,9 @@ public class MainFrame extends JFrame implements GAListener {
                 panel=this.mainPagePanel;
                 break;
             case 1:
-                show=this.problemDataShow;
-                panel=this.problemData;
+//                show=this.problemDataShow;
+                show=this.gaPanelShow;
+                panel=this.gaPanel;
                 break;
             case 2:
                 show=this.gaPanelShow;
@@ -182,14 +183,13 @@ public class MainFrame extends JFrame implements GAListener {
         return toolBarVertical;
     }
 
-
     public GeneticAlgorithmPanel getGaPanel() {
         return gaPanel;
     }
 
-    public PanelProblemData getProblemData() {
-        return problemData;
-    }
+//    public PanelProblemData getProblemData() {
+//        return problemData;
+//    }
 
     public ToolBarHorizontal getToolBarHorizontal() {
         return toolBarHorizontal;

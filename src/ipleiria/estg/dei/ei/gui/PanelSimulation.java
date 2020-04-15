@@ -1,14 +1,10 @@
 package ipleiria.estg.dei.ei.gui;
 
-import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.search.Location;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class PanelSimulation extends JLayeredPane implements EnvironmentListener {
@@ -23,7 +19,6 @@ public class PanelSimulation extends JLayeredPane implements EnvironmentListener
     public PanelSimulation() {
         this.setLayout(new OverlayLayout(this));
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
-
     }
 
     @Override

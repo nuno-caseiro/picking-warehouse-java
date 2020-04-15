@@ -25,11 +25,15 @@ public class PanelParameters extends PanelAtributesValue {
     public static final String SELECTIVE_PRESSURE= "2";
     public static final String PROB_RECOMBINATION= "0.7";
     public static final String PROB_MUTATION= "0.2";
+    public static final String TIME_WEIGHT= "1";
+    public static final String COLLISIONS_WEIGHT= "1";
     private MainFrame mainFrame;
 
     JTextField textFieldSeed = new JTextField(SEED,TEXT_FIELD_LENGHT);
     JTextField textFieldN = new JTextField(POPULATION_SIZE,TEXT_FIELD_LENGHT);
     JTextField textFieldGenerations = new JTextField(GENERATIONS,TEXT_FIELD_LENGHT);
+    JTextField textFieldTimeWeight = new JTextField(TIME_WEIGHT,TEXT_FIELD_LENGHT);
+    JTextField textFieldCollisionsWeight = new JTextField(COLLISIONS_WEIGHT,TEXT_FIELD_LENGHT);
 
     String[] selectionMethods= {"Tournament", "Rank"};
     JComboBox comboBoxSelectionMethods = new JComboBox(selectionMethods);
@@ -85,6 +89,14 @@ public class PanelParameters extends PanelAtributesValue {
         labels.add(new JLabel("Mutation prob.: "));
         valueComponents.add(textFieldProbMutation);
 
+        labels.add(new JLabel("Time Weight: "));
+        valueComponents.add(textFieldTimeWeight);
+        textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
+
+        labels.add(new JLabel("Collisions Weight: "));
+        valueComponents.add(textFieldCollisionsWeight);
+        textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
+
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(""),
                 BorderFactory.createEmptyBorder(1,1,1,1)
@@ -95,6 +107,14 @@ public class PanelParameters extends PanelAtributesValue {
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
 
         configure();
+    }
+
+    public JTextField getTextFieldTimeWeight() {
+        return textFieldTimeWeight;
+    }
+
+    public JTextField getTextFieldCollisionsWeight() {
+        return textFieldCollisionsWeight;
     }
 
     public JTextField getTextFieldSeed() {
@@ -158,8 +178,6 @@ public class PanelParameters extends PanelAtributesValue {
         textFieldTournamentSize.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 0);
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
     }
-
-
 
     public String[] getSelectionMethods() {
         return selectionMethods;

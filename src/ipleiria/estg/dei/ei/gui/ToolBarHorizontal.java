@@ -9,7 +9,7 @@ public class ToolBarHorizontal extends JToolBar {
 
     private JButton loadLayout;
     private JButton loadPicks;
-    private JButton aStarRun;
+//    private JButton aStarRun;
     private JButton gaRun;
     private JButton stopGaRun;
     private JButton simulateRun;
@@ -27,9 +27,9 @@ public class ToolBarHorizontal extends JToolBar {
         this.loadPicks= new JButton("",new ImageIcon(getClass().getResource("assets/loadPicksIcon.png")));
         this.loadPicks.setBorderPainted(false);
         this.loadPicks.setEnabled(false);
-        this.aStarRun= new JButton("",new ImageIcon(getClass().getResource("assets/aStarRunIcon.png")));
-        this.aStarRun.setBorderPainted(false);
-        this.aStarRun.setEnabled(false);
+//        this.aStarRun= new JButton("",new ImageIcon(getClass().getResource("assets/aStarRunIcon.png")));
+//        this.aStarRun.setBorderPainted(false);
+//        this.aStarRun.setEnabled(false);
         this.gaRun= new JButton("",new ImageIcon(getClass().getResource("assets/gaRunIcon.png")));
         this.gaRun.setBorderPainted(false);
         this.gaRun.setEnabled(false);
@@ -58,11 +58,11 @@ public class ToolBarHorizontal extends JToolBar {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 0);
         horizontalPanel.add(jSeparator,c);
-        c.gridx=4;
-        c.gridy=0;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        horizontalPanel.add(this.aStarRun,c);
+//        c.gridx=4;
+//        c.gridy=0;
+//        c.insets = new Insets(0, 0, 0, 0);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        horizontalPanel.add(this.aStarRun,c);
         c.gridx=5;
         c.gridy=0;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -84,7 +84,7 @@ public class ToolBarHorizontal extends JToolBar {
 
         loadLayout.addMouseListener(new JButtonBorder_MouseAdapter(loadLayout));
         loadPicks.addMouseListener(new JButtonBorder_MouseAdapter(loadPicks));
-        aStarRun.addMouseListener(new JButtonBorder_MouseAdapter(aStarRun));
+//        aStarRun.addMouseListener(new JButtonBorder_MouseAdapter(aStarRun));
         gaRun.addMouseListener(new JButtonBorder_MouseAdapter(gaRun));
         stopGaRun.addMouseListener(new JButtonBorder_MouseAdapter(stopGaRun));
         simulateRun.addMouseListener(new JButtonBorder_MouseAdapter(simulateRun));
@@ -93,9 +93,9 @@ public class ToolBarHorizontal extends JToolBar {
 
     }
 
-    public JButton getaStarRun() {
-        return aStarRun;
-    }
+//    public JButton getaStarRun() {
+//        return aStarRun;
+//    }
 
     public JButton getGaRun() {
         return gaRun;
@@ -120,7 +120,7 @@ public class ToolBarHorizontal extends JToolBar {
     public void manageButtons(boolean layout, boolean picks, boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {
         this.loadLayout.setEnabled(layout);
         this.loadPicks.setEnabled(picks);
-        this.aStarRun.setEnabled(runSearch);
+//        this.aStarRun.setEnabled(runSearch);
         this.gaRun.setEnabled(runGA);
         this.simulateRun.setEnabled(runEnvironment);
         this.stopGaRun.setEnabled(stopRunGA);
