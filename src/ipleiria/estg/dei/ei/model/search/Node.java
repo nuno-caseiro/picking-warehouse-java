@@ -42,9 +42,11 @@ public class Node implements Comparable<Node> {
 
     public Node(Node node) {
         this.costFromAdjacentNode = node.costFromAdjacentNode;
+        this.nodeNumber = node.nodeNumber;
         this.line = node.line;
         this.column = node.column;
-        this.nodeNumber = node.nodeNumber;
+        this.g = node.g;
+        this.time = 0;
     }
 
     public Node(Node parent, double f, double g, int line, int column, int nodeNumber) {

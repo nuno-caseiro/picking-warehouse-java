@@ -104,7 +104,7 @@ public class Controller {
         Random random = new Random(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldSeed().getText()));
 
         Environment.getInstance().setTimeWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldTimeWeight().getText()));
-        Environment.getInstance().setTimeWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText()));
+        Environment.getInstance().setCollisionsWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText()));
 
         System.out.println(view.getGaPanel().getPanelParameters().getTextFieldTimeWeight().getText());
         System.out.println(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText());
