@@ -17,6 +17,7 @@ public class Node implements Comparable<Node> {
     private int column;
     private int nodeNumber;
     private String type;
+    private double time;
 
     public Node(int line, int column, int nodeNumber, String type) {
         this.line = line;
@@ -67,6 +68,10 @@ public class Node implements Comparable<Node> {
         return g;
     }
 
+    public void setG(double g) {
+        this.g = g;
+    }
+
     public double getCostFromAdjacentNode() {
         return costFromAdjacentNode;
     }
@@ -89,6 +94,14 @@ public class Node implements Comparable<Node> {
 
     public String getType() {
         return type;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = this.g + time;
     }
 
     public void addCost(double cost) {

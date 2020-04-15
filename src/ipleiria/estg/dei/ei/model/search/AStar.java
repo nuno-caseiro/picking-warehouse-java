@@ -4,6 +4,7 @@ import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.utils.NodePriorityQueue;
 import ipleiria.estg.dei.ei.utils.Properties;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class AStar {
@@ -11,21 +12,27 @@ public class AStar {
     private NodePriorityQueue frontier;
     private HashSet<Integer> explored;
     private Heuristic heuristic;
+    private Environment environment;
 
     public AStar() {
         this.frontier = new NodePriorityQueue();
         this.explored = new HashSet<>();
         this.heuristic = new Heuristic();
+        this.environment = Environment.getInstance();
     }
 
     public List<Node> search(Node initialNode, Node goalNode) {
+        if (this.environment.pairsMapContains(initialNode, goalNode)) {
+            return this.environment.getPath(initialNode, goalNode);
+        }
+
         frontier.clear();
         explored.clear();
         frontier.add(initialNode);
 
         while (!frontier.isEmpty()) {
             Node node = frontier.poll();
-            if (node.getNodeNumber() == goalNode.getNodeNumber()){
+            if (node.getNodeNumber() == goalNode.getNodeNumber()) {
                 return computeSolution(node);
             }
 
@@ -37,13 +44,14 @@ public class AStar {
     }
 
     private List<Node> computeSolution(Node node) {
-        LinkedList<Node> solution = new LinkedList<>();
+        List<Node> solution = new ArrayList<>();
 
-        while (node.hasParent()) {
-            solution.addFirst(node);
+        while (node != null) {
+            solution.add(0, node);
             node = node.getParent();
         }
 
+        this.environment.addToPairsMap(solution);
         return solution;
     }
 

@@ -14,7 +14,7 @@ public class Environment {
 
     private static Environment INSTANCE = new Environment();
     private Individual bestInRun;
-    private HashMap<String, Pair> pairsMap;
+    private HashMap<String, List<Node>> pairsMap;
     private ArrayList<EnvironmentListener> listeners;
     private HashMap<Integer, List<Node>> originalGraph;
     private int graphSize;
@@ -24,14 +24,16 @@ public class Environment {
     private List<Integer> picks;
     private List<Integer> agents;
     private int offloadArea;
-    private List<Pair> pairs;
 //    private HashMap<String, Edge> edges;
     private List<Edge> edges;
     private int maxLine;
     private int maxColumn;
+    private int timeWeight;
+    private int collisionsWeight;
 
     private Environment() {
         this.listeners = new ArrayList<>();
+        this.pairsMap = new HashMap<>();
     }
 
     public static Environment getInstance() {
@@ -127,8 +129,6 @@ public class Environment {
         csvReader.close();
 
         createPicksGraph();
-
-        setPairs();
     }
 
     private void createPicksGraph() {
@@ -184,138 +184,133 @@ public class Environment {
         fireCreateSimulation();
     }
 
-    public void setPairs() {
-        this.pairs = new ArrayList<>();
+//    public void executeSolution() throws InterruptedException {
+//        int[] genome = bestInRun.getGenome();
+//        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
+//        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
+//
+//        int numIterations = 0;
+//        for (List<Location> l : solutionLocations) {
+//            if (l.size() > numIterations) {
+//                numIterations = l.size();
+//            }
+//        }
+//
+//        fireCreateSimulationPicks();
+//
+//        Node offloadNode = this.nodes.get(offloadArea);
+//        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
+//        List<Location> iterationAgentsLocations;
+//        for (int i = 0; i < numIterations; i++) {
+//            iterationAgentsLocations = new LinkedList<>();
+//            for (List<Location> l : solutionLocations) {
+//                if (i < l.size()) {
+//                    iterationAgentsLocations.add(l.get(i));
+//                } else {
+//                    iterationAgentsLocations.add(offloadLocation);
+//                }
+//            }
+//            Thread.sleep(500);
+//            fireUpdateEnvironment(iterationAgentsLocations);
+//        }
+//    }
 
-        for (int agent : this.agents) {
-            pairs.add(new Pair(agent, offloadArea));
-        }
+//    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
+//        List<List<Location>> solutionLocations = new ArrayList<>();
+//        List<Location> agentLocations = new ArrayList<>();
+//
+//        Node n1;
+//        Node n2;
+//        int action;
+//        int line;
+//        int column;
+//        for (List<Node> l : agentsPathNodes) {
+//            for (int i = 0; i < l.size() - 1; i++) {
+//                n1 = this.nodes.get(l.get(i).getNodeNumber());
+//                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
+//                line = n1.getLine();
+//                column = n1.getColumn();
+//
+//
+//                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
+//                    action = 1;
+//                } else {
+//                    action = -1;
+//                }
+//
+//                if (n1.getLine() == n2.getLine()) {
+//
+//                    do {
+//                        column += action;
+//                        agentLocations.add(new Location(line, column));
+//                    } while (column != n2.getColumn());
+//
+//                } else {
+//
+//                    do {
+//                        line += action;
+//                        agentLocations.add(new Location(line, column));
+//                    } while (line != n2.getLine());
+//
+//                }
+//            }
+//            solutionLocations.add(agentLocations);
+//            agentLocations = new ArrayList<>();
+//        }
+//
+//        return solutionLocations;
+//    }
 
-        for (int pick : this.picks) {
-            for (int agent : this.agents) {
-                pairs.add(new Pair(agent, pick));
-            }
-            pairs.add(new Pair(pick, offloadArea));
-        }
+//    private List<List<Node>> separateGenomeByAgents(int[] genome) {
+//        List<List<Node>> agents = new ArrayList<>();
+//        List<Node> agentPicks = new ArrayList<>();
+//        int agent = 0;
+//
+//        List<List<Node>> agentsPaths = new ArrayList<>();
+//        List<Node> agentPath = new ArrayList<>();
+//
+//        agentPicks.add(this.nodes.get(this.agents.get(agent)));
+//        for (int value : genome) {
+//            if (value < 0) {
+//                agentPicks.add(this.nodes.get(this.offloadArea));
+//                agents.add(agentPicks);
+//                agentPicks = new ArrayList<>();
+//                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
+//                continue;
+//            }
+//            agentPicks.add(this.nodes.get(picks.get(value - 1)));
+//        }
+//        agentPicks.add(this.nodes.get(this.offloadArea));
+//        agents.add(agentPicks);
+//
+//        agent = 0;
+//
+//        for (List<Node> l : agents) {
+//            agentPath.add(this.nodes.get(this.agents.get(agent++)));
+//            for (int i = 0; i < l.size() - 1; i++) {
+//                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()).getPath());
+//            }
+//            agentsPaths.add(agentPath);
+//            agentPath = new ArrayList<>();
+//        }
+//
+//        return agentsPaths;
+//    }
 
-        for (int i = 0; i < picks.size() - 1; i++) {
-            for (int j = i + 1; j < picks.size(); j++) {
-                pairs.add(new Pair(picks.get(i), picks.get(j)));
-            }
-        }
+    public int getTimeWeight() {
+        return timeWeight;
     }
 
-    public void executeSolution() throws InterruptedException {
-        int[] genome = bestInRun.getGenome();
-        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
-        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
-
-        int numIterations = 0;
-        for (List<Location> l : solutionLocations) {
-            if (l.size() > numIterations) {
-                numIterations = l.size();
-            }
-        }
-
-        fireCreateSimulationPicks();
-
-        Node offloadNode = this.nodes.get(offloadArea);
-        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
-        List<Location> iterationAgentsLocations;
-        for (int i = 0; i < numIterations; i++) {
-            iterationAgentsLocations = new LinkedList<>();
-            for (List<Location> l : solutionLocations) {
-                if (i < l.size()) {
-                    iterationAgentsLocations.add(l.get(i));
-                } else {
-                    iterationAgentsLocations.add(offloadLocation);
-                }
-            }
-            Thread.sleep(500);
-            fireUpdateEnvironment(iterationAgentsLocations);
-        }
+    public void setTimeWeight(int timeWeight) {
+        this.timeWeight = timeWeight;
     }
 
-    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
-        List<List<Location>> solutionLocations = new ArrayList<>();
-        List<Location> agentLocations = new ArrayList<>();
-
-        Node n1;
-        Node n2;
-        int action;
-        int line;
-        int column;
-        for (List<Node> l : agentsPathNodes) {
-            for (int i = 0; i < l.size() - 1; i++) {
-                n1 = this.nodes.get(l.get(i).getNodeNumber());
-                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
-                line = n1.getLine();
-                column = n1.getColumn();
-
-
-                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
-                    action = 1;
-                } else {
-                    action = -1;
-                }
-
-                if (n1.getLine() == n2.getLine()) {
-
-                    do {
-                        column += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (column != n2.getColumn());
-
-                } else {
-
-                    do {
-                        line += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (line != n2.getLine());
-
-                }
-            }
-            solutionLocations.add(agentLocations);
-            agentLocations = new ArrayList<>();
-        }
-
-        return solutionLocations;
+    public int getCollisionsWeight() {
+        return collisionsWeight;
     }
 
-    private List<List<Node>> separateGenomeByAgents(int[] genome) {
-        List<List<Node>> agents = new ArrayList<>();
-        List<Node> agentPicks = new ArrayList<>();
-        int agent = 0;
-
-        List<List<Node>> agentsPaths = new ArrayList<>();
-        List<Node> agentPath = new ArrayList<>();
-
-        agentPicks.add(this.nodes.get(this.agents.get(agent)));
-        for (int value : genome) {
-            if (value < 0) {
-                agentPicks.add(this.nodes.get(this.offloadArea));
-                agents.add(agentPicks);
-                agentPicks = new ArrayList<>();
-                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
-                continue;
-            }
-            agentPicks.add(this.nodes.get(picks.get(value - 1)));
-        }
-        agentPicks.add(this.nodes.get(this.offloadArea));
-        agents.add(agentPicks);
-
-        agent = 0;
-
-        for (List<Node> l : agents) {
-            agentPath.add(this.nodes.get(this.agents.get(agent++)));
-            for (int i = 0; i < l.size() - 1; i++) {
-                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()).getPath());
-            }
-            agentsPaths.add(agentPath);
-            agentPath = new ArrayList<>();
-        }
-
-        return agentsPaths;
+    public void setCollisionsWeight(int collisionsWeight) {
+        this.collisionsWeight = collisionsWeight;
     }
 
     public List<Integer> getPicks() {
@@ -340,10 +335,6 @@ public class Environment {
         }
 
         return agents;
-    }
-
-    public List<Pair> getPairs() {
-        return pairs;
     }
 
     public Node getNode(int i) {
@@ -382,31 +373,40 @@ public class Environment {
         this.bestInRun = bestInRun;
     }
 
-    public void setPairsMap() {
-        this.pairsMap = new HashMap<>();
-
-        StringBuilder sb;
-        StringBuilder sb1;
-        for (Pair pair : pairs) {
-            sb = new StringBuilder();
-            sb.append(pair.getNode1());
-            sb.append("-");
-            sb.append(pair.getNode2());
-            String key1 = sb.toString();
-
-            sb1 = new StringBuilder();
-            sb1.append(pair.getNode2());
-            sb1.append("-");
-            sb1.append(pair.getNode1());
-            String key2 = sb1.toString();
-
-            pairsMap.put(key1, pair);
-            pairsMap.put(key2, new Pair(pair));
-        }
+    public HashMap<String, List<Node>> getPairsMap() {
+        return pairsMap;
     }
 
-    public HashMap<String, Pair> getPairsMap() {
-        return pairsMap;
+    public boolean pairsMapContains(Node firstNode, Node secondNode) {
+        return this.pairsMap.containsKey(firstNode.getNodeNumber() + "-" + secondNode.getNodeNumber());
+    }
+
+    public void addToPairsMap(List<Node> path) {
+        List<Node> invPath = createInversePath(path);
+
+        this.pairsMap.put(path.get(0).getNodeNumber() + "-" + path.get(path.size() - 1).getNodeNumber(), path);
+        this.pairsMap.put(invPath.get(0).getNodeNumber() + "-" + invPath.get(path.size() - 1).getNodeNumber(), invPath);
+
+        path.remove(0);
+        invPath.remove(0);
+    }
+
+    private List<Node> createInversePath(List<Node> path) {
+        List<Node> invPath = new ArrayList<>();
+        path.forEach((node) -> invPath.add(new Node(node)));
+
+        double pathSize = path.get(path.size() - 1).getG();
+        for (int i = path.size() - 1; i >= 0; i--) {
+            invPath.get(i).setG(pathSize - path.get(i).getG());
+        }
+
+        Collections.reverse(invPath);
+
+        return invPath;
+    }
+
+    public List<Node> getPath(Node firstNode, Node secondNode) {
+        return this.pairsMap.get(firstNode.getNodeNumber() + "-" + secondNode.getNodeNumber());
     }
 
     public List<Integer> getAgents() {
