@@ -2,9 +2,9 @@ package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 
 import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.search.AStar;
+import ipleiria.estg.dei.ei.model.search.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +12,7 @@ public class Individual implements Comparable<Individual> {
 
     private int[] genome;
     private double fitness;
+    private int numberOfCollisions;
     private List<AgentPath> individualPaths;
     private Environment environment;
     private AStar aStar;
@@ -20,6 +21,7 @@ public class Individual implements Comparable<Individual> {
         int genomeSize = numPicks + (numAgents - 1);
         this.genome = new int[genomeSize];
         this.environment = Environment.getInstance();
+        this.aStar = new AStar();
 
         List<Integer> genes = new LinkedList<>(); // 0 -> divisions between paths for different agents | 1 ... n index of the picks (eg. Environment.getInstance().getPicks().get(n -1))
         for (int i = 0; i < numAgents - 1; i++) {
@@ -43,6 +45,7 @@ public class Individual implements Comparable<Individual> {
         System.arraycopy(original.genome, 0, this.genome, 0, this.genome.length);
         this.fitness = original.fitness;
         this.environment = Environment.getInstance();
+        this.aStar = new AStar();
     }
 
 //    public Individual(int[] genome) {
@@ -84,7 +87,6 @@ public class Individual implements Comparable<Individual> {
     }
 
     public void computeFitness() {
-        this.aStar = new AStar();
         this.individualPaths = new ArrayList<>();
 
         List<Integer> picks = this.environment.getPicks();
@@ -95,6 +97,7 @@ public class Individual implements Comparable<Individual> {
         int i = 0;
         for (int agent : agents) {
             agentPath = new AgentPath();
+            agentPath.addAgentInitialPosition(this.environment.getNode(agent));
 
             if (i >= this.genome.length || this.genome[i] < 0) {
                 computePath(agentPath, agent, offloadArea);
@@ -121,10 +124,53 @@ public class Individual implements Comparable<Individual> {
                 this.fitness = path.getValue();
             }
         }
+
+        detectAndPenalizeCollisions();
     }
 
     private void computePath(AgentPath agentPath, int firstNde, int secondNode) {
         agentPath.addPath(this.aStar.search(this.environment.getNode(firstNde), this.environment.getNode(secondNode)));
+    }
+
+    private void detectAndPenalizeCollisions() {
+        this.numberOfCollisions = 0;
+
+        // TYPE 1 COLLISIONS
+        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
+            for (int j = i + 1; j < this.individualPaths.size(); j++) {
+                for (Node node : this.individualPaths.get(i).getPath()) {
+                    for (Node node1 : this.individualPaths.get(j).getPath()) { // TODO OPTIMIZE THIS USING A HASHSET TO VERIFY IF LIST CONTAINS NODE AND REMOVE OFFLOAD NODE COLLISION VERIFICATION
+                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
+                            this.numberOfCollisions++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // TYPE 2 COLLISIONS
+        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
+            List<Node> path = this.individualPaths.get(i).getPath();
+            for (int j = i + 1; j < this.individualPaths.size(); j++) {
+                List<Node> path1 = this.individualPaths.get(i).getPath();
+                for (int k = 0; k < path.size() - 1; k++) {
+                    for (int l = 0; l < path1.size() - 1; l++) {
+                        if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
+                            if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path.get(l).getTime(), path.get(l + 1).getTime())) {
+                                this.numberOfCollisions++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // COMPUTE FITNESS
+        this.fitness = (this.fitness * this.environment.getTimeWeight()) + (this.numberOfCollisions * this.environment.getCollisionsWeight());
+    }
+
+    private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
+        return x1 <= y2 && y1 <= x2;
     }
 
     @Override
@@ -137,6 +183,8 @@ public class Individual implements Comparable<Individual> {
         StringBuilder sb = new StringBuilder();
         sb.append("Fitness: ");
         sb.append(fitness);
+        sb.append(" - Collisions: ");
+        sb.append(this.numberOfCollisions);
         sb.append("\nPath: ");
         for (int value : genome) {
             sb.append(value).append(" ");

@@ -24,9 +24,19 @@ public class AgentPath {
     }
 
     public void addPath(List<Node> path) {
-        this.path.addAll(path);
-        this.path.forEach((node -> node.setTime(this.value)));
+        Node n;
+        for (Node node : path) {
+            n = new Node(node);
+            n.setTime(this.value);
+            this.path.add(n);
+        }
 
         this.value += path.get(path.size() - 1).getG();
+    }
+
+    public void addAgentInitialPosition(Node node) {
+        Node n = new Node(node);
+        n.setTime(0);
+        this.path.add(n);
     }
 }

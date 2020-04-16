@@ -184,118 +184,118 @@ public class Environment {
         fireCreateSimulation();
     }
 
-//    public void executeSolution() throws InterruptedException {
-//        int[] genome = bestInRun.getGenome();
-//        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
-//        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
-//
-//        int numIterations = 0;
-//        for (List<Location> l : solutionLocations) {
-//            if (l.size() > numIterations) {
-//                numIterations = l.size();
-//            }
-//        }
-//
-//        fireCreateSimulationPicks();
-//
-//        Node offloadNode = this.nodes.get(offloadArea);
-//        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
-//        List<Location> iterationAgentsLocations;
-//        for (int i = 0; i < numIterations; i++) {
-//            iterationAgentsLocations = new LinkedList<>();
-//            for (List<Location> l : solutionLocations) {
-//                if (i < l.size()) {
-//                    iterationAgentsLocations.add(l.get(i));
-//                } else {
-//                    iterationAgentsLocations.add(offloadLocation);
-//                }
-//            }
-//            Thread.sleep(500);
-//            fireUpdateEnvironment(iterationAgentsLocations);
-//        }
-//    }
+    public void executeSolution() throws InterruptedException {
+        int[] genome = bestInRun.getGenome();
+        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
+        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
 
-//    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
-//        List<List<Location>> solutionLocations = new ArrayList<>();
-//        List<Location> agentLocations = new ArrayList<>();
-//
-//        Node n1;
-//        Node n2;
-//        int action;
-//        int line;
-//        int column;
-//        for (List<Node> l : agentsPathNodes) {
-//            for (int i = 0; i < l.size() - 1; i++) {
-//                n1 = this.nodes.get(l.get(i).getNodeNumber());
-//                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
-//                line = n1.getLine();
-//                column = n1.getColumn();
-//
-//
-//                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
-//                    action = 1;
-//                } else {
-//                    action = -1;
-//                }
-//
-//                if (n1.getLine() == n2.getLine()) {
-//
-//                    do {
-//                        column += action;
-//                        agentLocations.add(new Location(line, column));
-//                    } while (column != n2.getColumn());
-//
-//                } else {
-//
-//                    do {
-//                        line += action;
-//                        agentLocations.add(new Location(line, column));
-//                    } while (line != n2.getLine());
-//
-//                }
-//            }
-//            solutionLocations.add(agentLocations);
-//            agentLocations = new ArrayList<>();
-//        }
-//
-//        return solutionLocations;
-//    }
+        int numIterations = 0;
+        for (List<Location> l : solutionLocations) {
+            if (l.size() > numIterations) {
+                numIterations = l.size();
+            }
+        }
 
-//    private List<List<Node>> separateGenomeByAgents(int[] genome) {
-//        List<List<Node>> agents = new ArrayList<>();
-//        List<Node> agentPicks = new ArrayList<>();
-//        int agent = 0;
-//
-//        List<List<Node>> agentsPaths = new ArrayList<>();
-//        List<Node> agentPath = new ArrayList<>();
-//
-//        agentPicks.add(this.nodes.get(this.agents.get(agent)));
-//        for (int value : genome) {
-//            if (value < 0) {
-//                agentPicks.add(this.nodes.get(this.offloadArea));
-//                agents.add(agentPicks);
-//                agentPicks = new ArrayList<>();
-//                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
-//                continue;
-//            }
-//            agentPicks.add(this.nodes.get(picks.get(value - 1)));
-//        }
-//        agentPicks.add(this.nodes.get(this.offloadArea));
-//        agents.add(agentPicks);
-//
-//        agent = 0;
-//
-//        for (List<Node> l : agents) {
-//            agentPath.add(this.nodes.get(this.agents.get(agent++)));
-//            for (int i = 0; i < l.size() - 1; i++) {
-//                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()).getPath());
-//            }
-//            agentsPaths.add(agentPath);
-//            agentPath = new ArrayList<>();
-//        }
-//
-//        return agentsPaths;
-//    }
+        fireCreateSimulationPicks();
+
+        Node offloadNode = this.nodes.get(offloadArea);
+        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
+        List<Location> iterationAgentsLocations;
+        for (int i = 0; i < numIterations; i++) {
+            iterationAgentsLocations = new LinkedList<>();
+            for (List<Location> l : solutionLocations) {
+                if (i < l.size()) {
+                    iterationAgentsLocations.add(l.get(i));
+                } else {
+                    iterationAgentsLocations.add(offloadLocation);
+                }
+            }
+            Thread.sleep(500);
+            fireUpdateEnvironment(iterationAgentsLocations);
+        }
+    }
+
+    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
+        List<List<Location>> solutionLocations = new ArrayList<>();
+        List<Location> agentLocations = new ArrayList<>();
+
+        Node n1;
+        Node n2;
+        int action;
+        int line;
+        int column;
+        for (List<Node> l : agentsPathNodes) {
+            for (int i = 0; i < l.size() - 1; i++) {
+                n1 = this.nodes.get(l.get(i).getNodeNumber());
+                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
+                line = n1.getLine();
+                column = n1.getColumn();
+
+
+                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
+                    action = 1;
+                } else {
+                    action = -1;
+                }
+
+                if (n1.getLine() == n2.getLine()) {
+
+                    do {
+                        column += action;
+                        agentLocations.add(new Location(line, column));
+                    } while (column != n2.getColumn());
+
+                } else {
+
+                    do {
+                        line += action;
+                        agentLocations.add(new Location(line, column));
+                    } while (line != n2.getLine());
+
+                }
+            }
+            solutionLocations.add(agentLocations);
+            agentLocations = new ArrayList<>();
+        }
+
+        return solutionLocations;
+    }
+
+    private List<List<Node>> separateGenomeByAgents(int[] genome) {
+        List<List<Node>> agents = new ArrayList<>();
+        List<Node> agentPicks = new ArrayList<>();
+        int agent = 0;
+
+        List<List<Node>> agentsPaths = new ArrayList<>();
+        List<Node> agentPath = new ArrayList<>();
+
+        agentPicks.add(this.nodes.get(this.agents.get(agent)));
+        for (int value : genome) {
+            if (value < 0) {
+                agentPicks.add(this.nodes.get(this.offloadArea));
+                agents.add(agentPicks);
+                agentPicks = new ArrayList<>();
+                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
+                continue;
+            }
+            agentPicks.add(this.nodes.get(picks.get(value - 1)));
+        }
+        agentPicks.add(this.nodes.get(this.offloadArea));
+        agents.add(agentPicks);
+
+        agent = 0;
+
+        for (List<Node> l : agents) {
+            agentPath.add(this.nodes.get(this.agents.get(agent++)));
+            for (int i = 0; i < l.size() - 1; i++) {
+                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()));
+            }
+            agentsPaths.add(agentPath);
+            agentPath = new ArrayList<>();
+        }
+
+        return agentsPaths;
+    }
 
     public int getTimeWeight() {
         return timeWeight;
