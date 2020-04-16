@@ -74,7 +74,7 @@ public class Controller {
             public Void doInBackground() {
                 try {
                     view.manageButtons(false,false,false,false,false,false);
-//                    Environment.getInstance().executeSolution();
+                    Environment.getInstance().executeSolution();
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
@@ -105,9 +105,6 @@ public class Controller {
 
         Environment.getInstance().setTimeWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldTimeWeight().getText()));
         Environment.getInstance().setCollisionsWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText()));
-
-        System.out.println(view.getGaPanel().getPanelParameters().getTextFieldTimeWeight().getText());
-        System.out.println(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText());
 
         GeneticAlgorithm ga = new GeneticAlgorithm(
                 Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldN().getText()),

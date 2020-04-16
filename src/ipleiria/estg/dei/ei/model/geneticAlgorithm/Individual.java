@@ -136,27 +136,41 @@ public class Individual implements Comparable<Individual> {
         this.numberOfCollisions = 0;
 
         // TYPE 1 COLLISIONS
-//        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
-//            for (int j = i + 1; j < this.individualPaths.size(); j++) {
-//                for (Node node : this.individualPaths.get(i).getPath()) {
-//                    for (Node node1 : this.individualPaths.get(j).getPath()) { // OPTIMIZE THIS USING A HASHSET TO VERIFY IS LIST CONTAINS NODE
-//                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
-//                            this.numberOfCollisions++;
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
+            for (int j = i + 1; j < this.individualPaths.size(); j++) {
+                for (Node node : this.individualPaths.get(i).getPath()) {
+                    for (Node node1 : this.individualPaths.get(j).getPath()) { // TODO OPTIMIZE THIS USING A HASHSET TO VERIFY IF LIST CONTAINS NODE AND REMOVE OFFLOAD NODE COLLISION VERIFICATION
+                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
+                            this.numberOfCollisions++;
+                        }
+                    }
+                }
+            }
+        }
 
-//        // TYPE 2 COLLISIONS
-//        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
-//            for (int j = i + 1; j < this.individualPaths.size(); j++) {
-//
-//            }
-//        }
+        // TYPE 2 COLLISIONS
+        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
+            List<Node> path = this.individualPaths.get(i).getPath();
+            for (int j = i + 1; j < this.individualPaths.size(); j++) {
+                List<Node> path1 = this.individualPaths.get(i).getPath();
+                for (int k = 0; k < path.size() - 1; k++) {
+                    for (int l = 0; l < path1.size() - 1; l++) {
+                        if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
+                            if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path.get(l).getTime(), path.get(l + 1).getTime())) {
+                                this.numberOfCollisions++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // COMPUTE FITNESS
-//        this.fitness = (this.fitness * this.environment.getTimeWeight()) + (this.numberOfCollisions * this.environment.getCollisionsWeight());
+        this.fitness = (this.fitness * this.environment.getTimeWeight()) + (this.numberOfCollisions * this.environment.getCollisionsWeight());
+    }
+
+    private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
+        return x1 <= y2 && y1 <= x2;
     }
 
     @Override
