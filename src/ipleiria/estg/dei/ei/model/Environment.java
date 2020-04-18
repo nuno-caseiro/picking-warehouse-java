@@ -1,14 +1,15 @@
 package ipleiria.estg.dei.ei.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-
-import ipleiria.estg.dei.ei.utils.Properties;
 
 public class Environment {
 
@@ -16,15 +17,16 @@ public class Environment {
     private Individual bestInRun;
     private HashMap<String, List<Node>> pairsMap;
     private ArrayList<EnvironmentListener> listeners;
-    private HashMap<Integer, List<Node>> originalGraph;
+    private HashMap<Integer, List<Node>> warehouseGraph;
     private int graphSize;
+    private int edgesSize;
     private HashMap<Integer, List<Node>> picksGraph;
     private HashMap<Integer, Node> nodes;
     private List<Node> decisionNodes;
     private List<Integer> picks;
     private List<Integer> agents;
     private int offloadArea;
-//    private HashMap<String, Edge> edges;
+    private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
     private int maxLine;
     private int maxColumn;
@@ -40,149 +42,236 @@ public class Environment {
         return INSTANCE;
     }
 
-    public void readInitialStateFromFile(File file) throws IOException {
-        createGraphFromFile(file);
-    }
-
-    private void createGraphFromFile(File file) throws IOException {
+    public void readInitialStateFromFile(File file) {
         this.nodes = new HashMap<>();
-        this.originalGraph = new HashMap<>();
-        this.decisionNodes = new LinkedList<>();
-        this.edges = new LinkedList<>();
-        this.agents = new ArrayList<>();
         this.graphSize = 0;
-        this.maxLine = 0;
-        this.maxColumn = 0;
+        this.edgesSize = 0;
+        this.warehouseGraph = new HashMap<>();
+        this.edgesMap = new HashMap<>();
+        this.edges = new ArrayList<>();
+        this.agents = new ArrayList<>();
+        this.decisionNodes = new ArrayList<>();
 
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-        String row = "";
-        while ((row = csvReader.readLine()) != null && !row.contains("Sucessors")) {
-            String[] data = row.split(";");
-            if (data[0].contains("Nodes")) {
-                continue;
+        try {
+            JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
+
+            // IMPORT NODES
+            JsonArray jsonNodes = jsonObject.getAsJsonArray("nodes");
+
+            JsonObject jsonNode;
+            Node decisionNode;
+            for (JsonElement elementNode : jsonNodes) {
+                jsonNode = elementNode.getAsJsonObject();
+                decisionNode = new Node(jsonNode.get("nodeNumber").getAsInt(), jsonNode.get("line").getAsInt(), jsonNode.get("column").getAsInt(), jsonNode.get("type").getAsString());
+                this.nodes.put(jsonNode.get("nodeNumber").getAsInt(), decisionNode);
+                this.decisionNodes.add(decisionNode);
+                this.graphSize++;
             }
 
-            Node node = new Node(Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[0]), data[1]);
-            this.nodes.put(Integer.parseInt(data[0]), node);
+            // IMPORT SUCCESSORS
+            JsonArray jsonSuccessors;
+            JsonObject jsonSuccessor;
+            Node node;
+            for (JsonElement elementNode : jsonNodes) {
+                jsonNode = elementNode.getAsJsonObject();
+                List<Node> successors = new ArrayList<>();
+                this.warehouseGraph.put(jsonNode.get("nodeNumber").getAsInt(), successors);
 
-            if (node.getType().equals("D") ) {
-                this.decisionNodes.add(node);
-            }
+                jsonSuccessors = jsonNode.getAsJsonArray("successors");
+                for (JsonElement elementSuccessor : jsonSuccessors) {
+                    jsonSuccessor = elementSuccessor.getAsJsonObject();
+                    node = new Node(this.nodes.get(jsonSuccessor.get("nodeNumber").getAsInt()));
+                    node.setCostFromAdjacentNode(jsonSuccessor.get("distance").getAsDouble());
 
-            if (node.getLine() > this.maxLine) {
-                this.maxLine = node.getLine();
-            }
-
-            if (node.getColumn() > this.maxColumn) {
-                this.maxColumn = node.getColumn();
-            }
-        }
-
-        while ((row = csvReader.readLine()) != null && !row.contains("Edges")) {
-            String[] data = row.split(";");
-            ArrayList<Node> successors = new ArrayList<>();
-            this.originalGraph.put(Integer.parseInt(data[0]), successors);
-            this.graphSize++;
-
-            for (int i = 1; i < data.length; i += 2) {
-                Node node = nodes.get(Integer.parseInt(data[i]));
-                successors.add(new Node(Integer.parseInt(data[i + 1]), node.getLine(), node.getColumn(), node.getNodeNumber()));
-            }
-        }
-
-        while ((row = csvReader.readLine()) != null && !row.contains("Agents")) {
-            String[] data = row.split(";");
-            Node node1 = nodes.get(Integer.parseInt(data[0]));
-            Node node2 = nodes.get(Integer.parseInt(data[1]));
-//            edges.put(node1.getNodeNumber() + "-" + node2.getNodeNumber(), new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
-            edges.add(new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
-        }
-
-        while ((row = csvReader.readLine()) != null & !row.contains("OffLoad")) {
-            String[] data = row.split(";");
-            agents.add(Integer.parseInt(data[1]));
-        }
-
-        row = csvReader.readLine();
-        String[] data = row.split(";");
-
-        offloadArea = Integer.parseInt(data[1]);
-        csvReader.close();
-
-        fireCreateEnvironment();
-
-        for (int i = 1; i < this.graphSize + 1; i++) {
-            System.out.println(i + "->" + this.originalGraph.get(i));
-        }
-        System.out.println("----------------------------------------------------");
-    }
-
-    public void loadPicksFromFile(File file) throws IOException {
-        this.picks = new ArrayList<>();
-
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-        String row = "";
-        while ((row = csvReader.readLine()) != null) {
-            String[] data = row.split(";");
-            this.picks.add(Integer.parseInt(data[1]));
-        }
-        csvReader.close();
-
-        createPicksGraph();
-    }
-
-    private void createPicksGraph() {
-        this.picksGraph = new HashMap<>();
-
-        for (int i = 1; i <= this.graphSize; i++) {
-            List<Node> successors = new LinkedList<>();
-            this.picksGraph.put(i, successors);
-
-            for (Node node : this.originalGraph.get(i)) {
-                successors.add(new Node(node));
-            }
-        }
-
-
-        for (int i = 1; i <= this.graphSize ; i++) {
-            if (this.nodes.get(i).getType().equals("D")) {
-                continue;
-            }
-
-            if (this.picks.contains(i)) {
-                continue;
-            }
-
-            if (i == this.offloadArea) {
-                continue;
-            }
-
-            List<Node> successors = this.picksGraph.get(i);
-            for (Node node : successors) {
-                List<Node> nodeSuccessors = this.picksGraph.get(node.getNodeNumber());
-                double cost = node.getCostFromAdjacentNode();
-                int finalI = i;
-                nodeSuccessors.removeIf(n -> n.getNodeNumber() == finalI);
-
-                for (Node n : successors) {
-                    if (n.getNodeNumber() != node.getNodeNumber()) {
-                        Node nodeToAdd = new Node(n);
-                        nodeToAdd.addCost(cost);
-                        nodeSuccessors.add(nodeToAdd);
-                    }
+                    successors.add(node);
                 }
             }
 
-            this.picksGraph.remove(i);
+            // IMPORT EDGES
+            JsonArray jsonEdges = jsonObject.getAsJsonArray("edges");
+
+            JsonObject jsonEdge;
+            Edge edge;
+            Node node1;
+            Node node2;
+            for (JsonElement elementEdge : jsonEdges) {
+                jsonEdge = elementEdge.getAsJsonObject();
+                node1 = this.nodes.get(jsonEdge.get("node1Number").getAsInt());
+                node2 = this.nodes.get(jsonEdge.get("node2Number").getAsInt());
+                node1.addEdge(jsonEdge.get("edgeNumber").getAsInt());
+                node2.addEdge(jsonEdge.get("edgeNumber").getAsInt());
+                edge = new Edge(jsonEdge.get("edgeNumber").getAsInt(), node1, node2, jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt());
+
+                this.edges.add(edge);
+                this.edgesMap.put(jsonEdge.get("node1Number") +  "-" + jsonEdge.get("node2Number"), edge);
+                this.edgesSize++;
+            }
+            Collections.sort(this.edges);
+
+            // IMPORT AGENTS
+            JsonArray jsonAgents = jsonObject.getAsJsonArray("agents");
+
+            JsonObject jsonAgent;
+            int nodeNumber;
+            for (JsonElement elementAgent : jsonAgents) {
+                jsonAgent = elementAgent.getAsJsonObject();
+
+                nodeNumber = addNodeToGraph(this.warehouseGraph, jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt());
+
+                if (nodeNumber != 0) {
+                    this.agents.add(nodeNumber);
+                }
+            }
+
+            // IMPORT OFFLOAD
+            this.offloadArea = jsonObject.get("offloadArea").getAsInt();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        for (int i = 1; i < this.graphSize + 1; i++) {
-            System.out.println(i + "->" + this.picksGraph.get(i));
-        }
-        System.out.println("----------------------------------------------------");
-
-        fireCreateSimulation();
+        fireCreateEnvironment();
     }
+
+    // RETURNS THE NUMBER OF THE NODE ADDED TO THE GRAPH  OR 0 IF UNSUCCESSFUL // TODO COULD THROW EXCEPTION INSTEAD OF RETURNING 0
+    private int addNodeToGraph(HashMap<Integer, List<Node>> graph, int edgeNumber, int line, int column) {
+        Node edgeNode1 = this.edges.get(edgeNumber - 1).getNode1();
+        Node edgeNode2 = this.edges.get(edgeNumber - 1).getNode2();
+
+        if (edgeNode1.getLine() == line) {
+            return edgeNode1.getNodeNumber();
+        }
+
+        Node previousNode;
+        Node nextNode = edgeNode1;
+        do {
+            previousNode = nextNode;
+            nextNode = null;
+            for (Node n : graph.get(previousNode.getNodeNumber())) {
+                if (n.belongsToEdge(edgeNumber)) {
+                    nextNode = n;
+                    break;
+                }
+            }
+
+            if (nextNode == null) {
+                return 0;
+            }
+
+            if ((line - previousNode.getLine()) * (line - nextNode.getLine()) < 0) {
+                // ADD NEW NODE TO NODES
+                this.graphSize++;
+                Node newNode = new Node(this.graphSize, line, column, "O");
+                this.nodes.put(newNode.getNodeNumber(), newNode);
+
+                // ADD NEW NODE'S SUCCESSORS TO GRAPH
+                List<Node> successors = new ArrayList<>();
+                graph.put(newNode.getNodeNumber(), successors);
+                Node n1 = new Node(previousNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                Node n2 = new Node(nextNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                successors.add(n1);
+                successors.add(n2);
+
+                // ALTER PREVIOUS AND NEXT NODE SUCCESSORS
+                Node finalNextNode = nextNode;
+                graph.get(previousNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalNextNode.getNodeNumber());
+                Node finalPreviousNode = previousNode;
+                graph.get(nextNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalPreviousNode.getNodeNumber());
+
+                n1 = new Node(newNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                n1.addEdge(edgeNumber);
+                n2 = new Node(newNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                n2.addEdge(edgeNumber);
+
+                graph.get(previousNode.getNodeNumber()).add(n1);
+                graph.get(nextNode.getNodeNumber()).add(n2);
+
+                // CREATE NEW SUB EDGES
+                this.edgesMap.put(previousNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(previousNode.getNodeNumber()), newNode, Math.abs(previousNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+                this.edgesMap.put(nextNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(nextNode.getNodeNumber()), newNode, Math.abs(nextNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+
+                return newNode.getNodeNumber();
+            }
+
+            if (line == nextNode.getLine()) {
+                return nextNode.getNodeNumber();
+            }
+
+        } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
+
+        return 0;
+    }
+
+//    public void loadPicksFromFile(File file) throws IOException {
+//        this.picks = new ArrayList<>();
+//
+//        BufferedReader csvReader = new BufferedReader(new FileReader(file));
+//        String row = "";
+//        while ((row = csvReader.readLine()) != null) {
+//            String[] data = row.split(";");
+//            this.picks.add(Integer.parseInt(data[1]));
+//        }
+//        csvReader.close();
+//
+//        createPicksGraph();
+//    }
+
+//    private void createPicksGraph() {
+//        this.picksGraph = new HashMap<>();
+//
+//        for (int i = 1; i <= this.graphSize; i++) {
+//            List<Node> successors = new LinkedList<>();
+//            this.picksGraph.put(i, successors);
+//
+//            for (Node node : this.originalGraph.get(i)) {
+//                successors.add(new Node(node));
+//            }
+//        }
+//
+//
+//        for (int i = 1; i <= this.graphSize ; i++) {
+//            if (this.nodes.get(i).getType().equals("D")) {
+//                continue;
+//            }
+//
+//            if (this.picks.contains(i)) {
+//                continue;
+//            }
+//
+//            if (i == this.offloadArea) {
+//                continue;
+//            }
+//
+//            List<Node> successors = this.picksGraph.get(i);
+//            for (Node node : successors) {
+//                List<Node> nodeSuccessors = this.picksGraph.get(node.getNodeNumber());
+//                double cost = node.getCostFromAdjacentNode();
+//                int finalI = i;
+//                nodeSuccessors.removeIf(n -> n.getNodeNumber() == finalI);
+//
+//                for (Node n : successors) {
+//                    if (n.getNodeNumber() != node.getNodeNumber()) {
+//                        Node nodeToAdd = new Node(n);
+//                        nodeToAdd.addCost(cost);
+//                        nodeSuccessors.add(nodeToAdd);
+//                    }
+//                }
+//            }
+//
+//            this.picksGraph.remove(i);
+//        }
+//
+//        for (int i = 1; i < this.graphSize + 1; i++) {
+//            System.out.println(i + "->" + this.picksGraph.get(i));
+//        }
+//        System.out.println("----------------------------------------------------");
+//
+//        fireCreateSimulation();
+//    }
 
     public void executeSolution() throws InterruptedException {
         int[] genome = bestInRun.getGenome();

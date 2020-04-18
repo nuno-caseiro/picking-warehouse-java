@@ -4,6 +4,8 @@ package ipleiria.estg.dei.ei.model.search;
 import ipleiria.estg.dei.ei.utils.Properties;
 import ipleiria.estg.dei.ei.utils.PropertiesNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // Note: this class has a natural ordering that is inconsistent with equals.
@@ -18,12 +20,14 @@ public class Node implements Comparable<Node> {
     private int nodeNumber;
     private String type;
     private double time;
+    private List<Integer> edges;
 
-    public Node(int line, int column, int nodeNumber, String type) {
+    public Node(int nodeNumber, int line, int column, String type) {
+        this.nodeNumber = nodeNumber;
         this.line = line;
         this.column = column;
-        this.nodeNumber = nodeNumber;
         this.type = type;
+        this.edges = new ArrayList<>();
     }
 
     public Node(int line, int column, int nodeNumber) {
@@ -47,6 +51,7 @@ public class Node implements Comparable<Node> {
         this.column = node.column;
         this.g = node.g;
         this.time = 0;
+        this.edges = node.edges;
     }
 
     public Node(Node parent, double f, double g, int line, int column, int nodeNumber) {
@@ -56,6 +61,20 @@ public class Node implements Comparable<Node> {
         this.line = line;
         this.column = column;
         this.nodeNumber = nodeNumber;
+    }
+
+    public void addEdge(int edge) {
+        if (!this.edges.contains(edge)) {
+            this.edges.add(edge);
+        }
+    }
+
+    public boolean belongsToEdge(int edge) {
+        return this.edges.contains(edge);
+    }
+
+    public void setEdges(List<Integer> edges) {
+        this.edges = edges;
     }
 
     public Node getParent() {
@@ -104,6 +123,10 @@ public class Node implements Comparable<Node> {
 
     public void setTime(double time) {
         this.time = this.g + time;
+    }
+
+    public void setCostFromAdjacentNode(double costFromAdjacentNode) {
+        this.costFromAdjacentNode = costFromAdjacentNode;
     }
 
     public void addCost(double cost) {
