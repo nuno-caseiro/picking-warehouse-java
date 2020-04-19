@@ -51,6 +51,10 @@ public class AStar {
             node = node.getParent();
         }
 
+        if (solution.size() == 1) { // WHEN INITIAL NODE AND GOAL NODE ARE THE SAME
+            return solution;
+        }
+
         this.environment.addToPairsMap(solution);
         return solution;
     }

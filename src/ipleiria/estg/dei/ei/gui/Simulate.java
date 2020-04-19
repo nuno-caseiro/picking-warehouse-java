@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Simulate extends JLayeredPane {
 
-    private List<Location> agents;
-    private List<Location> originalPicks;
+    private List<Node> agents;
+    private List<Node> originalPicks;
     private List<Location> picks;
     private int nodeSize;
     private int nodePadding;
@@ -32,23 +32,23 @@ public class Simulate extends JLayeredPane {
     public void initializePicks() {
         this.picks.clear();
 
-        for (Location pick : this.originalPicks) {
-            this.picks.add(new Location(pick.getLine(), pick.getColumn()));
+        for (Node pick : this.originalPicks) {
+            this.picks.add(new Location(pick.getLine(), pick.getColumn(), pick.getLocation()));
         }
 
         this.agents = Environment.getInstance().getAgentNodes();
     }
 
     public void updateAgentLocations(List<Location> agents) {
-        for (Location pick : this.originalPicks) {
-            for (Location agent : this.agents) {
-                if (pick.equals(agent)) {
-                    this.picks.remove(pick);
-                }
-            }
-        }
-
-        this.agents = agents;
+//        for (Node pick : this.originalPicks) {
+//            for (Node agent : this.agents) {
+//                if (pick.equals(agent)) {
+//                    this.picks.remove(pick);
+//                }
+//            }
+//        }
+//
+//        this.agents = agents;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Simulate extends JLayeredPane {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         FontMetrics f = g.getFontMetrics();
 
-        Location location;
+        Node location;
         for (int i = 0; i < this.agents.size(); i++) {
             location = this.agents.get(i);
 
@@ -74,10 +74,10 @@ public class Simulate extends JLayeredPane {
 
         for (Location l : this.picks) {
             g2d.setColor(Color.green);
-            g2d.fillRect(((l.getColumn() + 1) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
+            g2d.fillRect(((l.getColumn() + (l.getColumnOffset())) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
 
             g2d.setColor(Color.black);
-            g2d.drawRect(((l.getColumn() + 1) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
+            g2d.drawRect(((l.getColumn() + (l.getColumnOffset())) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
         }
     }
 }

@@ -20,6 +20,7 @@ public class Node implements Comparable<Node> {
     private int nodeNumber;
     private String type;
     private double time;
+    private int location; // -1 if shelf is on the left of column or 1 if shelf is on the right of column
     private List<Integer> edges;
 
     public Node(int nodeNumber, int line, int column, String type) {
@@ -87,6 +88,14 @@ public class Node implements Comparable<Node> {
 
     public double getG() {
         return g;
+    }
+
+    public int getLocation() {
+        return location;
+    }
+
+    public void setLocation(int location) {
+        this.location = location;
     }
 
     public void setG(double g) {

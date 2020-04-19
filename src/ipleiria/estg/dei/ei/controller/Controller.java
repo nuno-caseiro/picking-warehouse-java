@@ -163,13 +163,14 @@ public class Controller {
     }
 
     private void loadPicks(){
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/picks/Picks.json"));
         int returnVal = fc.showOpenDialog(view);
         try {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSetPick = fc.getSelectedFile();
-//                Environment.getInstance().loadPicksFromFile(dataSetPick);
+                Environment.getInstance().loadPicksFromFile(dataSetPick);
+
                 view.manageButtons(true,true,true,true,false,false);
             }
 

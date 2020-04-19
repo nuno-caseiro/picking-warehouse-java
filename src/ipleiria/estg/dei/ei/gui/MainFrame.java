@@ -41,7 +41,7 @@ public class MainFrame extends JFrame implements GAListener {
     public void jbInit() throws Exception{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("PICKING");
-        this.setPreferredSize(new Dimension(1024, 768));
+        this.setPreferredSize(new Dimension(1024, 820));
 
         gaPanel = new GeneticAlgorithmPanel(this);
         problemData = new PanelProblemData();

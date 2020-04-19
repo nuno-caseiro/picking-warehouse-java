@@ -9,10 +9,10 @@ import java.util.List;
 
 public class PanelSimulation extends JLayeredPane implements EnvironmentListener {
 
-    public static final int PANEL_HEIGHT = 650;
+    public static final int PANEL_HEIGHT = 900;
     public static final int PANEL_WIDTH = 400;
-    public static final int NODE_SIZE = 30;
-    public static final int NODE_PADDING = 14;
+    public static final int NODE_SIZE = 18;
+    public static final int NODE_PADDING = 4;
     private WarehouseLayout warehouseLayout;
     private Simulate simulate;
 

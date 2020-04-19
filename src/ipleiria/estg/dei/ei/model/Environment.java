@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.AgentPath;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
 
@@ -23,8 +24,8 @@ public class Environment {
     private HashMap<Integer, List<Node>> picksGraph;
     private HashMap<Integer, Node> nodes;
     private List<Node> decisionNodes;
-    private List<Integer> picks;
-    private List<Integer> agents;
+    private List<Node> picks;
+    private List<Node> agents;
     private int offloadArea;
     private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
@@ -112,14 +113,14 @@ public class Environment {
             JsonArray jsonAgents = jsonObject.getAsJsonArray("agents");
 
             JsonObject jsonAgent;
-            int nodeNumber;
+            Node newNode;
             for (JsonElement elementAgent : jsonAgents) {
                 jsonAgent = elementAgent.getAsJsonObject();
 
-                nodeNumber = addNodeToGraph(this.warehouseGraph, jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt());
+                newNode = addNodeToGraph(this.warehouseGraph, jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt());
 
-                if (nodeNumber != 0) {
-                    this.agents.add(nodeNumber);
+                if (newNode != null) {
+                    this.agents.add(newNode);
                 }
             }
 
@@ -133,29 +134,71 @@ public class Environment {
         fireCreateEnvironment();
     }
 
-    // RETURNS THE NUMBER OF THE NODE ADDED TO THE GRAPH  OR 0 IF UNSUCCESSFUL // TODO COULD THROW EXCEPTION INSTEAD OF RETURNING 0
-    private int addNodeToGraph(HashMap<Integer, List<Node>> graph, int edgeNumber, int line, int column) {
+    public void loadPicksFromFile(File file) {
+        this.picks = new ArrayList<>();
+        this.picksGraph = new HashMap<>();
+
+        // COPY WAREHOUSE GRAPH TO PICKS GRAPH
+        List<Node> successors;
+        for (int i = 1; i <= this.graphSize; i++) {
+            successors = new LinkedList<>();
+            this.picksGraph.put(i, successors);
+
+            for (Node node : this.warehouseGraph.get(i)) {
+                successors.add(new Node(node));
+            }
+        }
+
+        try {
+            JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
+
+            // IMPORT PICKS
+            JsonArray jsonPicks = jsonObject.getAsJsonArray("picks");
+
+            JsonObject jsonPick;
+            Node newNode;
+            for (JsonElement elementNode : jsonPicks) {
+                jsonPick = elementNode.getAsJsonObject();
+
+                newNode = addNodeToGraph(this.picksGraph, jsonPick.get("edgeNumber").getAsInt(), jsonPick.get("line").getAsInt(), jsonPick.get("column").getAsInt());
+
+                if (newNode != null) {
+                    newNode.setLocation(jsonPick.get("location").getAsInt());
+                    this.picks.add(newNode);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        fireCreateSimulation();
+    }
+
+    // RETURNS NODE ADDED TO THE GRAPH OR NULL IF UNSUCCESSFUL // TODO COULD THROW EXCEPTION INSTEAD OF RETURNING 0
+    private Node addNodeToGraph(HashMap<Integer, List<Node>> graph, int edgeNumber, int line, int column) {
         Node edgeNode1 = this.edges.get(edgeNumber - 1).getNode1();
         Node edgeNode2 = this.edges.get(edgeNumber - 1).getNode2();
 
         if (edgeNode1.getLine() == line) {
-            return edgeNode1.getNodeNumber();
+            return edgeNode1;
         }
 
         Node previousNode;
         Node nextNode = edgeNode1;
+        int previousNodeNumber = -1;
         do {
             previousNode = nextNode;
             nextNode = null;
             for (Node n : graph.get(previousNode.getNodeNumber())) {
-                if (n.belongsToEdge(edgeNumber)) {
+                if (n.belongsToEdge(edgeNumber) && n.getNodeNumber() != previousNodeNumber) {
                     nextNode = n;
                     break;
                 }
             }
 
             if (nextNode == null) {
-                return 0;
+                return null;
             }
 
             if ((line - previousNode.getLine()) * (line - nextNode.getLine()) < 0) {
@@ -194,196 +237,32 @@ public class Environment {
                 this.edgesMap.put(previousNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(previousNode.getNodeNumber()), newNode, Math.abs(previousNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
                 this.edgesMap.put(nextNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(nextNode.getNodeNumber()), newNode, Math.abs(nextNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
 
-                return newNode.getNodeNumber();
+                return newNode;
             }
 
             if (line == nextNode.getLine()) {
-                return nextNode.getNodeNumber();
+                return nextNode;
             }
+
+            previousNodeNumber = previousNode.getNodeNumber();
 
         } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
 
-        return 0;
+        return null;
     }
 
-//    public void loadPicksFromFile(File file) throws IOException {
-//        this.picks = new ArrayList<>();
-//
-//        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-//        String row = "";
-//        while ((row = csvReader.readLine()) != null) {
-//            String[] data = row.split(";");
-//            this.picks.add(Integer.parseInt(data[1]));
-//        }
-//        csvReader.close();
-//
-//        createPicksGraph();
-//    }
-
-//    private void createPicksGraph() {
-//        this.picksGraph = new HashMap<>();
-//
-//        for (int i = 1; i <= this.graphSize; i++) {
-//            List<Node> successors = new LinkedList<>();
-//            this.picksGraph.put(i, successors);
-//
-//            for (Node node : this.originalGraph.get(i)) {
-//                successors.add(new Node(node));
-//            }
-//        }
-//
-//
-//        for (int i = 1; i <= this.graphSize ; i++) {
-//            if (this.nodes.get(i).getType().equals("D")) {
-//                continue;
-//            }
-//
-//            if (this.picks.contains(i)) {
-//                continue;
-//            }
-//
-//            if (i == this.offloadArea) {
-//                continue;
-//            }
-//
-//            List<Node> successors = this.picksGraph.get(i);
-//            for (Node node : successors) {
-//                List<Node> nodeSuccessors = this.picksGraph.get(node.getNodeNumber());
-//                double cost = node.getCostFromAdjacentNode();
-//                int finalI = i;
-//                nodeSuccessors.removeIf(n -> n.getNodeNumber() == finalI);
-//
-//                for (Node n : successors) {
-//                    if (n.getNodeNumber() != node.getNodeNumber()) {
-//                        Node nodeToAdd = new Node(n);
-//                        nodeToAdd.addCost(cost);
-//                        nodeSuccessors.add(nodeToAdd);
-//                    }
-//                }
-//            }
-//
-//            this.picksGraph.remove(i);
-//        }
-//
-//        for (int i = 1; i < this.graphSize + 1; i++) {
-//            System.out.println(i + "->" + this.picksGraph.get(i));
-//        }
-//        System.out.println("----------------------------------------------------");
-//
-//        fireCreateSimulation();
-//    }
-
     public void executeSolution() throws InterruptedException {
-        int[] genome = bestInRun.getGenome();
-        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
-        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
-
-        int numIterations = 0;
-        for (List<Location> l : solutionLocations) {
-            if (l.size() > numIterations) {
-                numIterations = l.size();
-            }
-        }
+        List<AgentPath> individualPaths = this.bestInRun.getIndividualPaths();
 
         fireCreateSimulationPicks();
 
-        Node offloadNode = this.nodes.get(offloadArea);
-        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
         List<Location> iterationAgentsLocations;
-        for (int i = 0; i < numIterations; i++) {
-            iterationAgentsLocations = new LinkedList<>();
-            for (List<Location> l : solutionLocations) {
-                if (i < l.size()) {
-                    iterationAgentsLocations.add(l.get(i));
-                } else {
-                    iterationAgentsLocations.add(offloadLocation);
-                }
+        for (int i = 0; i < this.bestInRun.getFitness(); i++) {
+            for (AgentPath agentPath : individualPaths) {
+
             }
-            Thread.sleep(500);
-            fireUpdateEnvironment(iterationAgentsLocations);
+            Thread.sleep(200);
         }
-    }
-
-    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
-        List<List<Location>> solutionLocations = new ArrayList<>();
-        List<Location> agentLocations = new ArrayList<>();
-
-        Node n1;
-        Node n2;
-        int action;
-        int line;
-        int column;
-        for (List<Node> l : agentsPathNodes) {
-            for (int i = 0; i < l.size() - 1; i++) {
-                n1 = this.nodes.get(l.get(i).getNodeNumber());
-                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
-                line = n1.getLine();
-                column = n1.getColumn();
-
-
-                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
-                    action = 1;
-                } else {
-                    action = -1;
-                }
-
-                if (n1.getLine() == n2.getLine()) {
-
-                    do {
-                        column += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (column != n2.getColumn());
-
-                } else {
-
-                    do {
-                        line += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (line != n2.getLine());
-
-                }
-            }
-            solutionLocations.add(agentLocations);
-            agentLocations = new ArrayList<>();
-        }
-
-        return solutionLocations;
-    }
-
-    private List<List<Node>> separateGenomeByAgents(int[] genome) {
-        List<List<Node>> agents = new ArrayList<>();
-        List<Node> agentPicks = new ArrayList<>();
-        int agent = 0;
-
-        List<List<Node>> agentsPaths = new ArrayList<>();
-        List<Node> agentPath = new ArrayList<>();
-
-        agentPicks.add(this.nodes.get(this.agents.get(agent)));
-        for (int value : genome) {
-            if (value < 0) {
-                agentPicks.add(this.nodes.get(this.offloadArea));
-                agents.add(agentPicks);
-                agentPicks = new ArrayList<>();
-                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
-                continue;
-            }
-            agentPicks.add(this.nodes.get(picks.get(value - 1)));
-        }
-        agentPicks.add(this.nodes.get(this.offloadArea));
-        agents.add(agentPicks);
-
-        agent = 0;
-
-        for (List<Node> l : agents) {
-            agentPath.add(this.nodes.get(this.agents.get(agent++)));
-            for (int i = 0; i < l.size() - 1; i++) {
-                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()));
-            }
-            agentsPaths.add(agentPath);
-            agentPath = new ArrayList<>();
-        }
-
-        return agentsPaths;
     }
 
     public int getTimeWeight() {
@@ -402,28 +281,28 @@ public class Environment {
         this.collisionsWeight = collisionsWeight;
     }
 
-    public List<Integer> getPicks() {
+    public List<Node> getPicks() {
         return picks;
     }
 
-    public List<Location> getPickNodes() {
-        List<Location> picks = new LinkedList<>();
-        for (int i : this.picks) {
-            Node node = this.nodes.get(i);
-            picks.add(new Location(node.getLine(), node.getColumn()));
-        }
-
-        return picks;
+    public List<Node> getPickNodes() {
+//        List<Location> picks = new LinkedList<>();
+//        for (Node node : this.picks) {
+//            picks.add(new Location(node.getLine(), node.getColumn()));
+//        }
+//
+//        return picks;
+        return this.picks;
     }
 
-    public List<Location> getAgentNodes() {
-        List<Location> agents = new ArrayList<>();
-        for (int i : this.agents) {
-            Node node = this.nodes.get(i);
-            agents.add(new Location(node.getLine(), node.getColumn()));
-        }
-
-        return agents;
+    public List<Node> getAgentNodes() {
+//        List<Location> agents = new ArrayList<>();
+//        for (Node node : this.agents) {
+//            agents.add(new Location(node.getLine(), node.getColumn()));
+//        }
+//
+//        return agents;
+        return this.agents;
     }
 
     public Node getNode(int i) {
@@ -480,6 +359,13 @@ public class Environment {
         invPath.remove(0);
     }
 
+    public int getEdgeDirection(int node1, int node2) {
+        if (this.edgesMap.containsKey(node1 + "-" + node2)) {
+            return this.edgesMap.get(node1 + "-" + node2).getDirection();
+        }
+        return this.edgesMap.get(node2 + "-" + node1).getDirection();
+    }
+
     private List<Node> createInversePath(List<Node> path) {
         List<Node> invPath = new ArrayList<>();
         path.forEach((node) -> invPath.add(new Node(node)));
@@ -498,8 +384,8 @@ public class Environment {
         return this.pairsMap.get(firstNode.getNodeNumber() + "-" + secondNode.getNodeNumber());
     }
 
-    public List<Integer> getAgents() {
-        return agents;
+    public List<Node> getAgents() {
+        return this.agents;
     }
 
     public int getOffloadArea() {
