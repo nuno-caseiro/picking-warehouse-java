@@ -11,7 +11,7 @@ public class PanelTextArea extends JPanel {
         textArea = new JTextArea(rows,columns);
         setLayout(new BorderLayout());
         JLabel jLabel = new JLabel(title);
-        jLabel.setBorder(new EmptyBorder(10,10,10,0));//top,left,bottom,right
+        jLabel.setBorder(new EmptyBorder(0,10,10,0));//top,left,bottom,right
         add(jLabel,BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setEditable(false);

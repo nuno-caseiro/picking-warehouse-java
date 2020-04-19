@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.controller;
 
+import ipleiria.estg.dei.ei.model.experiments.Experiment;
 import ipleiria.estg.dei.ei.gui.MainFrame;
 import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
@@ -7,6 +8,7 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 
@@ -24,28 +26,30 @@ public class Controller {
         view.getMenuBarHorizontal().getMenuItemImportPicks().addActionListener(e -> loadPicks());
         view.getMenuBarHorizontal().getExit().addActionListener(e->closeApplication());
 
-//        view.getMenuBarHorizontal().getMenuItemRunSearch().addActionListener(e -> search());
         view.getMenuBarHorizontal().getMenuItemRunGA().addActionListener(e -> runGA());
         view.getMenuBarHorizontal().getMenuItemStopGA().addActionListener(e -> stop());
         view.getMenuBarHorizontal().getMenuItemRunSimulate().addActionListener(e -> simulate());
 
-        view.getToolBarHorizontal().getLoadLayout().addActionListener(e-> loadWarehouseLayout());
         view.getToolBarHorizontal().getLoadPicks().addActionListener(e-> loadPicks());
-//        view.getToolBarHorizontal().getaStarRun().addActionListener(e-> search());
         view.getToolBarHorizontal().getGaRun().addActionListener(e-> runGA());
         view.getToolBarHorizontal().getStopGaRun().addActionListener(e-> stop());
         view.getToolBarHorizontal().getSimulateRun().addActionListener(e-> simulate());
 
-        view.getMenuBarHorizontal().getMenuItemSearchPanel().addActionListener(e->showProblemData());
         view.getMenuBarHorizontal().getMenuItemGAPanel().addActionListener(e->showGaPanel());
         view.getMenuBarHorizontal().getMenuItemSimulationPanel().addActionListener(e->showSimulatePanel());
 
-//        view.getToolBarVertical().getProblemData().addActionListener(e->showProblemData());
         view.getToolBarVertical().getGa().addActionListener(e->showGaPanel());
         view.getToolBarVertical().getSimulate().addActionListener(e->showSimulatePanel());
         view.getToolBarVertical().getGaHistory().addActionListener(e->showGaHistory());
+        view.getToolBarVertical().getExperiments().addActionListener(e->showExperimentPanel());
 
         view.getMenuBarHorizontal().getMenuItemWelcome().addActionListener(e->showMainPage());
+
+        view.getExperimentsPanel().getRun().addActionListener(e-> runExperiments());
+    }
+
+    private void showExperimentPanel() {
+        view.showPanel(1);
     }
 
     private void showGaHistory() {
@@ -58,10 +62,6 @@ public class Controller {
 
     private void showGaPanel() {
         view.showPanel(2);
-    }
-
-    private void showProblemData() {
-        view.showPanel(1);
     }
 
     private void showMainPage() {
@@ -99,6 +99,10 @@ public class Controller {
         view.setBestIndividualPanelText("");
         view.getGaPanel().getSeriesBestIndividual().clear();
         view.getGaPanel().getSeriesAverage().clear();
+
+        if(!view.isGaPanelShow()){
+            showGaPanel();
+        }
 
         view.manageButtons(true,false,true,true,true,false);
         Random random = new Random(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldSeed().getText()));
@@ -177,6 +181,39 @@ public class Controller {
         } catch (java.util.NoSuchElementException e2) {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void runExperiments() {
+
+        worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try{
+
+                Experiment experiment = new Experiment();
+                experiment.readParametersValues(view.getExperimentsPanel().getExperimentParameters());
+                while (experiment.hasMoreExperiments()){
+                    experiment.run();
+                    experiment.indicesManaging(experiment.getParameters().keySet().size() - 1);
+                }
+                view.manageButtons(false,false,false,false,false,false);
+                }catch (Exception e){
+                    e.printStackTrace(System.err);
+                }
+
+            return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                view.manageButtons(true,true,false,true,false,true);
+            }
+        };
+
+        worker.execute();
+
+
     }
 
     private void closeApplication(){

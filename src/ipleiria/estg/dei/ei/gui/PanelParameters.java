@@ -56,52 +56,59 @@ public class PanelParameters extends PanelAtributesValue {
         labels.add(new JLabel("Seed: "));
         valueComponents.add(textFieldSeed);
         textFieldSeed.addKeyListener(new IntegerTextField_KeyAdapter(null));
+        //textFieldSeed.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Population size: "));
         valueComponents.add(textFieldN);
         textFieldN.addKeyListener(new IntegerTextField_KeyAdapter(null));
+        //textFieldN.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("# of generations: "));
         valueComponents.add(textFieldGenerations);
         textFieldGenerations.addKeyListener(new IntegerTextField_KeyAdapter(null));
+        //textFieldGenerations.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Selection method: "));
         valueComponents.add(comboBoxSelectionMethods);
         comboBoxSelectionMethods.addActionListener(new JComboBoxSelectionMethods_ActionAdapter(this));
+        //((JLabel)comboBoxSelectionMethods.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 
         labels.add(new JLabel("Tournament size: "));
         valueComponents.add(textFieldTournamentSize);
         textFieldTournamentSize.addKeyListener(new IntegerTextField_KeyAdapter(null));
+        //textFieldTournamentSize.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Selective pressure: "));
         valueComponents.add(textFieldSelectivePressure);
         textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
+        //textFieldSelectivePressure.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Recombination method: "));
         valueComponents.add(comboBoxRecombinationMethods);
+        //((JLabel)comboBoxRecombinationMethods.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 
         labels.add(new JLabel("Recombination prob.: "));
         valueComponents.add(textFieldProbRecombination);
+        //textFieldProbRecombination.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Mutation method: "));
         valueComponents.add(comboBoxMutationMethods);
+        //((JLabel)comboBoxMutationMethods.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
+
 
         labels.add(new JLabel("Mutation prob.: "));
         valueComponents.add(textFieldProbMutation);
+        //textFieldProbMutation.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Time Weight: "));
         valueComponents.add(textFieldTimeWeight);
         textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
+        //textFieldTimeWeight.setHorizontalAlignment(JTextField.RIGHT);
 
         labels.add(new JLabel("Collisions Weight: "));
         valueComponents.add(textFieldCollisionsWeight);
         textFieldSelectivePressure.addKeyListener(new RankTextField_KeyAdapter(null));
-
-        setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(""),
-                BorderFactory.createEmptyBorder(1,1,1,1)
-        ));
-
+        //textFieldCollisionsWeight.setHorizontalAlignment(JTextField.RIGHT);
 
         textFieldTournamentSize.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 0);
         textFieldSelectivePressure.setEnabled(comboBoxSelectionMethods.getSelectedIndex() == 1);
