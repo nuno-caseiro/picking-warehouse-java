@@ -192,6 +192,9 @@ public class Controller {
 
                 Experiment experiment = new Experiment();
                 experiment.readParametersValues(view.getExperimentsPanel().getExperimentParameters());
+                view.getExperimentsPanel().getExperimentsProgressBar().setMaximum(experiment.getCountAllRuns());
+                experiment.setExperimentsPanel(view.getExperimentsPanel());
+                view.getExperimentsPanel().setAtualValueProgressBar(0);
                 while (experiment.hasMoreExperiments()){
                     experiment.run();
                     experiment.indicesManaging(experiment.getParameters().keySet().size() - 1);

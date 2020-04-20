@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +19,8 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
     private JButton remove;
     private JButton ok;
     private JButton cancel;
-    private int panelId;
+
+    private JLabel errors;
 
     private DefaultListModel atualParametersModel;
     private JList atualParametersList;
@@ -44,7 +44,6 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
     public ExperimentsEditParametersPanel(int panelId, List<String> actualParameters, HashMap<String,List<String>> availableParameters, ExperimentParametersPanel experimentsPanel) {
         setLayout(new BorderLayout());
 
-        setSize(new Dimension(200,200));
         init();
 
         this.availableParameters=availableParameters;
@@ -53,7 +52,7 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
             atualParametersModel.addElement(actualParameter);
         }
 
-        this.panelId=panelId;
+        errors= new JLabel("");
         switch (panelId){
             case 1:
                 break;
@@ -173,6 +172,7 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
         this.southPanel.add(ok,BorderLayout.WEST);
         this.southPanel.add(cancel,BorderLayout.EAST);
         this.add(southPanel,BorderLayout.SOUTH);
+
     }
 
     private void init(){
@@ -188,6 +188,7 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
 
         jScrollPaneOfAtualParam = new JScrollPane(atualParametersList);
         jScrollPaneOfAvailableParam = new JScrollPane(availableParametersList);
+        //jScrollPaneOfAtualParam.setPreferredSize(new Dimension(70,100));
 
         centerPanel = new JPanel(new BorderLayout());
         southPanel = new JPanel(new BorderLayout());
@@ -231,7 +232,7 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
 
         actualComponent =component;
     }
-    
+
     @Override
     protected void firePopupMenuWillBecomeInvisible() {
         experimentParametersPanel.reverseEditing();

@@ -77,6 +77,7 @@ public class MainFrame extends JFrame implements GAListener {
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=false;
                 break; 
             case 1:
                 this.mainPageShow=false;
@@ -90,18 +91,21 @@ public class MainFrame extends JFrame implements GAListener {
                 this.gaPanelShow=show;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=false;
                 break;
             case 3:
                 this.mainPageShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=show;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=false;
                 break;
             case 4:
                 this.mainPageShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=show;
+                this.experimentsPanelShow=false;
                 break;
             default:
                 show= false;

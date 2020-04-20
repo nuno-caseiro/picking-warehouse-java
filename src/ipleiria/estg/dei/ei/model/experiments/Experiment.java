@@ -1,8 +1,10 @@
 package ipleiria.estg.dei.ei.model.experiments;
 
 import ipleiria.estg.dei.ei.gui.ExperimentParametersPanel;
+import ipleiria.estg.dei.ei.gui.ExperimentsPanel;
 import ipleiria.estg.dei.ei.gui.PanelParameters;
 import ipleiria.estg.dei.ei.model.Environment;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.*;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.RankBased;
@@ -16,16 +18,19 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 
-public class Experiment {
+public class Experiment implements GAListener {
 
     private int seed;
     private int runs;
     private HashMap<String, Parameter> parameters;
     private GeneticAlgorithm geneticAlgorithm;
     private double[] allRunsFitness;
+    private int countAllRuns;
+    private ExperimentsPanel experimentsPanel;
 
     public Experiment() throws FileNotFoundException {
         this.parameters= new LinkedHashMap<>();
+        this.countAllRuns=1;
     }
 
     public void readParameterFile() throws FileNotFoundException {
@@ -69,7 +74,10 @@ public class Experiment {
 
         runs = Integer.parseInt(getParameterValue("Runs"));
         allRunsFitness= new double[runs];
+
+        countAllRuns=countAllRuns*runs;
     }
+
 
     public void addParameter(String keyName,List<String> listToAdd){
         String[] values= new String[listToAdd.size()];
@@ -78,6 +86,7 @@ public class Experiment {
         }
         Parameter parameter= new Parameter(keyName,values);
         parameters.put(keyName,parameter);
+        countAllRuns*=listToAdd.size();
     }
 
     public void indicesManaging(int i){
@@ -177,6 +186,8 @@ public class Experiment {
 
         for (int i = 0; i < runs; i++) {
             geneticAlgorithm = buildRun();
+            geneticAlgorithm.addGAListener(this);
+            geneticAlgorithm.addGAListener(experimentsPanel);
             geneticAlgorithm.run();
             runEnded(i);
             System.out.println("Done "+geneticAlgorithm.getAverageFitness());
@@ -240,5 +251,24 @@ public class Experiment {
         sb.append(Environment.getInstance().getTimeWeight() + "\t");
         sb.append(Environment.getInstance().getCollisionsWeight() + "\t");
         return sb.toString();
+    }
+
+    public int getCountAllRuns() {
+        return countAllRuns;
+    }
+
+    @Override
+    public void generationEnded(GeneticAlgorithm e) {
+
+    }
+
+    @Override
+    public void runEnded(GeneticAlgorithm e) {
+
+    }
+
+    public void setExperimentsPanel(ExperimentsPanel experimentsPanel) {
+        this.experimentsPanel=experimentsPanel;
+
     }
 }
