@@ -1,0 +1,200 @@
+{
+    "nodes": [
+        {
+            "line": 0,
+            "nodeNumber": 1,
+            "column": 1,
+            "successors": [
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 2
+                },
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 3
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 8,
+            "nodeNumber": 2,
+            "column": 1,
+            "successors": [
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 1
+                },
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 4
+                },
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 6
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 0,
+            "nodeNumber": 3,
+            "column": 4,
+            "successors": [
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 1
+                },
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 4
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 8,
+            "nodeNumber": 4,
+            "column": 4,
+            "successors": [
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 3
+                },
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 7
+                },
+                {
+                    "distance": 1.0,
+                    "nodeNumber": 5
+                },
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 2
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 8,
+            "nodeNumber": 5,
+            "column": 5,
+            "successors": [
+                {
+                    "distance": 1.0,
+                    "nodeNumber": 4
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 16,
+            "nodeNumber": 6,
+            "column": 1,
+            "successors": [
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 2
+                },
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 7
+                }
+            ],
+            "type": "D"
+        },
+        {
+            "line": 16,
+            "nodeNumber": 7,
+            "column": 4,
+            "successors": [
+                {
+                    "distance": 8.0,
+                    "nodeNumber": 4
+                },
+                {
+                    "distance": 3.0,
+                    "nodeNumber": 6
+                }
+            ],
+            "type": "D"
+        }
+    ],
+    "edges": [
+        {
+            "distance": 3,
+            "node1Number": 1,
+            "edgeNumber": 1,
+            "node2Number": 3,
+            "direction": 1
+        },
+        {
+            "distance": 8,
+            "node1Number": 1,
+            "edgeNumber": 2,
+            "node2Number": 2,
+            "direction": 1
+        },
+        {
+            "distance": 3,
+            "node1Number": 2,
+            "edgeNumber": 3,
+            "node2Number": 4,
+            "direction": 1
+        },
+        {
+            "distance": 8,
+            "node1Number": 2,
+            "edgeNumber": 4,
+            "node2Number": 6,
+            "direction": 1
+        },
+        {
+            "distance": 3,
+            "node1Number": 6,
+            "edgeNumber": 5,
+            "node2Number": 7,
+            "direction": 1
+        },
+        {
+            "distance": 8,
+            "node1Number": 3,
+            "edgeNumber": 6,
+            "node2Number": 4,
+            "direction": 1
+        },
+        {
+            "distance": 1,
+            "node1Number": 4,
+            "edgeNumber": 7,
+            "node2Number": 5,
+            "direction": 1
+        },
+        {
+            "distance": 8,
+            "node1Number": 4,
+            "edgeNumber": 8,
+            "node2Number": 7,
+            "direction": 1
+        }
+    ],
+    "agents": [
+        {
+            "line": 2,
+            "column": 1,
+            "edgeNumber": 2
+        },
+        {
+            "line": 13,
+            "column": 1,
+            "edgeNumber": 4
+        },
+        {
+            "line": 12,
+            "column": 4,
+            "edgeNumber": 8
+        }
+    ],
+    "offloadArea": 5
+}

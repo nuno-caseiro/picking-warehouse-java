@@ -73,14 +73,28 @@ public class WarehouseLayout extends JLayeredPane {
 
     private void drawShelf(Node n, Edge edge, Graphics2D g2d) {
 
-        if ((n.getColumn() * this.cellSize) < (this.maxColumn * this.cellSize) && (n.getLine() * this.cellSize) < (this.maxLine * this.cellSize)) {
-            for (int i = 1; i < edge.getDistanceOfNodes(); i++) {
-                g2d.setColor(Color.gray);
-                g2d.fillRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)) , (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+//        if ((n.getColumn() * this.cellSize) < (this.maxColumn * this.cellSize) && (n.getLine() * this.cellSize) < (this.maxLine * this.cellSize)) {
+//            for (int i = 1; i < edge.getDistanceOfNodes(); i++) {
+//                g2d.setColor(Color.gray);
+//                g2d.fillRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)) , (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+//
+//                g2d.setColor(Color.black);
+//                g2d.drawRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)) , (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+//            }
+//        }
 
-                g2d.setColor(Color.black);
-                g2d.drawRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)) , (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
-            }
+        for (int i = 1; i < edge.getDistanceOfNodes(); i++) {
+            g2d.setColor(Color.gray);
+            g2d.fillRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)), (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+
+            g2d.setColor(Color.black);
+            g2d.drawRect((n.getColumn() * this.cellSize) + (this.nodeSize + (this.nodePadding / 2)), (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+
+            g2d.setColor(Color.gray);
+            g2d.fillRect((n.getColumn() * this.cellSize) - (this.nodePadding/2) - (this.nodeSize + (this.nodePadding )), (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
+
+            g2d.setColor(Color.black);
+            g2d.drawRect((n.getColumn() * this.cellSize) - (this.nodePadding/2) - (this.nodeSize + (this.nodePadding )), (n.getLine() * this.cellSize) + ((this.cellSize * i) - (this.nodePadding / 2)), this.cellSize, this.cellSize);
         }
     }
 }

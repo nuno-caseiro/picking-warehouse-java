@@ -13,10 +13,12 @@ import java.util.Random;
 public class Controller {
 
     private MainFrame view;
+    private Environment environment;
     private SwingWorker<Void, Void> worker;
 
     public Controller(MainFrame view) {
         this.view = view;
+        this.environment = Environment.getInstance();
     }
 
     public void initController() {
@@ -143,38 +145,36 @@ public class Controller {
     }
 
     private void loadWarehouseLayout() {
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets"));
-        int returnVal = fc.showOpenDialog(view);
-        Environment.getInstance().addEnvironmentListener(view.getSimulationPanel());
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/warehouseLayout/WarehouseLayout_2.json"));
+        int returnVal = fc.showOpenDialog(this.view);
+        this.environment.addEnvironmentListener(this.view.getSimulationPanel());
 
         try {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
+
                 view.manageButtons(true,true,false,false,false,false);
             }
 
-        } catch (IOException e1) {
-            e1.printStackTrace(System.err);
-        } catch (java.util.NoSuchElementException e2) {
+        } catch (java.util.NoSuchElementException e) {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void loadPicks(){
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/picks/Picks_2.json"));
         int returnVal = fc.showOpenDialog(view);
         try {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSetPick = fc.getSelectedFile();
                 Environment.getInstance().loadPicksFromFile(dataSetPick);
+
                 view.manageButtons(true,true,true,true,false,false);
             }
 
-        }catch (IOException e1) {
-            e1.printStackTrace(System.err);
-        } catch (java.util.NoSuchElementException e2) {
+        } catch (java.util.NoSuchElementException e) {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }

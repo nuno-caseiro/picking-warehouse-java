@@ -23,7 +23,7 @@ public class AgentPath {
         return value;
     }
 
-    public void addPath(List<Node> path) {
+    public void addPath(List<Node> path, int pickLocation) {
         Node n;
         for (Node node : path) {
             n = new Node(node);
@@ -31,7 +31,12 @@ public class AgentPath {
             this.path.add(n);
         }
 
-        this.value += path.get(path.size() - 1).getG();
+        if (path.size() < 1) { // path.size() == 0 WHEN 2 CONSECUTIVE PICKS ARE ON THE SAME NODE EX: 40 -> 40
+            this.path.get(this.path.size() - 1).setLocation(2);
+        } else {
+            this.path.get(this.path.size() - 1).setLocation(pickLocation);
+            this.value += path.get(path.size() - 1).getG();
+        }
     }
 
     public void addAgentInitialPosition(Node node) {

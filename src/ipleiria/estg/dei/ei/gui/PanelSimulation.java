@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.search.Location;
 
@@ -9,20 +10,31 @@ import java.util.List;
 
 public class PanelSimulation extends JLayeredPane implements EnvironmentListener {
 
-    public static final int PANEL_HEIGHT = 650;
-    public static final int PANEL_WIDTH = 400;
-    public static final int NODE_SIZE = 30;
-    public static final int NODE_PADDING = 14;
+    public static int PANEL_HEIGHT;
+    public static int PANEL_WIDTH;
+    public static int NODE_SIZE = 18;
+    public static int NODE_PADDING = 4;
     private WarehouseLayout warehouseLayout;
     private Simulate simulate;
 
-    public PanelSimulation() {
+    public PanelSimulation(int width, int height) {
+        PANEL_WIDTH = width;
+        PANEL_HEIGHT = height;
+
         this.setLayout(new OverlayLayout(this));
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_HEIGHT));
     }
 
     @Override
     public void createEnvironment() {
+        int maxLine = Environment.getInstance().getMaxLine();
+        int maxColumn = Environment.getInstance().getMaxColumn();
+
+        int cellSize = Math.min(PANEL_HEIGHT / (maxLine + 1), PANEL_WIDTH / (maxColumn + 2));
+
+        NODE_PADDING = (int) (cellSize * 0.3);
+        NODE_SIZE = cellSize - NODE_PADDING;
+
         this.warehouseLayout = new WarehouseLayout(NODE_SIZE, NODE_PADDING);
         this.warehouseLayout.setSize(PANEL_WIDTH,PANEL_HEIGHT);
         this.setLayer(this.warehouseLayout,-1);

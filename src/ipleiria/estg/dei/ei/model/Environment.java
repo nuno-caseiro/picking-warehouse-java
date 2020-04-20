@@ -1,14 +1,16 @@
 package ipleiria.estg.dei.ei.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.AgentPath;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-
-import ipleiria.estg.dei.ei.utils.Properties;
 
 public class Environment {
 
@@ -16,18 +18,17 @@ public class Environment {
     private Individual bestInRun;
     private HashMap<String, List<Node>> pairsMap;
     private ArrayList<EnvironmentListener> listeners;
-    private HashMap<Integer, List<Node>> originalGraph;
+    private HashMap<Integer, List<Node>> warehouseGraph;
     private int graphSize;
+    private int edgesSize;
     private HashMap<Integer, List<Node>> picksGraph;
     private HashMap<Integer, Node> nodes;
     private List<Node> decisionNodes;
-    private List<Integer> picks;
-    private List<Integer> agents;
+    private List<Node> picks;
+    private List<Node> agents;
     private int offloadArea;
-//    private HashMap<String, Edge> edges;
+    private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
-    private int maxLine;
-    private int maxColumn;
     private int timeWeight;
     private int collisionsWeight;
 
@@ -40,261 +41,282 @@ public class Environment {
         return INSTANCE;
     }
 
-    public void readInitialStateFromFile(File file) throws IOException {
-        createGraphFromFile(file);
-    }
-
-    private void createGraphFromFile(File file) throws IOException {
+    public void readInitialStateFromFile(File file) {
         this.nodes = new HashMap<>();
-        this.originalGraph = new HashMap<>();
-        this.decisionNodes = new LinkedList<>();
-        this.edges = new LinkedList<>();
-        this.agents = new ArrayList<>();
         this.graphSize = 0;
-        this.maxLine = 0;
-        this.maxColumn = 0;
+        this.edgesSize = 0;
+        this.warehouseGraph = new HashMap<>();
+        this.edgesMap = new HashMap<>();
+        this.edges = new ArrayList<>();
+        this.agents = new ArrayList<>();
+        this.decisionNodes = new ArrayList<>();
 
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-        String row = "";
-        while ((row = csvReader.readLine()) != null && !row.contains("Sucessors")) {
-            String[] data = row.split(";");
-            if (data[0].contains("Nodes")) {
-                continue;
+        try {
+            JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
+
+            // IMPORT NODES
+            JsonArray jsonNodes = jsonObject.getAsJsonArray("nodes");
+
+            JsonObject jsonNode;
+            Node decisionNode;
+            for (JsonElement elementNode : jsonNodes) {
+                jsonNode = elementNode.getAsJsonObject();
+                decisionNode = new Node(jsonNode.get("nodeNumber").getAsInt(), jsonNode.get("line").getAsInt(), jsonNode.get("column").getAsInt(), jsonNode.get("type").getAsString());
+                this.nodes.put(jsonNode.get("nodeNumber").getAsInt(), decisionNode);
+                this.decisionNodes.add(decisionNode);
+                this.graphSize++;
             }
 
-            Node node = new Node(Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[0]), data[1]);
-            this.nodes.put(Integer.parseInt(data[0]), node);
+            // IMPORT SUCCESSORS
+            JsonArray jsonSuccessors;
+            JsonObject jsonSuccessor;
+            Node node;
+            for (JsonElement elementNode : jsonNodes) {
+                jsonNode = elementNode.getAsJsonObject();
+                List<Node> successors = new ArrayList<>();
+                this.warehouseGraph.put(jsonNode.get("nodeNumber").getAsInt(), successors);
 
-            if (node.getType().equals("D") ) {
-                this.decisionNodes.add(node);
+                jsonSuccessors = jsonNode.getAsJsonArray("successors");
+                for (JsonElement elementSuccessor : jsonSuccessors) {
+                    jsonSuccessor = elementSuccessor.getAsJsonObject();
+                    node = new Node(this.nodes.get(jsonSuccessor.get("nodeNumber").getAsInt()));
+                    node.setCostFromAdjacentNode(jsonSuccessor.get("distance").getAsDouble());
+
+                    successors.add(node);
+                }
             }
 
-            if (node.getLine() > this.maxLine) {
-                this.maxLine = node.getLine();
+            // IMPORT EDGES
+            JsonArray jsonEdges = jsonObject.getAsJsonArray("edges");
+
+            JsonObject jsonEdge;
+            Edge edge;
+            Node node1;
+            Node node2;
+            for (JsonElement elementEdge : jsonEdges) {
+                jsonEdge = elementEdge.getAsJsonObject();
+                node1 = this.nodes.get(jsonEdge.get("node1Number").getAsInt());
+                node2 = this.nodes.get(jsonEdge.get("node2Number").getAsInt());
+                node1.addEdge(jsonEdge.get("edgeNumber").getAsInt());
+                node2.addEdge(jsonEdge.get("edgeNumber").getAsInt());
+                edge = new Edge(jsonEdge.get("edgeNumber").getAsInt(), node1, node2, jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt());
+
+                this.edges.add(edge);
+                this.edgesMap.put(jsonEdge.get("node1Number") +  "-" + jsonEdge.get("node2Number"), edge);
+                this.edgesSize++;
+            }
+            Collections.sort(this.edges);
+
+            // IMPORT AGENTS
+            JsonArray jsonAgents = jsonObject.getAsJsonArray("agents");
+
+            JsonObject jsonAgent;
+            Node newNode;
+            for (JsonElement elementAgent : jsonAgents) {
+                jsonAgent = elementAgent.getAsJsonObject();
+
+                newNode = addNodeToGraph(this.warehouseGraph, jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt());
+
+                if (newNode != null) {
+                    this.agents.add(newNode);
+                }
             }
 
-            if (node.getColumn() > this.maxColumn) {
-                this.maxColumn = node.getColumn();
-            }
+            // IMPORT OFFLOAD
+            this.offloadArea = jsonObject.get("offloadArea").getAsInt();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        while ((row = csvReader.readLine()) != null && !row.contains("Edges")) {
-            String[] data = row.split(";");
-            ArrayList<Node> successors = new ArrayList<>();
-            this.originalGraph.put(Integer.parseInt(data[0]), successors);
-            this.graphSize++;
-
-            for (int i = 1; i < data.length; i += 2) {
-                Node node = nodes.get(Integer.parseInt(data[i]));
-                successors.add(new Node(Integer.parseInt(data[i + 1]), node.getLine(), node.getColumn(), node.getNodeNumber()));
-            }
-        }
-
-        while ((row = csvReader.readLine()) != null && !row.contains("Agents")) {
-            String[] data = row.split(";");
-            Node node1 = nodes.get(Integer.parseInt(data[0]));
-            Node node2 = nodes.get(Integer.parseInt(data[1]));
-//            edges.put(node1.getNodeNumber() + "-" + node2.getNodeNumber(), new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
-            edges.add(new Edge(node1, node2, Integer.parseInt(data[2]), Integer.parseInt(data[3])));
-        }
-
-        while ((row = csvReader.readLine()) != null & !row.contains("OffLoad")) {
-            String[] data = row.split(";");
-            agents.add(Integer.parseInt(data[1]));
-        }
-
-        row = csvReader.readLine();
-        String[] data = row.split(";");
-
-        offloadArea = Integer.parseInt(data[1]);
-        csvReader.close();
 
         fireCreateEnvironment();
-
-        for (int i = 1; i < this.graphSize + 1; i++) {
-            System.out.println(i + "->" + this.originalGraph.get(i));
-        }
-        System.out.println("----------------------------------------------------");
     }
 
-    public void loadPicksFromFile(File file) throws IOException {
+    public void loadPicksFromFile(File file) {
         this.picks = new ArrayList<>();
-
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-        String row = "";
-        while ((row = csvReader.readLine()) != null) {
-            String[] data = row.split(";");
-            this.picks.add(Integer.parseInt(data[1]));
-        }
-        csvReader.close();
-
-        createPicksGraph();
-    }
-
-    private void createPicksGraph() {
         this.picksGraph = new HashMap<>();
 
+        // COPY WAREHOUSE GRAPH TO PICKS GRAPH
+        List<Node> successors;
         for (int i = 1; i <= this.graphSize; i++) {
-            List<Node> successors = new LinkedList<>();
+            successors = new LinkedList<>();
             this.picksGraph.put(i, successors);
 
-            for (Node node : this.originalGraph.get(i)) {
+            for (Node node : this.warehouseGraph.get(i)) {
                 successors.add(new Node(node));
             }
         }
 
+        try {
+            JsonObject jsonObject = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
 
-        for (int i = 1; i <= this.graphSize ; i++) {
-            if (this.nodes.get(i).getType().equals("D")) {
-                continue;
-            }
+            // IMPORT PICKS
+            JsonArray jsonPicks = jsonObject.getAsJsonArray("picks");
 
-            if (this.picks.contains(i)) {
-                continue;
-            }
+            JsonObject jsonPick;
+            Node newNode;
+            for (JsonElement elementNode : jsonPicks) {
+                jsonPick = elementNode.getAsJsonObject();
 
-            if (i == this.offloadArea) {
-                continue;
-            }
+                newNode = addNodeToGraph(this.picksGraph, jsonPick.get("edgeNumber").getAsInt(), jsonPick.get("line").getAsInt(), jsonPick.get("column").getAsInt());
 
-            List<Node> successors = this.picksGraph.get(i);
-            for (Node node : successors) {
-                List<Node> nodeSuccessors = this.picksGraph.get(node.getNodeNumber());
-                double cost = node.getCostFromAdjacentNode();
-                int finalI = i;
-                nodeSuccessors.removeIf(n -> n.getNodeNumber() == finalI);
-
-                for (Node n : successors) {
-                    if (n.getNodeNumber() != node.getNodeNumber()) {
-                        Node nodeToAdd = new Node(n);
-                        nodeToAdd.addCost(cost);
-                        nodeSuccessors.add(nodeToAdd);
-                    }
+                if (newNode != null) {
+                    newNode.setLocation(jsonPick.get("location").getAsInt());
+                    this.picks.add(newNode);
                 }
             }
-
-            this.picksGraph.remove(i);
+            System.out.println(123);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        for (int i = 1; i < this.graphSize + 1; i++) {
-            System.out.println(i + "->" + this.picksGraph.get(i));
-        }
-        System.out.println("----------------------------------------------------");
 
         fireCreateSimulation();
     }
 
-    public void executeSolution() throws InterruptedException {
-        int[] genome = bestInRun.getGenome();
-        List<List<Node>> agentsPathNodes = separateGenomeByAgents(genome);
-        List<List<Location>> solutionLocations = computeSolutionLocations(agentsPathNodes);
+    // RETURNS NODE ADDED TO THE GRAPH OR NULL IF UNSUCCESSFUL // TODO COULD THROW EXCEPTION INSTEAD OF RETURNING 0
+    private Node addNodeToGraph(HashMap<Integer, List<Node>> graph, int edgeNumber, int line, int column) {
+        Node edgeNode1 = this.edges.get(edgeNumber - 1).getNode1();
+        Node edgeNode2 = this.edges.get(edgeNumber - 1).getNode2();
 
-        int numIterations = 0;
-        for (List<Location> l : solutionLocations) {
-            if (l.size() > numIterations) {
-                numIterations = l.size();
-            }
+        if (edgeNode1.getLine() == line) {
+            return edgeNode1;
         }
+
+        Node previousNode;
+        Node nextNode = edgeNode1;
+        int previousNodeNumber = -1;
+        do {
+            previousNode = nextNode;
+            nextNode = null;
+            for (Node n : graph.get(previousNode.getNodeNumber())) {
+                if (n.belongsToEdge(edgeNumber) && n.getNodeNumber() != previousNodeNumber) {
+                    nextNode = n;
+                    break;
+                }
+            }
+
+            if (nextNode == null) {
+                return null;
+            }
+
+            if ((line - previousNode.getLine()) * (line - nextNode.getLine()) < 0) {
+                // ADD NEW NODE TO NODES
+                this.graphSize++;
+                Node newNode = new Node(this.graphSize, line, column, "O");
+                this.nodes.put(newNode.getNodeNumber(), newNode);
+
+                // ADD NEW NODE'S SUCCESSORS TO GRAPH
+                List<Node> successors = new ArrayList<>();
+                graph.put(newNode.getNodeNumber(), successors);
+                Node n1 = new Node(previousNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                Node n2 = new Node(nextNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                successors.add(n1);
+                successors.add(n2);
+
+                // ALTER PREVIOUS AND NEXT NODE SUCCESSORS
+                Node finalNextNode = nextNode;
+                graph.get(previousNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalNextNode.getNodeNumber());
+                Node finalPreviousNode = previousNode;
+                graph.get(nextNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalPreviousNode.getNodeNumber());
+
+                n1 = new Node(newNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                n1.addEdge(edgeNumber);
+                n2 = new Node(newNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                n2.addEdge(edgeNumber);
+
+                graph.get(previousNode.getNodeNumber()).add(n1);
+                graph.get(nextNode.getNodeNumber()).add(n2);
+
+                // CREATE NEW SUB EDGES
+                this.edgesMap.put(previousNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(previousNode.getNodeNumber()), newNode, Math.abs(previousNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+                this.edgesMap.put(nextNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(nextNode.getNodeNumber()), newNode, Math.abs(nextNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+
+                return newNode;
+            }
+
+            if (line == nextNode.getLine()) {
+                return nextNode;
+            }
+
+            previousNodeNumber = previousNode.getNodeNumber();
+
+        } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
+
+        return null;
+    }
+
+    public void executeSolution() throws InterruptedException {
+        List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
 
         fireCreateSimulationPicks();
 
-        Node offloadNode = this.nodes.get(offloadArea);
-        Location offloadLocation = new Location(offloadNode.getLine(), offloadNode.getColumn());
+        Node offloadNode = this.nodes.get(this.offloadArea);
         List<Location> iterationAgentsLocations;
-        for (int i = 0; i < numIterations; i++) {
+        for (int i = 0; i < this.bestInRun.getFitness(); i++) {
             iterationAgentsLocations = new LinkedList<>();
-            for (List<Location> l : solutionLocations) {
+            for (List<Location> l : individualPaths) {
                 if (i < l.size()) {
                     iterationAgentsLocations.add(l.get(i));
                 } else {
-                    iterationAgentsLocations.add(offloadLocation);
+                    iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
                 }
             }
-            Thread.sleep(500);
+            Thread.sleep(200);
             fireUpdateEnvironment(iterationAgentsLocations);
         }
     }
 
-    private List<List<Location>> computeSolutionLocations(List<List<Node>> agentsPathNodes) {
+    private List<List<Location>> computeIndividualLocations(List<AgentPath> individualPaths) {
         List<List<Location>> solutionLocations = new ArrayList<>();
         List<Location> agentLocations = new ArrayList<>();
 
+        List<Node> path;
         Node n1;
         Node n2;
         int action;
         int line;
         int column;
-        for (List<Node> l : agentsPathNodes) {
-            for (int i = 0; i < l.size() - 1; i++) {
-                n1 = this.nodes.get(l.get(i).getNodeNumber());
-                n2 = this.nodes.get(l.get(i + 1).getNodeNumber());
+        for (AgentPath agentPath : individualPaths) {
+            path = agentPath.getPath();
+            for (int i = 0; i < path.size() - 1; i++) {
+                n1 = path.get(i);
+                n2 = path.get(i + 1);
                 line = n1.getLine();
                 column = n1.getColumn();
 
 
-                if (n1.getColumn() < n2.getColumn() || n1.getLine() < n2.getLine()) {
+                if (column < n2.getColumn() || line < n2.getLine()) {
                     action = 1;
                 } else {
                     action = -1;
                 }
 
-                if (n1.getLine() == n2.getLine()) {
+                if (line == n2.getLine()) {
 
-                    do {
+                    column += action;
+                    while (column != n2.getColumn()) {
+                        agentLocations.add(new Location(line, column, 0));
                         column += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (column != n2.getColumn());
-
+                    }
+                    agentLocations.add(new Location(line, column, n2.getLocation()));
                 } else {
 
-                    do {
+                    line += action;
+                    while (line != n2.getLine()) {
+                        agentLocations.add(new Location(line, column, 0));
                         line += action;
-                        agentLocations.add(new Location(line, column));
-                    } while (line != n2.getLine());
-
+                    }
+                    agentLocations.add(new Location(line, column, n2.getLocation()));
                 }
             }
             solutionLocations.add(agentLocations);
             agentLocations = new ArrayList<>();
         }
-
         return solutionLocations;
-    }
-
-    private List<List<Node>> separateGenomeByAgents(int[] genome) {
-        List<List<Node>> agents = new ArrayList<>();
-        List<Node> agentPicks = new ArrayList<>();
-        int agent = 0;
-
-        List<List<Node>> agentsPaths = new ArrayList<>();
-        List<Node> agentPath = new ArrayList<>();
-
-        agentPicks.add(this.nodes.get(this.agents.get(agent)));
-        for (int value : genome) {
-            if (value < 0) {
-                agentPicks.add(this.nodes.get(this.offloadArea));
-                agents.add(agentPicks);
-                agentPicks = new ArrayList<>();
-                agentPicks.add(this.nodes.get(this.agents.get(++agent)));
-                continue;
-            }
-            agentPicks.add(this.nodes.get(picks.get(value - 1)));
-        }
-        agentPicks.add(this.nodes.get(this.offloadArea));
-        agents.add(agentPicks);
-
-        agent = 0;
-
-        for (List<Node> l : agents) {
-            agentPath.add(this.nodes.get(this.agents.get(agent++)));
-            for (int i = 0; i < l.size() - 1; i++) {
-                agentPath.addAll(this.pairsMap.get(l.get(i).getNodeNumber() + "-" + l.get(i + 1).getNodeNumber()));
-            }
-            agentsPaths.add(agentPath);
-            agentPath = new ArrayList<>();
-        }
-
-        return agentsPaths;
     }
 
     public int getTimeWeight() {
@@ -313,28 +335,16 @@ public class Environment {
         this.collisionsWeight = collisionsWeight;
     }
 
-    public List<Integer> getPicks() {
+    public List<Node> getPicks() {
         return picks;
     }
 
-    public List<Location> getPickNodes() {
-        List<Location> picks = new LinkedList<>();
-        for (int i : this.picks) {
-            Node node = this.nodes.get(i);
-            picks.add(new Location(node.getLine(), node.getColumn()));
-        }
-
-        return picks;
+    public List<Node> getPickNodes() {
+        return this.picks;
     }
 
-    public List<Location> getAgentNodes() {
-        List<Location> agents = new ArrayList<>();
-        for (int i : this.agents) {
-            Node node = this.nodes.get(i);
-            agents.add(new Location(node.getLine(), node.getColumn()));
-        }
-
-        return agents;
+    public List<Node> getAgentNodes() {
+        return this.agents;
     }
 
     public Node getNode(int i) {
@@ -358,10 +368,26 @@ public class Environment {
     }
 
     public int getMaxLine() {
+        int maxLine = 0;
+
+        for (int i = 1; i <= this.graphSize; i++) {
+            if (this.nodes.get(i).getLine() > maxLine) {
+                maxLine = this.nodes.get(i).getLine();
+            }
+        }
+
         return maxLine;
     }
 
     public int getMaxColumn() {
+        int maxColumn = 0;
+
+        for (int i = 1; i <= this.graphSize; i++) {
+            if (this.nodes.get(i).getColumn() > maxColumn) {
+                maxColumn = this.nodes.get(i).getColumn();
+            }
+        }
+
         return maxColumn;
     }
 
@@ -391,6 +417,13 @@ public class Environment {
         invPath.remove(0);
     }
 
+    public int getEdgeDirection(int node1, int node2) {
+        if (this.edgesMap.containsKey(node1 + "-" + node2)) {
+            return this.edgesMap.get(node1 + "-" + node2).getDirection();
+        }
+        return this.edgesMap.get(node2 + "-" + node1).getDirection();
+    }
+
     private List<Node> createInversePath(List<Node> path) {
         List<Node> invPath = new ArrayList<>();
         path.forEach((node) -> invPath.add(new Node(node)));
@@ -409,8 +442,8 @@ public class Environment {
         return this.pairsMap.get(firstNode.getNodeNumber() + "-" + secondNode.getNodeNumber());
     }
 
-    public List<Integer> getAgents() {
-        return agents;
+    public List<Node> getAgents() {
+        return this.agents;
     }
 
     public int getOffloadArea() {
