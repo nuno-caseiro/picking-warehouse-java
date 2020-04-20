@@ -20,7 +20,7 @@ public class Node implements Comparable<Node> {
     private int nodeNumber;
     private String type;
     private double time;
-    private int location; // -1 if shelf is on the left of column or 1 if shelf is on the right of column
+    private int location; // -1 if pick is on the left of column, 1 if pick is on the right of column or 2 if there are picks both on the left and right
     private List<Integer> edges;
 
     public Node(int nodeNumber, int line, int column, String type) {
@@ -53,6 +53,7 @@ public class Node implements Comparable<Node> {
         this.g = node.g;
         this.time = 0;
         this.edges = node.edges;
+        this.location = node.location;
     }
 
     public Node(Node parent, double f, double g, int line, int column, int nodeNumber) {
@@ -62,6 +63,14 @@ public class Node implements Comparable<Node> {
         this.line = line;
         this.column = column;
         this.nodeNumber = nodeNumber;
+    }
+
+    public Node(int line, int column, int nodeNumber, double time, int location) {
+        this.line = line;
+        this.column = column;
+        this.nodeNumber = nodeNumber;
+        this.time = time;
+        this.location = location;
     }
 
     public void addEdge(int edge) {

@@ -46,12 +46,9 @@ public class Individual implements Comparable<Individual> {
         this.fitness = original.fitness;
         this.environment = Environment.getInstance();
         this.aStar = new AStar();
+        this.individualPaths = original.individualPaths;
+        this.numberOfCollisions = original.numberOfCollisions;
     }
-
-//    public Individual(int[] genome) {
-//        this.genome = genome;
-//        computeFitness();
-//    }
 
     public int[] getGenome() {
         return genome;
@@ -133,7 +130,7 @@ public class Individual implements Comparable<Individual> {
     }
 
     private void computePath(AgentPath agentPath, Node firstNde, Node secondNode) {
-        agentPath.addPath(this.aStar.search(firstNde, secondNode));
+        agentPath.addPath(this.aStar.search(firstNde, secondNode), secondNode.getLocation());
     }
 
     private void detectAndPenalizeCollisions() {

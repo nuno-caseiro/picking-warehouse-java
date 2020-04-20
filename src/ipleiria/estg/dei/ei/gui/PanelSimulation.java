@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.gui;
 
+import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.EnvironmentListener;
 import ipleiria.estg.dei.ei.model.search.Location;
 
@@ -23,6 +24,16 @@ public class PanelSimulation extends JLayeredPane implements EnvironmentListener
 
     @Override
     public void createEnvironment() {
+//        int maxLine = Environment.getInstance().getMaxLine();
+//        int maxColumn = Environment.getInstance().getMaxColumn();
+//
+//        Dimension d1 = this.warehouseLayout.getSize();
+//
+//        int cellSize = Math.min(PANEL_HEIGHT / (maxLine + 1), PANEL_WIDTH / (maxColumn + 1));
+//
+//        NODE_PADDING = (int) (cellSize * 0.3);
+//        NODE_SIZE = cellSize - NODE_PADDING;
+
         this.warehouseLayout = new WarehouseLayout(NODE_SIZE, NODE_PADDING);
         this.warehouseLayout.setSize(PANEL_WIDTH,PANEL_HEIGHT);
         this.setLayer(this.warehouseLayout,-1);

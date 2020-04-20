@@ -145,7 +145,7 @@ public class Controller {
     }
 
     private void loadWarehouseLayout() {
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/warehouseLayout/WarehouseLayout.json"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/warehouseLayout/WarehouseLayout_2.json"));
         int returnVal = fc.showOpenDialog(this.view);
         this.environment.addEnvironmentListener(this.view.getSimulationPanel());
 
@@ -163,7 +163,7 @@ public class Controller {
     }
 
     private void loadPicks(){
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/picks/Picks.json"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/picks/Picks_2.json"));
         int returnVal = fc.showOpenDialog(view);
         try {
 

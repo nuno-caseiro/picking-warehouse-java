@@ -29,8 +29,6 @@ public class Environment {
     private int offloadArea;
     private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
-    private int maxLine;
-    private int maxColumn;
     private int timeWeight;
     private int collisionsWeight;
 
@@ -167,7 +165,7 @@ public class Environment {
                     this.picks.add(newNode);
                 }
             }
-
+            System.out.println(123);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,17 +250,73 @@ public class Environment {
     }
 
     public void executeSolution() throws InterruptedException {
-        List<AgentPath> individualPaths = this.bestInRun.getIndividualPaths();
+        List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
 
         fireCreateSimulationPicks();
 
+        Node offloadNode = this.nodes.get(this.offloadArea);
         List<Location> iterationAgentsLocations;
         for (int i = 0; i < this.bestInRun.getFitness(); i++) {
-            for (AgentPath agentPath : individualPaths) {
-
+            iterationAgentsLocations = new LinkedList<>();
+            for (List<Location> l : individualPaths) {
+                if (i < l.size()) {
+                    iterationAgentsLocations.add(l.get(i));
+                } else {
+                    iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
+                }
             }
             Thread.sleep(200);
+            fireUpdateEnvironment(iterationAgentsLocations);
         }
+    }
+
+    private List<List<Location>> computeIndividualLocations(List<AgentPath> individualPaths) {
+        List<List<Location>> solutionLocations = new ArrayList<>();
+        List<Location> agentLocations = new ArrayList<>();
+
+        List<Node> path;
+        Node n1;
+        Node n2;
+        int action;
+        int line;
+        int column;
+        for (AgentPath agentPath : individualPaths) {
+            path = agentPath.getPath();
+            for (int i = 0; i < path.size() - 1; i++) {
+                n1 = path.get(i);
+                n2 = path.get(i + 1);
+                line = n1.getLine();
+                column = n1.getColumn();
+
+
+                if (column < n2.getColumn() || line < n2.getLine()) {
+                    action = 1;
+                } else {
+                    action = -1;
+                }
+
+                if (line == n2.getLine()) {
+
+                    column += action;
+                    while (column != n2.getColumn()) {
+                        agentLocations.add(new Location(line, column, 0));
+                        column += action;
+                    }
+                    agentLocations.add(new Location(line, column, n2.getLocation()));
+                } else {
+
+                    line += action;
+                    while (line != n2.getLine()) {
+                        agentLocations.add(new Location(line, column, 0));
+                        line += action;
+                    }
+                    agentLocations.add(new Location(line, column, n2.getLocation()));
+                }
+            }
+            solutionLocations.add(agentLocations);
+            agentLocations = new ArrayList<>();
+        }
+        return solutionLocations;
     }
 
     public int getTimeWeight() {
@@ -286,22 +340,10 @@ public class Environment {
     }
 
     public List<Node> getPickNodes() {
-//        List<Location> picks = new LinkedList<>();
-//        for (Node node : this.picks) {
-//            picks.add(new Location(node.getLine(), node.getColumn()));
-//        }
-//
-//        return picks;
         return this.picks;
     }
 
     public List<Node> getAgentNodes() {
-//        List<Location> agents = new ArrayList<>();
-//        for (Node node : this.agents) {
-//            agents.add(new Location(node.getLine(), node.getColumn()));
-//        }
-//
-//        return agents;
         return this.agents;
     }
 
@@ -326,10 +368,26 @@ public class Environment {
     }
 
     public int getMaxLine() {
+        int maxLine = 0;
+
+        for (int i = 1; i <= this.graphSize; i++) {
+            if (this.nodes.get(i).getLine() > maxLine) {
+                maxLine = this.nodes.get(i).getLine();
+            }
+        }
+
         return maxLine;
     }
 
     public int getMaxColumn() {
+        int maxColumn = 0;
+
+        for (int i = 1; i <= this.graphSize; i++) {
+            if (this.nodes.get(i).getColumn() > maxColumn) {
+                maxColumn = this.nodes.get(i).getColumn();
+            }
+        }
+
         return maxColumn;
     }
 

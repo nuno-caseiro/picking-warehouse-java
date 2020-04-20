@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Simulate extends JLayeredPane {
 
-    private List<Node> agents;
+    private List<Location> agents;
     private List<Node> originalPicks;
     private List<Location> picks;
     private int nodeSize;
@@ -31,24 +31,27 @@ public class Simulate extends JLayeredPane {
 
     public void initializePicks() {
         this.picks.clear();
+        this.agents = new LinkedList<>();
 
         for (Node pick : this.originalPicks) {
             this.picks.add(new Location(pick.getLine(), pick.getColumn(), pick.getLocation()));
         }
 
-        this.agents = Environment.getInstance().getAgentNodes();
+        for (Node agent : Environment.getInstance().getAgentNodes()) {
+            this.agents.add(new Location(agent.getLine(), agent.getColumn(), agent.getLocation()));
+        }
     }
 
     public void updateAgentLocations(List<Location> agents) {
-//        for (Node pick : this.originalPicks) {
-//            for (Node agent : this.agents) {
-//                if (pick.equals(agent)) {
-//                    this.picks.remove(pick);
-//                }
-//            }
-//        }
-//
-//        this.agents = agents;
+        for (Location location : agents) {
+            if (location.getColumnOffset() == 2) {
+                this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn());
+            } else {
+                this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn() && n.getColumnOffset() == location.getColumnOffset());
+            }
+        }
+
+        this.agents = agents;
     }
 
     @Override
@@ -57,11 +60,16 @@ public class Simulate extends JLayeredPane {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         FontMetrics f = g.getFontMetrics();
 
-        Node location;
+        Location location;
         for (int i = 0; i < this.agents.size(); i++) {
             location = this.agents.get(i);
 
-            g2d.setColor(Color.red);
+            if (location.getColumnOffset() != 0) {
+                g2d.setColor(Color.yellow);
+            } else {
+                g2d.setColor(Color.red);
+            }
+
             g2d.fillOval(location.getColumn() * this.cellSize, location.getLine() * this.cellSize, this.nodeSize, this.nodeSize);
 
             g2d.setColor(Color.black);
