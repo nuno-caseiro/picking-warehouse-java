@@ -45,7 +45,6 @@ public class MainFrame extends JFrame implements GAListener {
 
         gaPanel = new GeneticAlgorithmPanel(this);
         problemData = new PanelProblemData();
-        simulationPanel = new PanelSimulation();
         mainPagePanel = new MainPagePanel();
         gaHistoryPanel = new PanelGeneticAlgorithmHistory();
 
@@ -62,6 +61,8 @@ public class MainFrame extends JFrame implements GAListener {
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
         pack();
+
+        simulationPanel = new PanelSimulation(this.mainPagePanel.getWidth(), this.mainPagePanel.getHeight());
     }
 
     public void manageButtons(boolean layout, boolean picks,boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {

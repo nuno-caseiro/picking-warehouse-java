@@ -150,23 +150,23 @@ public class Individual implements Comparable<Individual> {
         }
 
         // TYPE 2 COLLISIONS
-//        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
-//            List<Node> path = this.individualPaths.get(i).getPath();
-//            for (int j = i + 1; j < this.individualPaths.size(); j++) {
-//                List<Node> path1 = this.individualPaths.get(i).getPath();
-//                for (int k = 0; k < path.size() - 1; k++) { // TODO OPTIMIZE THIS USING A HASH SET
-//                    for (int l = 0; l < path1.size() - 1; l++) {
-//                        if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
-//                            if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
-//                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path.get(l).getTime(), path.get(l + 1).getTime())) {
-//                                    this.numberOfCollisions++;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        for (int i = 0; i < this.individualPaths.size() - 1; i++) {
+            List<Node> path = this.individualPaths.get(i).getPath();
+            for (int j = i + 1; j < this.individualPaths.size(); j++) {
+                List<Node> path1 = this.individualPaths.get(i).getPath();
+                for (int k = 0; k < path.size() - 1; k++) { // TODO OPTIMIZE THIS USING A HASH SET
+                    for (int l = 0; l < path1.size() - 1; l++) {
+                        if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
+                            if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
+                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path.get(l).getTime(), path.get(l + 1).getTime())) {
+                                    this.numberOfCollisions++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // COMPUTE FITNESS
         this.fitness = (this.fitness * this.environment.getTimeWeight()) + (this.numberOfCollisions * this.environment.getCollisionsWeight());
