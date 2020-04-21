@@ -6,10 +6,12 @@ public class Location {
 
     private int line;
     private int column;
+    private int columnOffset;
 
-    public Location(int line, int column) {
+    public Location(int line, int column, int columnOffset) {
         this.line = line;
         this.column = column;
+        this.columnOffset = columnOffset;
     }
 
     public int getLine() {
@@ -26,6 +28,14 @@ public class Location {
 
     public void setColumn(int column) {
         this.column = column;
+    }
+
+    public int getColumnOffset() {
+        return columnOffset;
+    }
+
+    public void setColumnOffset(int columnOffset) {
+        this.columnOffset = columnOffset;
     }
 
     @Override

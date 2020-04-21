@@ -14,7 +14,7 @@ import java.util.List;
 public class Simulate extends JLayeredPane {
 
     private List<Location> agents;
-    private List<Location> originalPicks;
+    private List<Node> originalPicks;
     private List<Location> picks;
     private int nodeSize;
     private int nodePadding;
@@ -31,20 +31,23 @@ public class Simulate extends JLayeredPane {
 
     public void initializePicks() {
         this.picks.clear();
+        this.agents = new LinkedList<>();
 
-        for (Location pick : this.originalPicks) {
-            this.picks.add(new Location(pick.getLine(), pick.getColumn()));
+        for (Node pick : this.originalPicks) {
+            this.picks.add(new Location(pick.getLine(), pick.getColumn(), pick.getLocation()));
         }
 
-        this.agents = Environment.getInstance().getAgentNodes();
+        for (Node agent : Environment.getInstance().getAgentNodes()) {
+            this.agents.add(new Location(agent.getLine(), agent.getColumn(), agent.getLocation()));
+        }
     }
 
     public void updateAgentLocations(List<Location> agents) {
-        for (Location pick : this.originalPicks) {
-            for (Location agent : this.agents) {
-                if (pick.equals(agent)) {
-                    this.picks.remove(pick);
-                }
+        for (Location location : agents) {
+            if (location.getColumnOffset() == 2) {
+                this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn());
+            } else {
+                this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn() && n.getColumnOffset() == location.getColumnOffset());
             }
         }
 
@@ -61,7 +64,12 @@ public class Simulate extends JLayeredPane {
         for (int i = 0; i < this.agents.size(); i++) {
             location = this.agents.get(i);
 
-            g2d.setColor(Color.red);
+            if (location.getColumnOffset() != 0) {
+                g2d.setColor(Color.yellow);
+            } else {
+                g2d.setColor(Color.red);
+            }
+
             g2d.fillOval(location.getColumn() * this.cellSize, location.getLine() * this.cellSize, this.nodeSize, this.nodeSize);
 
             g2d.setColor(Color.black);
@@ -74,10 +82,10 @@ public class Simulate extends JLayeredPane {
 
         for (Location l : this.picks) {
             g2d.setColor(Color.green);
-            g2d.fillRect(((l.getColumn() + 1) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
+            g2d.fillRect(((l.getColumn() + (l.getColumnOffset())) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
 
             g2d.setColor(Color.black);
-            g2d.drawRect(((l.getColumn() + 1) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
+            g2d.drawRect(((l.getColumn() + (l.getColumnOffset())) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
         }
     }
 }

@@ -42,11 +42,10 @@ public class MainFrame extends JFrame implements GAListener {
     public void jbInit() throws Exception{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("PICKING");
-        this.setPreferredSize(new Dimension(1024, 768));
+        this.setPreferredSize(new Dimension(1024, 820));
 
         gaPanel = new GeneticAlgorithmPanel(this);
         problemData = new PanelProblemData();
-        simulationPanel = new PanelSimulation();
         mainPagePanel = new MainPagePanel();
         gaHistoryPanel = new PanelGeneticAlgorithmHistory();
         experimentsPanel= new ExperimentsPanel();
@@ -63,6 +62,8 @@ public class MainFrame extends JFrame implements GAListener {
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
         pack();
+
+        simulationPanel = new PanelSimulation(this.mainPagePanel.getWidth(), this.mainPagePanel.getHeight());
     }
 
     public void manageButtons(boolean layout, boolean picks,boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {
