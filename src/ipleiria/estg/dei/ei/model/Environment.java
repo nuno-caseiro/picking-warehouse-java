@@ -252,6 +252,10 @@ public class Environment {
     public void executeSolution() throws InterruptedException {
         List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
 
+        for (AgentPath agentPath : this.bestInRun.getIndividualPaths()) {
+            System.out.println(agentPath.getPath());
+        }
+
         fireCreateSimulationPicks();
 
         Node offloadNode = this.nodes.get(this.offloadArea);
