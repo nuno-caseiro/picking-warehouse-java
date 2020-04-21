@@ -70,7 +70,7 @@ public class RankBased extends SelectionMethod  {
     
     @Override
     public String toString(){
-        return "Rank";
+        return "Rank("+ps+")";
     }    
 }
 

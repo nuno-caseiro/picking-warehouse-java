@@ -9,22 +9,26 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class GeneticAlgorithmPanel extends JPanel {
-    private PanelTextArea bestIndividualPanel;
+    private JPanel bestIndividualPanel;
     private XYSeries seriesBestIndividual;
     private XYSeries seriesAverage;
     private MainFrame mainFrame;
     private PanelParameters panelParameters;
-    private JPanel gaPanelParametersNorth;
+    private JPanel gaPanelParametersWest;
+    public JTextArea textArea;
 
     public GeneticAlgorithmPanel(MainFrame mainFrame) {
         this.mainFrame= mainFrame;
         setLayout(new BorderLayout());
 
+        gaPanelParametersWest = new JPanel(new BorderLayout());
+
         panelParameters = new PanelParameters(this.mainFrame);
-        gaPanelParametersNorth= new JPanel(new BorderLayout());
+        panelParameters.setBorder(new EmptyBorder(0,5,0,5));//top,left,bottom,right
 
         //Chart
         seriesBestIndividual = new XYSeries("Best");
@@ -36,21 +40,25 @@ public class GeneticAlgorithmPanel extends JPanel {
         JFreeChart chart = ChartFactory.createXYLineChart("Evolution", "generation", "fitness", dataSet, PlotOrientation.VERTICAL, true, true, false);
 
         ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(""), BorderFactory.createEmptyBorder(1,1,1,1)));
+        chartPanel.setBorder(new EmptyBorder(0,0,0,0));
         chartPanel.setPreferredSize(new Dimension(400,200));
         //----
 
-        bestIndividualPanel= new PanelTextArea("Best solution: ", 15,10);
 
-        gaPanelParametersNorth.add(panelParameters,BorderLayout.NORTH);
-        gaPanelParametersNorth.add(bestIndividualPanel,BorderLayout.CENTER);
-        this.add(gaPanelParametersNorth, BorderLayout.WEST);
+        bestIndividualPanel= new JPanel(new BorderLayout());
+        textArea= new JTextArea(6,5);
+        JScrollPane jScrollPane= new JScrollPane(textArea);
+        bestIndividualPanel.setBorder(new EmptyBorder(1,0,0,0));
+        bestIndividualPanel.add(jScrollPane);
+
+        gaPanelParametersWest.add(panelParameters,BorderLayout.NORTH);
+        gaPanelParametersWest.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.GRAY));
+        textArea.setText("Best Solution");
+        this.add(gaPanelParametersWest,BorderLayout.WEST);
+        this.add(bestIndividualPanel,BorderLayout.SOUTH);
         this.add(chartPanel,BorderLayout.CENTER);
     }
 
-    public PanelTextArea getBestIndividualPanel() {
-        return bestIndividualPanel;
-    }
 
     public XYSeries getSeriesBestIndividual() {
         return seriesBestIndividual;
@@ -65,7 +73,7 @@ public class GeneticAlgorithmPanel extends JPanel {
     }
 
     public void setBestIndividualPanel(String bestIndividualPanelText) {
-        this.bestIndividualPanel.textArea.setText(bestIndividualPanelText);
+        this.textArea.setText(bestIndividualPanelText);
     }
 
     public void setValuesOfGenerationEnded(GeneticAlgorithm e){

@@ -13,7 +13,6 @@ public class MenuBarHorizontal extends JMenuBar {
         private JMenu menuEdit;
 
         private JMenu menuRun;
-        private JMenuItem menuItemRunSearch;
         private JMenuItem menuItemRunGA;
         private JMenuItem menuItemRunSimulate;
         private JMenuItem menuItemStopGA;
@@ -48,15 +47,12 @@ public class MenuBarHorizontal extends JMenuBar {
         this.add(menuEdit);
 
         this.menuRun = new JMenu("Run");
-        this.menuItemRunSearch= new JMenuItem("Run Search");
-        this.menuItemRunSearch.setEnabled(false);
         this.menuItemRunGA= new JMenuItem("Run Genetic Algorithm");
         this.menuItemRunGA.setEnabled(false);
         this.menuItemRunSimulate = new JMenuItem("Run Simulate");
         this.menuItemRunSimulate.setEnabled(false);
         this.menuItemStopGA= new JMenuItem("Stop Genetic Algorithm");
         this.menuItemStopGA.setEnabled(false);
-        this.menuRun.add(menuItemRunSearch);
         this.menuRun.add(menuItemRunGA);
         this.menuRun.add(menuItemRunSimulate);
         this.menuRun.add(menuItemStopGA);
@@ -85,14 +81,11 @@ public class MenuBarHorizontal extends JMenuBar {
         this.menuHelp.add(menuItemAbout);
         this.add(menuHelp);
 
-
     }
 
     public void manageButtons(boolean layout, boolean picks,boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {
-        //boolean experiments, boolean runExperiments, falta meter
         this.menuItemImportLayout.setEnabled(layout);
         this.menuItemImportPicks.setEnabled(picks);
-        this.menuItemRunSearch.setEnabled(runSearch);
         this.menuItemRunGA.setEnabled(runGA);
         this.menuItemStopGA.setEnabled(stopRunGA);
         this.menuItemRunSimulate.setEnabled(runEnvironment);
@@ -109,10 +102,6 @@ public class MenuBarHorizontal extends JMenuBar {
 
     public JMenuItem getExit() {
         return exit;
-    }
-
-    public JMenuItem getMenuItemRunSearch() {
-        return menuItemRunSearch;
     }
 
     public JMenuItem getMenuItemRunGA() {
