@@ -19,6 +19,7 @@ public class Simulate extends JLayeredPane {
     private int nodeSize;
     private int nodePadding;
     private int cellSize;
+    private int count;
 
     public Simulate(int nodeSize, int nodePadding) {
         this.nodeSize = nodeSize;
@@ -43,6 +44,7 @@ public class Simulate extends JLayeredPane {
     }
 
     public void updateAgentLocations(List<Location> agents) {
+
         for (Location location : agents) {
             if (location.getColumnOffset() == 2) {
                 this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn());
