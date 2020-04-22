@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 
+import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.Mutation;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators.Recombination;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.selectionMethods.SelectionMethod;
@@ -35,7 +36,7 @@ public class GeneticAlgorithm {
         random = rand;
     }
 
-    public Individual run() {
+    public Individual  run() {
         t = 0;
         population = new Population(popSize, numPicks, numAgents);
         bestInRun = population.evaluate();
@@ -81,6 +82,44 @@ public class GeneticAlgorithm {
         return population.getAverageFitness();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Population size:" + popSize + "\r\n");
+        sb.append("Max generations:" + maxGenerations + "\r\n");
+        sb.append("Selection:" + selection + "\r\n");
+        sb.append("Recombination:" + recombination + "\r\n");
+        sb.append("Recombination prob.: " + recombination.getProbability() + "\r\n");
+        sb.append("Mutation:" + mutation + "\r\n");
+        sb.append("Mutation prob.: " + mutation.getProbability()+ "\r\n");
+        sb.append("Time weight:" + Environment.getInstance().getTimeWeight()+ "\r\n");
+        sb.append("Collisions weight:" + Environment.getInstance().getCollisionsWeight()+ "\r\n");
+        return sb.toString();
+    }
+
+    public int getPopSize() {
+        return popSize;
+    }
+
+    public int getMaxGenerations() {
+        return maxGenerations;
+    }
+
+    public Population getPopulation() {
+        return population;
+    }
+
+    public SelectionMethod getSelection() {
+        return selection;
+    }
+
+    public Recombination getRecombination() {
+        return recombination;
+    }
+
+    public Mutation getMutation() {
+        return mutation;
+    }
 
     //Listeners
     private final transient List<GAListener> listeners = new ArrayList<>(3);

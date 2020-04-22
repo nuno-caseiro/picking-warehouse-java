@@ -18,15 +18,15 @@ public class PanelAtributesValue extends JPanel {
     protected void configure(){
 
         GridBagLayout gridBag = new GridBagLayout();
-        setLayout(gridBag);  //setting manager of layout to container gridbag. this is to control the position of elements added to itself
+        setLayout(gridBag);
 
         GridBagConstraints c = new GridBagConstraints();
-        c.anchor= GridBagConstraints.NORTHWEST; //TODO is this align left?
+        c.anchor= GridBagConstraints.WEST;
         Iterator<JLabel> itLabels = labels.iterator();
         Iterator<JComponent> itTextFields = valueComponents.iterator();
 
         while(itLabels.hasNext()){
-            c.gridwidth = GridBagConstraints.RELATIVE; //TODO comment code
+            c.gridwidth = GridBagConstraints.RELATIVE;
             c.fill = GridBagConstraints.NONE;
             c.weightx = 0.0;
             add(itLabels.next(),c);
