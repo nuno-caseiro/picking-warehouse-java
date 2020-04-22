@@ -16,7 +16,7 @@ public class IntegerTextField_KeyAdapter implements KeyListener {
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         char c = keyEvent.getKeyChar();
-        if(!Character.isDigit(c)  || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE){
+        if(!Character.isDigit(c)  || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE || Character.isWhitespace(c)){
             keyEvent.consume();
         }
     }

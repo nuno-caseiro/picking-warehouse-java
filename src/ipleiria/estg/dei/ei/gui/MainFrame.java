@@ -19,12 +19,13 @@ public class MainFrame extends JFrame implements GAListener {
     private PanelProblemData problemData;
     private PanelSimulation simulationPanel;
     private PanelGeneticAlgorithmHistory gaHistoryPanel;
+    private ExperimentsPanel experimentsPanel;
     private JPanel simulationGlobalPanel;
     private boolean mainPageShow;
-//    private boolean problemDataShow;
     private boolean gaPanelShow;
     private boolean simulationPanelShow;
     private boolean gaHistoryPanelShow;
+    private boolean experimentsPanelShow;
 
     private MainPagePanel mainPagePanel;
     private JPanel mainPanel;
@@ -47,6 +48,7 @@ public class MainFrame extends JFrame implements GAListener {
         problemData = new PanelProblemData();
         mainPagePanel = new MainPagePanel();
         gaHistoryPanel = new PanelGeneticAlgorithmHistory();
+        experimentsPanel= new ExperimentsPanel();
 
         this.menuBarHorizontal = new MenuBarHorizontal();
         this.toolBarVertical = new ToolBarVertical();
@@ -56,7 +58,6 @@ public class MainFrame extends JFrame implements GAListener {
         mainPanel.add(toolBarHorizontal,BorderLayout.NORTH);
         mainPanel.add(toolBarVertical,BorderLayout.WEST);
         mainPanel.add(mainPagePanel,BorderLayout.CENTER);
-
         this.setJMenuBar(menuBarHorizontal);
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
@@ -74,38 +75,38 @@ public class MainFrame extends JFrame implements GAListener {
         switch (panelNumber){
             case 0:
                 this.mainPageShow=show;
-//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
-                break;
+                this.experimentsPanelShow=false;
+                break; 
             case 1:
                 this.mainPageShow=false;
-//                this.problemDataShow=show;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=show;
                 break;
             case 2:
                 this.mainPageShow=false;
-//                this.problemDataShow= false;
                 this.gaPanelShow=show;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=false;
                 break;
             case 3:
                 this.mainPageShow=false;
-//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=show;
                 this.gaHistoryPanelShow=false;
+                this.experimentsPanelShow=false;
                 break;
             case 4:
                 this.mainPageShow=false;
-//                this.problemDataShow=false;
                 this.gaPanelShow=false;
                 this.simulationPanelShow=false;
                 this.gaHistoryPanelShow=show;
+                this.experimentsPanelShow=false;
                 break;
             default:
                 show= false;
@@ -122,9 +123,8 @@ public class MainFrame extends JFrame implements GAListener {
                 panel=this.mainPagePanel;
                 break;
             case 1:
-//                show=this.problemDataShow;
-                show=this.gaPanelShow;
-                panel=this.gaPanel;
+                show=this.experimentsPanelShow;
+                panel=this.experimentsPanel;
                 break;
             case 2:
                 show=this.gaPanelShow;
@@ -172,6 +172,10 @@ public class MainFrame extends JFrame implements GAListener {
         gaPanel.setBestIndividualPanel(bestIndividualPanelText);
     }
 
+    public boolean isGaPanelShow() {
+        return gaPanelShow;
+    }
+
     public MenuBarHorizontal getMenuBarHorizontal() {
         return menuBarHorizontal;
     }
@@ -188,10 +192,6 @@ public class MainFrame extends JFrame implements GAListener {
         return gaPanel;
     }
 
-//    public PanelProblemData getProblemData() {
-//        return problemData;
-//    }
-
     public ToolBarHorizontal getToolBarHorizontal() {
         return toolBarHorizontal;
     }
@@ -200,9 +200,13 @@ public class MainFrame extends JFrame implements GAListener {
         return gaHistoryPanel;
     }
 
+    public ExperimentsPanel getExperimentsPanel() {
+        return experimentsPanel;
+    }
+
     @Override
     public void generationEnded(GeneticAlgorithm e) {
-        this.setBestIndividualPanelText(e.getBestInRun().toString());
+        this.setBestIndividualPanelText("Best solution\n"+e.getBestInRun().toString());
         this.getGaPanel().setValuesOfGenerationEnded(e);
     }
 
