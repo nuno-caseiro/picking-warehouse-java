@@ -126,8 +126,10 @@ public class Controller {
                     Individual bestInRun = ga.run();
                     Environment.getInstance().setBestInRun(bestInRun);
                     view.getGaHistoryPanel().appendParametersOfRun(bestInRun,view.getGaPanel().getPanelParameters());
-                    System.out.println(Environment.getInstance().getPicks());
-                    System.out.println(bestInRun);
+//                    System.out.println(Environment.getInstance().getPicks());
+//                    System.out.println(bestInRun);
+
+                    Environment.getInstance().printCollisions(bestInRun);
 
                 } catch (Exception e) {
                     e.printStackTrace(System.err);

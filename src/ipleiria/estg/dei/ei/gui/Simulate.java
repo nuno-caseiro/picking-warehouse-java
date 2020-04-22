@@ -19,6 +19,7 @@ public class Simulate extends JLayeredPane {
     private int nodeSize;
     private int nodePadding;
     private int cellSize;
+    private int count;
 
     public Simulate(int nodeSize, int nodePadding) {
         this.nodeSize = nodeSize;
@@ -26,6 +27,7 @@ public class Simulate extends JLayeredPane {
         this.cellSize = nodeSize + nodePadding;
         this.originalPicks = Environment.getInstance().getPickNodes();
         this.picks = new ArrayList<>();
+        this.count = 0;
         initializePicks();
     }
 
@@ -43,6 +45,7 @@ public class Simulate extends JLayeredPane {
     }
 
     public void updateAgentLocations(List<Location> agents) {
+        count++;
         for (Location location : agents) {
             if (location.getColumnOffset() == 2) {
                 this.picks.removeIf(n -> n.getLine() == location.getLine() && n.getColumn() == location.getColumn());
@@ -87,5 +90,8 @@ public class Simulate extends JLayeredPane {
             g2d.setColor(Color.black);
             g2d.drawRect(((l.getColumn() + (l.getColumnOffset())) * this.cellSize) - (this.nodePadding / 2), (l.getLine() * this.cellSize) - (this.nodePadding / 2), this.cellSize, this.cellSize);
         }
+
+        String str = this.count + "";
+        g2d.drawString(str, 25 * this.cellSize, 10 * this.cellSize);
     }
 }

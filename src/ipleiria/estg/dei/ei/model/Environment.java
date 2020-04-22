@@ -165,7 +165,7 @@ public class Environment {
                     this.picks.add(newNode);
                 }
             }
-            System.out.println(123);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,9 +252,12 @@ public class Environment {
 
 
     // FOR DEBUGGING
-    private void printCollisions(List<AgentPath> individualPaths) {
+    public void printCollisions(Individual individual) {
+        List<AgentPath> individualPaths = individual.getIndividualPaths();
 
         System.out.println("##########################################################");
+
+        System.out.println(individual);
 
         int agentNumber = 0;
         for (AgentPath agentPath : this.bestInRun.getIndividualPaths()) {
@@ -315,8 +318,6 @@ public class Environment {
     public void executeSolution() throws InterruptedException {
         List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
 
-        printCollisions(this.bestInRun.getIndividualPaths());
-
         fireCreateSimulationPicks();
 
         Node offloadNode = this.nodes.get(this.offloadArea);
@@ -330,7 +331,7 @@ public class Environment {
                     iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
                 }
             }
-            Thread.sleep(200);
+            Thread.sleep(500);
             fireUpdateEnvironment(iterationAgentsLocations);
         }
     }
