@@ -177,7 +177,7 @@ public class Individual implements Comparable<Individual> {
     }
 
     private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
-        return x1 <= y2 && y1 <= x2;
+        return x1 < y2 && y1 < x2;
     }
 
     @Override

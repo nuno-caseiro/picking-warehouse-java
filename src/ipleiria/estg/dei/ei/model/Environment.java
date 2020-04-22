@@ -249,74 +249,82 @@ public class Environment {
         return null;
     }
 
-
-
     // FOR DEBUGGING
-    public void printCollisions(Individual individual) {
-        List<AgentPath> individualPaths = individual.getIndividualPaths();
-
-        System.out.println("##########################################################");
-
-        System.out.println(individual);
-
-        int agentNumber = 0;
-        for (AgentPath agentPath : this.bestInRun.getIndividualPaths()) {
-            System.out.println("Agent " + agentNumber + ":" + agentPath.getPath());
-            agentNumber++;
-        }
-
-        for (int i = 0; i < individualPaths.size() - 1; i++) {
-            for (int j = i + 1; j < individualPaths.size(); j++) {
-                for (Node node : individualPaths.get(i).getPath()) {
-                    for (Node node1 : individualPaths.get(j).getPath()) { // TODO OPTIMIZE THIS USING A HASH SET TO VERIFY IF LIST CONTAINS NODE AND REMOVE OFFLOAD NODE COLLISION VERIFICATION
-                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
-                            System.out.println("----------------------------------------------------------");
-                            System.out.println("Agent " + i + ": " + node);
-                            System.out.println("Agent " + j + ": " + node1);
-                        }
-                    }
-                }
-            }
-        }
-
-        // TYPE 2 COLLISIONS
-        for (int i = 0; i < individualPaths.size() - 1; i++) {
-            List<Node> path = individualPaths.get(i).getPath();
-            for (int j = i + 1; j < individualPaths.size(); j++) {
-                List<Node> path1 = individualPaths.get(j).getPath();
-                for (int k = 0; k < path.size() - 1; k++) { // TODO OPTIMIZE THIS USING A HASH SET
-                    for (int l = 0; l < path1.size() - 1; l++) {
-                        if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
-                            if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
-                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path1.get(l).getTime(), path1.get(l + 1).getTime())) {
-                                    System.out.println("----------------------------------------------------------");
-                                    System.out.println("Agent " + i + ": " + path.get(k));
-                                    System.out.println("Agent " + i + ": " + path.get(k + 1));
-                                    System.out.println("Agent " + j + ": " + path1.get(l));
-                                    System.out.println("Agent " + j + ": " + path1.get(l + 1));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        System.out.println("##########################################################");
-    }
-
-    private boolean isEdgeOneWay(int node1, int node2) {
-        return getEdgeDirection(node1, node2) == 1;
-    }
-
-    private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
-        return x1 <= y2 && y1 <= x2;
-    }
-
-
+//    public void printCollisions(Individual individual) {
+//        List<AgentPath> individualPaths = individual.getIndividualPaths();
+//
+//        System.out.println("##########################################################");
+//
+//        System.out.println(individual);
+//
+//        int agentNumber = 0;
+//        for (AgentPath agentPath : this.bestInRun.getIndividualPaths()) {
+//            System.out.println("Agent " + agentNumber + ":" + agentPath.getPath());
+//            agentNumber++;
+//        }
+//
+//        for (int i = 0; i < individualPaths.size() - 1; i++) {
+//            for (int j = i + 1; j < individualPaths.size(); j++) {
+//                for (Node node : individualPaths.get(i).getPath()) {
+//                    for (Node node1 : individualPaths.get(j).getPath()) { // TODO OPTIMIZE THIS USING A HASH SET TO VERIFY IF LIST CONTAINS NODE AND REMOVE OFFLOAD NODE COLLISION VERIFICATION
+//                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
+//                            System.out.println("----------------------------------------------------------");
+//                            System.out.println("Agent " + i + ": " + node);
+//                            System.out.println("Agent " + j + ": " + node1);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // TYPE 2 COLLISIONS
+//        for (int i = 0; i < individualPaths.size() - 1; i++) {
+//            List<Node> path = individualPaths.get(i).getPath();
+//            for (int j = i + 1; j < individualPaths.size(); j++) {
+//                List<Node> path1 = individualPaths.get(j).getPath();
+//                for (int k = 0; k < path.size() - 1; k++) { // TODO OPTIMIZE THIS USING A HASH SET
+//                    for (int l = 0; l < path1.size() - 1; l++) {
+//                        if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
+//                            if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
+//                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path1.get(l).getTime(), path1.get(l + 1).getTime())) {
+//                                    System.out.println("----------------------------------------------------------");
+//                                    System.out.println("Agent " + i + ": " + path.get(k));
+//                                    System.out.println("Agent " + i + ": " + path.get(k + 1));
+//                                    System.out.println("Agent " + j + ": " + path1.get(l));
+//                                    System.out.println("Agent " + j + ": " + path1.get(l + 1));
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        System.out.println("----------------------------------------------------------");
+//
+//        for (int i = 0; i < individual.getIndividualPaths().size(); i++) {
+//            List<Node> l = individual.getIndividualPaths().get(i).getPath();
+//            System.out.println("Agent " + i + ": " + l.get(l.size() - 1));
+//        }
+//
+//        System.out.println("##########################################################");
+//    }
+//
+//    private boolean isEdgeOneWay(int node1, int node2) {
+//        return getEdgeDirection(node1, node2) == 1;
+//    }
+//
+//    private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
+//        return x1 < y2 && y1 < x2;
+//    }
 
     public void executeSolution() throws InterruptedException {
         List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
+
+        for (int i = 0; i < individualPaths.size(); i++) {
+            List<Location> l = individualPaths.get(i);
+            System.out.println("Agent " + i + ": " + l.size());
+        }
 
         fireCreateSimulationPicks();
 
@@ -331,7 +339,7 @@ public class Environment {
                     iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
                 }
             }
-            Thread.sleep(500);
+            Thread.sleep(300);
             fireUpdateEnvironment(iterationAgentsLocations);
         }
     }
