@@ -33,6 +33,7 @@ public class Simulate extends JLayeredPane {
 
     public void initializePicks() {
         this.picks.clear();
+        this.statesOfIterations.clear();
         this.agents = new LinkedList<>();
 
         for (Node pick : this.originalPicks) {
