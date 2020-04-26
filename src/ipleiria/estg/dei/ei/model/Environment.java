@@ -377,11 +377,11 @@ public class Environment {
 
     public void resume(Thread a){
         if(this.pause!=null){
-
-        this.pause=!this.pause;
-        synchronized (a){
-            a.notify();
-        }
+            this.pause=!this.pause;
+            this.executionSteps = this.executionSteps - 1;
+            synchronized (a){
+                a.notify();
+            }
         }
     }
 
@@ -389,6 +389,7 @@ public class Environment {
         if(this.pause!=null) {
             if (!this.pause) {
                 this.pause = true;
+                this.executionSteps = this.executionSteps - 1;
                 return;
             }
             synchronized (a) {
@@ -401,6 +402,7 @@ public class Environment {
         if(this.pause!=null) {
             if (!this.pause) {
                 this.pause = true;
+                this.executionSteps = this.executionSteps - 1;
                 return;
             }
             synchronized (a) {

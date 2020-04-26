@@ -34,7 +34,7 @@ public class MenuBarHorizontal extends JMenuBar {
     public MenuBarHorizontal() {
 
         this.menuFile = new JMenu("File");
-        this.menuItemImportLayout = new JMenuItem("Import Layout", KeyEvent.VK_O);
+        this.menuItemImportLayout = new JMenuItem("Switch Layout", KeyEvent.VK_O);
         this.menuItemImportPicks = new JMenuItem("Import Picks", KeyEvent.VK_O);
         this.menuItemImportPicks.setEnabled(false);
         this.exit = new JMenuItem("Exit");
