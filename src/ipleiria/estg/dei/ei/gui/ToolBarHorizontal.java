@@ -12,6 +12,9 @@ public class ToolBarHorizontal extends JToolBar {
     private JButton stopGaRun;
     private JButton simulateRun;
 
+    private JButton stepForward;
+    private JButton stepBackward;
+    private JButton resume;
 
     public ToolBarHorizontal() {
         GridBagConstraints c = new GridBagConstraints();
@@ -32,6 +35,19 @@ public class ToolBarHorizontal extends JToolBar {
         this.simulateRun= new JButton("",new ImageIcon(getClass().getResource("assets/simulationRunIcon.png")));
         this.simulateRun.setBorderPainted(false);
         this.simulateRun.setEnabled(false);
+
+        this.stepForward= new JButton("",new ImageIcon(getClass().getResource("assets/nextIcon.png")));
+        this.stepForward.setBorderPainted(false);
+        //this.stepForward.setEnabled(false);
+
+        this.stepBackward= new JButton("",new ImageIcon(getClass().getResource("assets/backIcon.png")));
+        this.stepBackward.setBorderPainted(false);
+
+        //this.stepBackward.setEnabled(false);
+        this.resume= new JButton("",new ImageIcon(getClass().getResource("assets/pausePlayIcon.png")));
+        this.resume.setBorderPainted(false);
+        //this.stepBackward.setEnabled(false);
+
 
         JPanel horizontalPanel= new JPanel(new GridBagLayout());
         c.gridx=1;
@@ -58,17 +74,35 @@ public class ToolBarHorizontal extends JToolBar {
         horizontalPanel.add(this.stopGaRun,c);
         c.gridx=5;
         c.gridy=0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.simulateRun,c);
+        c.gridx=6;
+        c.gridy=0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.resume,c);
+        c.gridx=7;
+        c.gridy=0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.stepForward);
+        c.gridx=8;
+        c.gridy=0;
         c.weightx=1.0;
         c.weighty=1.0;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 0);
-        horizontalPanel.add(this.simulateRun,c);
+        horizontalPanel.add(this.stepBackward,c);
 
 
         loadPicks.addMouseListener(new JButtonBorder_MouseAdapter(loadPicks));
         gaRun.addMouseListener(new JButtonBorder_MouseAdapter(gaRun));
         stopGaRun.addMouseListener(new JButtonBorder_MouseAdapter(stopGaRun));
         simulateRun.addMouseListener(new JButtonBorder_MouseAdapter(simulateRun));
+        stepForward.addMouseListener(new JButtonBorder_MouseAdapter(stepForward));
+        stepBackward.addMouseListener(new JButtonBorder_MouseAdapter(stepBackward));
+        resume.addMouseListener(new JButtonBorder_MouseAdapter(resume));
         horizontalPanel.setBackground(Color.WHITE);
         this.add(horizontalPanel);
 
@@ -88,6 +122,18 @@ public class ToolBarHorizontal extends JToolBar {
 
     public JButton getStopGaRun() {
         return stopGaRun;
+    }
+
+    public JButton getStepForward() {
+        return stepForward;
+    }
+
+    public JButton getStepBackward() {
+        return stepBackward;
+    }
+
+    public JButton getResume() {
+        return resume;
     }
 
     public void manageButtons(boolean layout, boolean picks, boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {

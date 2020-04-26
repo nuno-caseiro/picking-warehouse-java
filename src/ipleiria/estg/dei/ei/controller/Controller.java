@@ -8,8 +8,9 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class Controller {
@@ -48,6 +49,36 @@ public class Controller {
         view.getMenuBarHorizontal().getMenuItemWelcome().addActionListener(e->showMainPage());
 
         view.getExperimentsPanel().getRun().addActionListener(e-> runExperiments());
+
+        view.getToolBarHorizontal().getStepForward().addActionListener(e-> increment());
+        view.getToolBarHorizontal().getStepBackward().addActionListener(e-> decrement());
+        view.getToolBarHorizontal().getResume().addActionListener(e-> resume());
+
+        loadDefaultLayout();
+    }
+
+    private void loadDefaultLayout(){
+        this.environment.addEnvironmentListener(this.view.getSimulationPanel());
+        try{
+            Environment.getInstance().loadAtualLayout();
+        }catch (Exception e){
+            e.printStackTrace(System.err);
+        }
+        view.manageButtons(true,true,false,false,false,false);
+
+    }
+
+    private void resume(){
+        Environment.getInstance().resume(Environment.getInstance().getAuxThread());
+    }
+
+    private void decrement() {
+        Environment.getInstance().decrement(Environment.getInstance().getAuxThread());
+
+    }
+
+    private void increment() {
+        Environment.getInstance().increment(Environment.getInstance().getAuxThread());
     }
 
     private void showExperimentPanel() {
@@ -59,7 +90,7 @@ public class Controller {
     }
 
     private void showSimulatePanel() {
-    view.showPanel(3);
+        view.showPanel(3);
     }
 
     private void showGaPanel() {
@@ -71,11 +102,16 @@ public class Controller {
     }
 
     private void simulate() {
+
+        if(!view.isSimulationPanelShow()){
+            showSimulatePanel();
+        }
+
         worker = new SwingWorker<>() {
             @Override
             public Void doInBackground() {
                 try {
-                    view.manageButtons(false,false,false,false,false,false);
+                    view.manageButtons(false,false,false,false,false,true);
                     Environment.getInstance().executeSolution();
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
@@ -93,7 +129,9 @@ public class Controller {
     }
 
     private void stop() {
-        worker.cancel(true);
+        if(worker != null && !worker.isCancelled() && !worker.isDone()) {
+            worker.cancel(true);
+        }
     }
 
     private void runGA() {
@@ -125,16 +163,13 @@ public class Controller {
 
         worker = new SwingWorker<>() {
             @Override
-            public Void doInBackground() {
+            protected Void doInBackground() throws InterruptedException {
+
                 try {
                     Individual bestInRun = ga.run();
                     Environment.getInstance().setBestInRun(bestInRun);
                     view.getGaHistoryPanel().appendParametersOfRun(bestInRun,view.getGaPanel().getPanelParameters());
-//                    System.out.println(Environment.getInstance().getPicks());
                     System.out.println(bestInRun);
-
-//                    Environment.getInstance().printCollisions(bestInRun);
-
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }
@@ -142,8 +177,10 @@ public class Controller {
             }
 
             @Override
-            public void done() {
+            protected void done() {
+                if(!isCancelled()){
                 view.manageButtons(true,false,false,true,false,true);
+                }
 
             }
         };
@@ -151,7 +188,7 @@ public class Controller {
     }
 
     private void loadWarehouseLayout() {
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/warehouseLayout/WarehouseLayout_2.json"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/"));
         int returnVal = fc.showOpenDialog(this.view);
         this.environment.addEnvironmentListener(this.view.getSimulationPanel());
 
@@ -159,6 +196,15 @@ public class Controller {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
                 Environment.getInstance().readInitialStateFromFile(dataSet);
+                if(!dataSet.getPath().contains("actual")){
+                    try{
+                        Path newDataset = Files.move(Paths.get(dataSet.getPath()), Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/"+dataSet.getName()));
+                        Files.move(Paths.get(Environment.getInstance().getDefaultWarehouseLayout().getPath()),Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/other/"+Environment.getInstance().getDefaultWarehouseLayout().getName()));
+                        Environment.getInstance().setDefaultWarehouseLayout(new File(String.valueOf(newDataset)));
+                    }catch (Exception e){
+                        e.printStackTrace(System.err);
+                    }
+                }
 
                 view.manageButtons(true,true,false,false,false,false);
             }
@@ -169,7 +215,7 @@ public class Controller {
     }
 
     private void loadPicks(){
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/picks/Picks_2.json"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/picks/Picks_2.json"));
         int returnVal = fc.showOpenDialog(view);
         try {
 
@@ -192,21 +238,21 @@ public class Controller {
             protected Void doInBackground() throws Exception {
                 try{
 
-                Experiment experiment = new Experiment();
-                experiment.readParametersValues(view.getExperimentsPanel().getExperimentParameters());
-                view.getExperimentsPanel().getExperimentsProgressBar().setMaximum(experiment.getCountAllRuns());
-                experiment.setExperimentsPanel(view.getExperimentsPanel());
-                view.getExperimentsPanel().setAtualValueProgressBar(0);
-                while (experiment.hasMoreExperiments()){
-                    experiment.run();
-                    experiment.indicesManaging(experiment.getParameters().keySet().size() - 1);
-                }
-                view.manageButtons(false,false,false,false,false,false);
+                    Experiment experiment = new Experiment();
+                    experiment.readParametersValues(view.getExperimentsPanel().getExperimentParameters());
+                    view.getExperimentsPanel().getExperimentsProgressBar().setMaximum(experiment.getCountAllRuns());
+                    experiment.setExperimentsPanel(view.getExperimentsPanel());
+                    view.getExperimentsPanel().setAtualValueProgressBar(0);
+                    while (experiment.hasMoreExperiments()){
+                        experiment.run();
+                        experiment.indicesManaging(experiment.getParameters().keySet().size() - 1);
+                    }
+                    view.manageButtons(false,false,false,false,false,false);
                 }catch (Exception e){
                     e.printStackTrace(System.err);
                 }
 
-            return null;
+                return null;
             }
 
             @Override

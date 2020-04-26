@@ -9,8 +9,12 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Environment {
 
@@ -31,10 +35,15 @@ public class Environment {
     private List<Edge> edges;
     private int timeWeight;
     private int collisionsWeight;
+    private Boolean pause;
+    private int executionSteps= 0;
+    private Thread auxThread;
+    private File defaultWarehouseLayout;
 
     private Environment() {
         this.listeners = new ArrayList<>();
         this.pairsMap = new HashMap<>();
+        this.defaultWarehouseLayout=null;
     }
 
     public static Environment getInstance() {
@@ -132,9 +141,19 @@ public class Environment {
         fireCreateEnvironment();
     }
 
+    public void loadAtualLayout() throws IOException {
+        String defaultLayoutPath = Files.walk(Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual"))
+                .map(Path::toString)
+                .filter(n -> n.endsWith(".json")).collect(Collectors.joining());
+        defaultWarehouseLayout = new File(defaultLayoutPath);
+        readInitialStateFromFile(defaultWarehouseLayout);
+    }
+
     public void loadPicksFromFile(File file) {
         this.picks = new ArrayList<>();
         this.picksGraph = new HashMap<>();
+
+        readInitialStateFromFile(defaultWarehouseLayout);
 
         // COPY WAREHOUSE GRAPH TO PICKS GRAPH
         List<Node> successors;
@@ -319,7 +338,10 @@ public class Environment {
 //    }
 
     public void executeSolution() throws InterruptedException {
+        this.pause=false;
+        auxThread = new Thread();
         List<List<Location>> individualPaths = computeIndividualLocations(this.bestInRun.getIndividualPaths());
+
 
         for (int i = 0; i < individualPaths.size(); i++) {
             List<Location> l = individualPaths.get(i);
@@ -328,19 +350,65 @@ public class Environment {
 
         fireCreateSimulationPicks();
 
-        Node offloadNode = this.nodes.get(this.offloadArea);
-        List<Location> iterationAgentsLocations;
-        for (int i = 0; i < this.bestInRun.getFitness(); i++) {
-            iterationAgentsLocations = new LinkedList<>();
-            for (List<Location> l : individualPaths) {
-                if (i < l.size()) {
-                    iterationAgentsLocations.add(l.get(i));
-                } else {
-                    iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
+        auxThread.start();
+
+        synchronized (auxThread){
+            Node offloadNode = this.nodes.get(this.offloadArea);
+            List<Location> iterationAgentsLocations;
+            for (this.executionSteps = 0; this.executionSteps < this.bestInRun.getFitness(); this.executionSteps++) {
+                iterationAgentsLocations = new LinkedList<>();
+                for (List<Location> l : individualPaths) {
+                    if (this.executionSteps < l.size()) {
+                        iterationAgentsLocations.add(l.get(this.executionSteps));
+                    } else {
+                        iterationAgentsLocations.add(new Location(offloadNode.getLine(), offloadNode.getColumn(), 0));
+                    }
+                }
+                fireUpdateEnvironment(iterationAgentsLocations, this.executionSteps);
+                if(this.pause){
+                    auxThread.wait();
+                }else{
+                    Thread.sleep(300);
                 }
             }
-            Thread.sleep(300);
-            fireUpdateEnvironment(iterationAgentsLocations);
+        }
+
+    }
+
+    public void resume(Thread a){
+        if(this.pause!=null){
+
+        this.pause=!this.pause;
+        synchronized (a){
+            a.notify();
+        }
+        }
+    }
+
+    public void increment(Thread a){
+        if(this.pause!=null) {
+            if (!this.pause) {
+                this.pause = true;
+                return;
+            }
+            synchronized (a) {
+                a.notify();
+            }
+        }
+    }
+
+    public void decrement(Thread a){
+        if(this.pause!=null) {
+            if (!this.pause) {
+                this.pause = true;
+                return;
+            }
+            synchronized (a) {
+                this.executionSteps = this.executionSteps - 2;
+                if (this.executionSteps < 0)
+                    this.executionSteps = 0;
+                a.notify();
+            }
         }
     }
 
@@ -441,6 +509,14 @@ public class Environment {
         return edges;
     }
 
+    public File getDefaultWarehouseLayout() {
+        return defaultWarehouseLayout;
+    }
+
+    public void setDefaultWarehouseLayout(File defaultWarehouseLayout) {
+        this.defaultWarehouseLayout = defaultWarehouseLayout;
+    }
+
     public int getMaxLine() {
         int maxLine = 0;
 
@@ -498,6 +574,10 @@ public class Environment {
         return this.edgesMap.get(node2 + "-" + node1).getDirection();
     }
 
+    public Thread getAuxThread() {
+        return auxThread;
+    }
+
     private List<Node> createInversePath(List<Node> path) {
         List<Node> invPath = new ArrayList<>();
         path.forEach((node) -> invPath.add(new Node(node)));
@@ -534,13 +614,9 @@ public class Environment {
         }
     }
 
-//    public synchronized void removeEnvironmentListener(EnvironmentListener l) {
-//        listeners.remove(l);
-//    }
-
-    public void fireUpdateEnvironment(List<Location> agents) {
+    public void fireUpdateEnvironment(List<Location> agents, int iteration) {
         for (EnvironmentListener listener : listeners) {
-            listener.updateEnvironment(agents);
+            listener.updateEnvironment(agents, iteration);
         }
     }
 

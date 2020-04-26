@@ -7,8 +7,7 @@ import ipleiria.estg.dei.ei.model.search.Node;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 public class Simulate extends JLayeredPane {
@@ -20,6 +19,7 @@ public class Simulate extends JLayeredPane {
     private int nodePadding;
     private int cellSize;
     private int count;
+    private HashMap<Integer,List<Location>> statesOfIterations;
 
     public Simulate(int nodeSize, int nodePadding) {
         this.nodeSize = nodeSize;
@@ -27,6 +27,7 @@ public class Simulate extends JLayeredPane {
         this.cellSize = nodeSize + nodePadding;
         this.originalPicks = Environment.getInstance().getPickNodes();
         this.picks = new ArrayList<>();
+        this.statesOfIterations= new HashMap<>();
         initializePicks();
     }
 
@@ -43,7 +44,16 @@ public class Simulate extends JLayeredPane {
         }
     }
 
-    public void updateAgentLocations(List<Location> agents) {
+    public void updateAgentLocations(List<Location> agents, int iteration) {
+        if(!statesOfIterations.containsKey(iteration)){
+            List<Location> picksAux= List.copyOf(this.picks);
+            this.statesOfIterations.put(iteration, picksAux);
+        }
+
+        if(statesOfIterations.containsKey(iteration)){
+            this.picks.clear();
+            this.picks.addAll(statesOfIterations.get(iteration));
+        }
 
         for (Location location : agents) {
             if (location.getColumnOffset() == 2) {
