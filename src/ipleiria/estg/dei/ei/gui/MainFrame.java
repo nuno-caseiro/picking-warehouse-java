@@ -176,6 +176,10 @@ public class MainFrame extends JFrame implements GAListener {
         return gaPanelShow;
     }
 
+    public boolean isSimulationPanelShow() {
+        return simulationPanelShow;
+    }
+
     public MenuBarHorizontal getMenuBarHorizontal() {
         return menuBarHorizontal;
     }

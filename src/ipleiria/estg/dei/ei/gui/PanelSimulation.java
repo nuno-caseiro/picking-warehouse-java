@@ -35,6 +35,15 @@ public class PanelSimulation extends JLayeredPane implements EnvironmentListener
         NODE_PADDING = (int) (cellSize * 0.3);
         NODE_SIZE = cellSize - NODE_PADDING;
 
+        if(warehouseLayout!=null){
+            this.remove(warehouseLayout);
+            this.validate();
+        }
+        if(this.simulate!=null){
+            this.remove(this.simulate);
+            this.validate();
+        }
+
         this.warehouseLayout = new WarehouseLayout(NODE_SIZE, NODE_PADDING);
         this.warehouseLayout.setSize(PANEL_WIDTH,PANEL_HEIGHT);
         this.setLayer(this.warehouseLayout,-1);
@@ -46,6 +55,11 @@ public class PanelSimulation extends JLayeredPane implements EnvironmentListener
 
     @Override
     public void createSimulation() {
+        if(this.simulate!=null){
+            this.remove(this.simulate);
+            this.validate();
+        }
+
         this.simulate = new Simulate(NODE_SIZE, NODE_PADDING);
         this.simulate.setSize(PANEL_WIDTH,PANEL_HEIGHT);
         this.setLayer(this.simulate,1);
@@ -63,8 +77,8 @@ public class PanelSimulation extends JLayeredPane implements EnvironmentListener
     }
 
     @Override
-    public void updateEnvironment(List<Location> agents) {
-        this.simulate.updateAgentLocations(agents);
+    public void updateEnvironment(List<Location> agents, int iteration) {
+        this.simulate.updateAgentLocations(agents,iteration);
         this.simulate.validate();
         this.simulate.repaint();
     }

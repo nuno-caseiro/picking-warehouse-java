@@ -73,7 +73,7 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         numRunsTextField.addKeyListener(new IntegerTextField_KeyAdapter(null));
 
         addComponents(2,populationSizesLabel,populationSizesTextField,populationSizes,"100");
-        addComponents(3,maxGenerationsLabel,maxGenerationsTextField,maxGenerations,"50");
+        addComponents(3,maxGenerationsLabel,maxGenerationsTextField,maxGenerations,"100");
         addComponents(4,selectionMethodsLabel,selectionMethodsTextField,selectionMethods,"Tournament");
         addComponents(5,tournamentSizeLabel,tournamentSizeTextField, tournamentSizeValues,"4");
         addComponents(6,selectivePressureLabel,selectivePressureTextField, selectivePressureValues,"1.0");

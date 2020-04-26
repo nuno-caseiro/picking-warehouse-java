@@ -12,6 +12,9 @@ public class ToolBarHorizontal extends JToolBar {
     private JButton stopGaRun;
     private JButton simulateRun;
 
+    private JButton stepForward;
+    private JButton stepBackward;
+    private JButton resume;
 
     public ToolBarHorizontal() {
         GridBagConstraints c = new GridBagConstraints();
@@ -33,6 +36,19 @@ public class ToolBarHorizontal extends JToolBar {
         this.simulateRun.setBorderPainted(false);
         this.simulateRun.setEnabled(false);
 
+        this.stepForward= new JButton("",new ImageIcon(getClass().getResource("assets/nextIcon.png")));
+        this.stepForward.setBorderPainted(false);
+        this.stepForward.setEnabled(false);
+
+        this.stepBackward= new JButton("",new ImageIcon(getClass().getResource("assets/backIcon.png")));
+        this.stepBackward.setBorderPainted(false);
+        this.stepBackward.setEnabled(false);
+
+        this.resume= new JButton("",new ImageIcon(getClass().getResource("assets/pausePlayIcon.png")));
+        this.resume.setBorderPainted(false);
+        this.stepBackward.setEnabled(false);
+
+
         JPanel horizontalPanel= new JPanel(new GridBagLayout());
         c.gridx=1;
         c.gridy=0;
@@ -43,32 +59,48 @@ public class ToolBarHorizontal extends JToolBar {
         c.gridx=2;
         c.gridy=0;
         c.fill = GridBagConstraints.VERTICAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 5);
         horizontalPanel.add(jSeparator,c);
         c.gridx=3;
         c.gridy=0;
-        c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 5);
         horizontalPanel.add(this.gaRun,c);
         c.gridx=4;
         c.gridy=0;
-        c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 5);
         horizontalPanel.add(this.stopGaRun,c);
         c.gridx=5;
         c.gridy=0;
-        c.weightx=1.0;
-        c.weighty=1.0;
-        c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = new Insets(0, 0, 0, 0);
         horizontalPanel.add(this.simulateRun,c);
+        JSeparator jSeparator2= new JSeparator(JSeparator.VERTICAL);
+        c.gridx=6;
+        c.gridy=0;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(jSeparator2,c);
+        c.gridx=7;
+        c.gridy=0;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.resume,c);
+        c.gridx=8;
+        c.gridy=0;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.stepForward);
+        c.gridx=9;
+        c.gridy=0;
+        c.weightx=1.0;
+        c.weighty=1.0;
+        c.insets = new Insets(0, 0, 0, 0);
+        horizontalPanel.add(this.stepBackward,c);
 
 
         loadPicks.addMouseListener(new JButtonBorder_MouseAdapter(loadPicks));
         gaRun.addMouseListener(new JButtonBorder_MouseAdapter(gaRun));
         stopGaRun.addMouseListener(new JButtonBorder_MouseAdapter(stopGaRun));
         simulateRun.addMouseListener(new JButtonBorder_MouseAdapter(simulateRun));
+        stepForward.addMouseListener(new JButtonBorder_MouseAdapter(stepForward));
+        stepBackward.addMouseListener(new JButtonBorder_MouseAdapter(stepBackward));
+        resume.addMouseListener(new JButtonBorder_MouseAdapter(resume));
         horizontalPanel.setBackground(Color.WHITE);
         this.add(horizontalPanel);
 
@@ -90,10 +122,25 @@ public class ToolBarHorizontal extends JToolBar {
         return stopGaRun;
     }
 
+    public JButton getStepForward() {
+        return stepForward;
+    }
+
+    public JButton getStepBackward() {
+        return stepBackward;
+    }
+
+    public JButton getResume() {
+        return resume;
+    }
+
     public void manageButtons(boolean layout, boolean picks, boolean runSearch, boolean runGA, boolean stopRunGA, boolean runEnvironment) {
         this.loadPicks.setEnabled(picks);
         this.gaRun.setEnabled(runGA);
         this.simulateRun.setEnabled(runEnvironment);
         this.stopGaRun.setEnabled(stopRunGA);
+        this.stepForward.setEnabled(runEnvironment);
+        this.stepBackward.setEnabled(runEnvironment);
+        this.resume.setEnabled(runEnvironment);
     }
 }
