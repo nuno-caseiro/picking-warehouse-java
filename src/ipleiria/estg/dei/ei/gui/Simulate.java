@@ -87,8 +87,8 @@ public class Simulate extends JLayeredPane {
             g2d.setColor(Color.black);
             g2d.drawOval(location.getColumn() * this.cellSize, location.getLine() * this.cellSize, this.nodeSize, this.nodeSize);
 
-            String str = "A" + (i + 1);
-            g2d.drawString(str, (location.getColumn() * this.cellSize) + ((this.nodeSize / 2) - (f.stringWidth(str) / 2)), (location.getLine() * this.cellSize) + ((this.nodeSize / 2) + (f.getHeight() / 2)));
+            String str = String.valueOf(i + 1);
+            g2d.drawString(str, (location.getColumn() * this.cellSize) + ((this.nodeSize / 2) - (f.stringWidth(str) / 2)), (location.getLine() * this.cellSize) + ((this.nodeSize / 2) + (f.getHeight() / 2)) -2);
 
         }
 
