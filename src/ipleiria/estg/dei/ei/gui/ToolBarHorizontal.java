@@ -60,7 +60,7 @@ public class ToolBarHorizontal extends JToolBar {
         c.gridx=1;
         c.gridy=0;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.insets = new Insets(0, 0, 0, -5);
+        //c.insets = new Insets(0, 0, 0, -5);
         this.add(this.loadPicks,c);
         JSeparator jSeparator= new JSeparator(JSeparator.VERTICAL);
         c.gridx=2;
