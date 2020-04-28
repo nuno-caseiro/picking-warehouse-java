@@ -66,6 +66,7 @@ public class ToolBarHorizontal extends JToolBar {
         c.gridx=2;
         c.gridy=0;
         c.fill = GridBagConstraints.VERTICAL;
+        c.insets = new Insets(0, 0, 0, 0);
         jSeparator.setForeground(Color.GRAY);
         jSeparator.setBackground(Color.LIGHT_GRAY.brighter());
         this.add(jSeparator,c);
