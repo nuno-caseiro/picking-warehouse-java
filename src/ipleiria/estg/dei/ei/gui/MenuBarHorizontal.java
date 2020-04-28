@@ -1,6 +1,7 @@
 package ipleiria.estg.dei.ei.gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class MenuBarHorizontal extends JMenuBar {
@@ -80,6 +81,8 @@ public class MenuBarHorizontal extends JMenuBar {
         this.menuHelp.add(menuItemReleaseNotes);
         this.menuHelp.add(menuItemAbout);
         this.add(menuHelp);
+
+        this.setBackground(Color.WHITE);
 
     }
 

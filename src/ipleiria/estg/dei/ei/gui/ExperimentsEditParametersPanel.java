@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExperimentsEditParametersPanel extends JPopupMenu {
+public class ExperimentsEditParametersPanel extends JPanel {
 
     private final ExperimentParametersPanel experimentParametersPanel;
 
@@ -176,8 +176,8 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
     }
 
     private void init(){
-        add = new JButton("+");
-        remove = new JButton("-");
+        add = new JButton("<");
+        remove = new JButton(">");
         ok = new JButton("OK");
         cancel = new JButton("Cancel");
 
@@ -233,9 +233,10 @@ public class ExperimentsEditParametersPanel extends JPopupMenu {
         actualComponent =component;
     }
 
+    /*
     @Override
     protected void firePopupMenuWillBecomeInvisible() {
         experimentParametersPanel.reverseEditing();
         super.firePopupMenuWillBecomeInvisible();
-    }
+    }*/
 }

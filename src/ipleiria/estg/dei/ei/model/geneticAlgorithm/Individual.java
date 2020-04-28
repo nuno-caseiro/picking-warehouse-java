@@ -12,6 +12,7 @@ public class Individual implements Comparable<Individual> {
 
     private int[] genome;
     private double fitness;
+    private double fitnesswofitness;
     private int numberOfCollisions;
     private List<AgentPath> individualPaths;
     private Environment environment;
@@ -74,6 +75,14 @@ public class Individual implements Comparable<Individual> {
         return individualPaths;
     }
 
+    public double getFitnesswofitness() {
+        return fitnesswofitness;
+    }
+
+    public int getNumberOfCollisions() {
+        return numberOfCollisions;
+    }
+
     public int getIndexOf(int value){
         for (int i = 0; i < genome.length; i++) {
             if (genome[i] == value) {
@@ -125,6 +134,7 @@ public class Individual implements Comparable<Individual> {
                 this.fitness = path.getValue();
             }
         }
+        this.fitnesswofitness= this.fitness;
 
         detectAndPenalizeCollisions();
     }

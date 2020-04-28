@@ -25,6 +25,7 @@ public class Experiment implements GAListener {
     private HashMap<String, Parameter> parameters;
     private GeneticAlgorithm geneticAlgorithm;
     private double[] allRunsFitness;
+    private double[] allRunsCollisions;
     private int countAllRuns;
     private ExperimentsPanel experimentsPanel;
 
@@ -74,6 +75,7 @@ public class Experiment implements GAListener {
 
         runs = Integer.parseInt(getParameterValue("Runs"));
         allRunsFitness= new double[runs];
+        allRunsCollisions= new double[runs];
 
         countAllRuns=countAllRuns*runs;
     }
@@ -180,9 +182,8 @@ public class Experiment implements GAListener {
 
     public void run(){
 
-        for (int i = 0; i < allRunsFitness.length; i++) {
-            allRunsFitness[i]=0.0;
-        }
+        Arrays.fill(allRunsFitness, 0.0);
+        Arrays.fill(allRunsCollisions, 0.0);
 
         for (int i = 0; i < runs; i++) {
             geneticAlgorithm = buildRun();
@@ -200,18 +201,21 @@ public class Experiment implements GAListener {
 
     private void runEnded(int i) {
         allRunsFitness[i]=geneticAlgorithm.getAverageFitness();
+        allRunsCollisions[i]=geneticAlgorithm.getBestInRun().getNumberOfCollisions();
     }
 
     private void experimentEnded(){
         File file = new File("statistic_average_fitness.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentHeader() + "\t" + "Average:" + "\t" + "StdDev:" + "\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentHeader() + "\t" + "Average:" + "\t" + "StdDev:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" + "\r\n");
         }
 
         double average = Maths.average(allRunsFitness);
         double stdDeviation= Maths.standardDeviation(allRunsFitness,average);
+        double collisionsAverage = Maths.average(allRunsCollisions);
+        double collisionStdDeviation = Maths.average(allRunsCollisions);
 
-        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average + "\t" + stdDeviation + "\r\n");
+        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average + "\t" + stdDeviation + "\t" + collisionsAverage + "\t" + collisionStdDeviation + "\r\n");
     }
 
     protected String getParameterValue(String parameterName){

@@ -73,7 +73,27 @@ public class ExperimentsPanel extends JPanel implements GAListener {
 
     }
 
-    public void showEditParameters(int panelId, List values, Point point) {
+    public void showEditParameters(int panelId, List<String> values, Point point){
+        for (Component component : eastPanel.getComponents()) {
+            if(component==experimentsEditParametersPanel){
+                eastPanel.remove(component);
+            }
+        }
+        experimentsEditParametersPanel= new ExperimentsEditParametersPanel(panelId,values,availableParameters,experimentParameters);
+        eastPanel.add(experimentsEditParametersPanel,BorderLayout.NORTH);
+        eastPanel.validate();
+        this.validate();
+    }
+
+    public void hideEditParameters(){
+        eastPanel.remove(experimentsEditParametersPanel);
+        eastPanel.validate();
+        this.repaint();
+    }
+
+
+
+    /*public void showEditParameters(int panelId, List values, Point point) {
         experimentsEditParametersPanel= new ExperimentsEditParametersPanel(panelId,values,availableParameters,experimentParameters);
         experimentsEditParametersPanel.setLocation(point.x+250,point.y);
         experimentsEditParametersPanel.setPreferredSize(new Dimension(300,200));
@@ -85,7 +105,7 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     public void hideEditParameters(){
         experimentsEditParametersPanel.setInvoker(null);
         experimentsEditParametersPanel.setVisible(false);
-    }
+    }*/
 
     public HashMap<String, List<String>> getAvailableParameters() {
         return availableParameters;
