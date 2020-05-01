@@ -57,4 +57,12 @@ public class Population {
         }
         return fitnessSum / individuals.size();
     }
+
+    public double getAverageFitnessWithoutCollisions(){
+        double fitnessSum = 0;
+        for (Individual individual : individuals) {
+            fitnessSum += individual.getFitnesswofitness();
+        }
+        return fitnessSum / individuals.size();
+    }
 }

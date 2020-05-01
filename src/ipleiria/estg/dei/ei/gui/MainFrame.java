@@ -218,6 +218,11 @@ public class MainFrame extends JFrame implements GAListener {
     public void runEnded(GeneticAlgorithm e) {
 
     }
+
+    @Override
+    public void experimentEnded() {
+
+    }
 }
 
 

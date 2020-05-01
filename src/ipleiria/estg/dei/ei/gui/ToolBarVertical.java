@@ -20,18 +20,22 @@ public class ToolBarVertical extends JToolBar {
 
        this.ga = new JButton("",new ImageIcon(getClass().getResource("assets/gaIcon.png")));
        this.ga.setBorderPainted(false);
+       this.ga.setBackground(Color.WHITE);
        this.add(this.ga);
 
        this.simulate= new JButton("",new ImageIcon(getClass().getResource("assets/simulationIcon.png")));
        this.simulate.setBorderPainted(false);
+       this.simulate.setBackground(Color.WHITE);
        this.add(this.simulate);
 
        this.gaHistory= new JButton("",new ImageIcon(getClass().getResource("assets/gaHistoryIcon.png")));
        this.gaHistory.setBorderPainted(false);
+       this.gaHistory.setBackground(Color.WHITE);
        this.add(this.gaHistory);
 
        this.experiments= new JButton("",new ImageIcon(getClass().getResource("assets/experimentsIcon.png")));
        this.experiments.setBorderPainted(false);
+       this.experiments.setBackground(Color.WHITE);
        this.add(this.experiments);
 
        ga.addMouseListener(new JButtonBorder_MouseAdapter(ga));

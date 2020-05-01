@@ -18,19 +18,24 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 
-public class Experiment implements GAListener {
+public class Experiment implements ExperimentListener  {
 
     private int seed;
     private int runs;
     private HashMap<String, Parameter> parameters;
     private GeneticAlgorithm geneticAlgorithm;
-    private double[] allRunsFitness;
     private int countAllRuns;
+    protected List<String> statisticsNames;
+    protected List<ExperimentListener> statistics;
     private ExperimentsPanel experimentsPanel;
 
-    public Experiment() throws FileNotFoundException {
+
+
+    public Experiment() {
         this.parameters= new LinkedHashMap<>();
         this.countAllRuns=1;
+        this.statistics= new LinkedList<>();
+        this.statisticsNames= new LinkedList<>();
     }
 
     public void readParameterFile() throws FileNotFoundException {
@@ -50,7 +55,7 @@ public class Experiment implements GAListener {
         }
 
         runs = Integer.parseInt(getParameterValue("Runs"));
-        allRunsFitness= new double[runs];
+
     }
 
     public void readParametersValues(ExperimentParametersPanel experimentParametersPanel){
@@ -73,9 +78,30 @@ public class Experiment implements GAListener {
         addParameter("Collisions weight",experimentParametersPanel.getTimeWeightValues());
 
         runs = Integer.parseInt(getParameterValue("Runs"));
-        allRunsFitness= new double[runs];
 
         countAllRuns=countAllRuns*runs;
+
+        String[] statistics = experimentParametersPanel.getStatisticsValues().toString().trim().replaceAll("[\\[\\]\\(\\)]", "").split(",");
+        for (int i = 0; i < statistics.length; i++) {
+            if(statistics[i].equals("StatisticBestAverage")){
+                StatisticBestAverage statisticBestAverage = new StatisticBestAverage(runs,buildExperimentHeader());
+                addExperimentListener(statisticBestAverage);
+                this.statistics.add(statisticBestAverage);
+            }
+            if(statistics[i].equals(" StatisticBestAverageWithoutCollisions")){
+                StatisticBestAveragewoCollisions statisticBestAveragewoCollisions = new StatisticBestAveragewoCollisions(runs,buildExperimentHeader());
+                addExperimentListener(statisticBestAveragewoCollisions);
+                this.statistics.add(statisticBestAveragewoCollisions);
+            }
+
+        }
+//        StatisticBestAverage statisticBestAverage = new StatisticBestAverage(runs,buildExperimentHeader());
+//        StatisticBestAveragewoCollisions statisticBestAveragewoCollisions = new StatisticBestAveragewoCollisions(runs,buildExperimentHeader());
+//        addExperimentListener(statisticBestAverage);
+//        addExperimentListener(statisticBestAveragewoCollisions);
+//        this.statistics.add(statisticBestAverage);
+//        this.statistics.add(statisticBestAveragewoCollisions);
+
     }
 
 
@@ -94,20 +120,11 @@ public class Experiment implements GAListener {
         String[] keys= parameters.keySet().toArray(new String[0]);
         key=keys[i];
 
-       /* Iterator iterator= parameters.keySet().iterator();
-        iterator.next();
-
-        while(index!=i){
-            index++;
-            key = iterator.next().toString();
-        }*/
-
         parameters.get(key).activeValueIndex++;
         if (i != 0 && parameters.get(key).activeValueIndex >= parameters.get(key).getNumberOfValues()) {
             parameters.get(key).activeValueIndex = 0;
             indicesManaging(--i);
         }
-
     }
 
     private GeneticAlgorithm buildRun(){
@@ -171,6 +188,10 @@ public class Experiment implements GAListener {
         Environment.getInstance().setTimeWeight(timeWeight);
         Environment.getInstance().setCollisionsWeight(collisionsWeight);
 
+        for (ExperimentListener statistic : statistics) {
+            ga.addGAListener((GAListener) statistic);
+        }
+
         return ga;
     }
 
@@ -180,39 +201,17 @@ public class Experiment implements GAListener {
 
     public void run(){
 
-        for (int i = 0; i < allRunsFitness.length; i++) {
-            allRunsFitness[i]=0.0;
-        }
-
         for (int i = 0; i < runs; i++) {
             geneticAlgorithm = buildRun();
-            geneticAlgorithm.addGAListener(this);
             geneticAlgorithm.addGAListener(experimentsPanel);
             geneticAlgorithm.run();
-            runEnded(i);
-            System.out.println("Done "+geneticAlgorithm.getAverageFitness());
+            System.out.println("Done "+geneticAlgorithm.getAverageFitness() + " C:"+ geneticAlgorithm.getBestInRun().getNumberOfCollisions());
             seed++;
         }
-        experimentEnded();
-        //Fire experiment ended
-        System.out.println("---------TERMINOU-------");
+        fireExperimentEnded();
+
     }
 
-    private void runEnded(int i) {
-        allRunsFitness[i]=geneticAlgorithm.getAverageFitness();
-    }
-
-    private void experimentEnded(){
-        File file = new File("statistic_average_fitness.xls");
-        if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentHeader() + "\t" + "Average:" + "\t" + "StdDev:" + "\r\n");
-        }
-
-        double average = Maths.average(allRunsFitness);
-        double stdDeviation= Maths.standardDeviation(allRunsFitness,average);
-
-        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average + "\t" + stdDeviation + "\r\n");
-    }
 
     protected String getParameterValue(String parameterName){
         if(parameters.get(parameterName)!=null){
@@ -239,36 +238,31 @@ public class Experiment implements GAListener {
         return sb.toString();
     }
 
-    private String buildExperimentValues() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(geneticAlgorithm.getPopSize() + "\t");
-        sb.append(geneticAlgorithm.getMaxGenerations() + "\t");
-        sb.append(geneticAlgorithm.getSelection() + "\t");
-        sb.append(geneticAlgorithm.getRecombination() + "\t");
-        sb.append(geneticAlgorithm.getRecombination().getProbability() + "\t");
-        sb.append(geneticAlgorithm.getMutation() + "\t");
-        sb.append(geneticAlgorithm.getMutation().getProbability() + "\t");
-        sb.append(Environment.getInstance().getTimeWeight() + "\t");
-        sb.append(Environment.getInstance().getCollisionsWeight() + "\t");
-        return sb.toString();
-    }
 
     public int getCountAllRuns() {
         return countAllRuns;
     }
 
-    @Override
-    public void generationEnded(GeneticAlgorithm e) {
+    final private List<ExperimentListener> listeners = new ArrayList<>(10);
 
+    public synchronized void addExperimentListener(ExperimentListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    public void fireExperimentEnded() {
+        for (ExperimentListener listener : listeners) {
+            listener.experimentEnded();
+        }
     }
 
     @Override
-    public void runEnded(GeneticAlgorithm e) {
+    public void experimentEnded() {
 
     }
 
     public void setExperimentsPanel(ExperimentsPanel experimentsPanel) {
         this.experimentsPanel=experimentsPanel;
-
     }
 }

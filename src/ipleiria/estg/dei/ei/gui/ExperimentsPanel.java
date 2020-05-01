@@ -5,7 +5,9 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -24,7 +26,7 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     private JButton run;
     private JProgressBar experimentsProgressBar;
     private int atualValueProgressBar;
-    private JTextArea individual = new JTextArea(10,40);
+    private JTextArea individual = new JTextArea(10,50);
 
 
     public ExperimentsPanel() {
@@ -53,17 +55,21 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     values.add("Inversion");
     values.add("Scramble");
     availableParameters.put("Mutation",values);
+    values = new LinkedList<>();
+    values.add("StatisticBestAverage");
+    values.add("StatisticBestAverageWithoutCollisions");
+    availableParameters.put("Statistics",values);
 
     experimentsProgressBar = new JProgressBar();
     experimentsProgressBar.setStringPainted(true);
     experimentsProgressBar.setValue(atualValueProgressBar);
 
-    eastPanel.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.GRAY));
+    parameters.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.GRAY));
 
     run= new JButton("Run");
 
     parameters.add(experimentParameters,BorderLayout.NORTH);
-    parameters.add(run,BorderLayout.CENTER);
+    parameters.add(run,BorderLayout.SOUTH);
 
     this.individual.setEditable(false);
     this.eastPanel.add(individual,BorderLayout.SOUTH);
@@ -73,7 +79,26 @@ public class ExperimentsPanel extends JPanel implements GAListener {
 
     }
 
-    public void showEditParameters(int panelId, List values, Point point) {
+    public void showEditParameters(int panelId, List<String> values){
+        for (Component component : eastPanel.getComponents()) {
+            if(component==experimentsEditParametersPanel){
+                eastPanel.remove(component);
+            }
+        }
+        experimentsEditParametersPanel= new ExperimentsEditParametersPanel(panelId,values,availableParameters,experimentParameters);
+        eastPanel.add(experimentsEditParametersPanel,BorderLayout.NORTH);
+        this.validate();
+        this.repaint();
+    }
+
+    public void hideEditParameters(){
+        eastPanel.remove(experimentsEditParametersPanel);
+
+        this.validate();
+        this.repaint();
+    }
+
+    /*public void showEditParameters(int panelId, List values, Point point) {
         experimentsEditParametersPanel= new ExperimentsEditParametersPanel(panelId,values,availableParameters,experimentParameters);
         experimentsEditParametersPanel.setLocation(point.x+250,point.y);
         experimentsEditParametersPanel.setPreferredSize(new Dimension(300,200));
@@ -85,7 +110,7 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     public void hideEditParameters(){
         experimentsEditParametersPanel.setInvoker(null);
         experimentsEditParametersPanel.setVisible(false);
-    }
+    }*/
 
     public HashMap<String, List<String>> getAvailableParameters() {
         return availableParameters;
@@ -121,5 +146,11 @@ public class ExperimentsPanel extends JPanel implements GAListener {
         atualValueProgressBar++;
         experimentsProgressBar.setValue(atualValueProgressBar);
         individual.setText(e.getBestInRun().toString());
+    }
+
+
+    @Override
+    public void experimentEnded() {
+
     }
 }
