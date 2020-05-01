@@ -41,7 +41,6 @@ public class ToolBarHorizontal extends JToolBar {
         this.simulateRun.setEnabled(false);
         this.simulateRun.setBackground(Color.WHITE);
 
-
         this.stepForward= new JButton("",new ImageIcon(getClass().getResource("assets/nextIcon.png")));
         this.stepForward.setBorderPainted(false);
         this.stepForward.setEnabled(false);
@@ -106,8 +105,6 @@ public class ToolBarHorizontal extends JToolBar {
         stepBackward.addMouseListener(new JButtonBorder_MouseAdapter(stepBackward));
         resume.addMouseListener(new JButtonBorder_MouseAdapter(resume));
         this.setBackground(Color.WHITE);
-
-
     }
 
     public JButton getGaRun() {

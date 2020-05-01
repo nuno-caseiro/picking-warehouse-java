@@ -82,6 +82,11 @@ public class GeneticAlgorithm {
         return population.getAverageFitness();
     }
 
+    public double getAverageFitnessWithoutCollisions() {
+        return population.getAverageFitnessWithoutCollisions();
+    }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

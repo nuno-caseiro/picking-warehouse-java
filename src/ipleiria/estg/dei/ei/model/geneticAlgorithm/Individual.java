@@ -45,6 +45,7 @@ public class Individual implements Comparable<Individual> {
         this.genome = new int[original.genome.length];
         System.arraycopy(original.genome, 0, this.genome, 0, this.genome.length);
         this.fitness = original.fitness;
+        this.fitnesswofitness=original.fitnesswofitness;
         this.environment = Environment.getInstance();
         this.aStar = new AStar();
         this.individualPaths = original.individualPaths;
@@ -136,6 +137,7 @@ public class Individual implements Comparable<Individual> {
         }
         this.fitnesswofitness= this.fitness;
 
+
         detectAndPenalizeCollisions();
     }
 
@@ -208,4 +210,5 @@ public class Individual implements Comparable<Individual> {
         }
         return sb.toString();
     }
+
 }

@@ -3,6 +3,7 @@ package ipleiria.estg.dei.ei.gui;
 import ipleiria.estg.dei.ei.utils.IntegerTextField_KeyAdapter;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,54 +13,57 @@ import java.util.List;
 public class ExperimentParametersPanel extends PanelAtributesValue {
     private ExperimentsPanel mainPanel;
 
-    private JTextField numRunsTextField;
+    private JTextArea numRunsTextField;
     private JLabel numRunsLabel;
 
     private JLabel populationSizesLabel;
     private List<String> populationSizes;
-    private JTextField populationSizesTextField;
+    private JTextArea populationSizesTextField;
 
     private JLabel maxGenerationsLabel;
     private List<String> maxGenerations;
-    private JTextField maxGenerationsTextField;
+    private JTextArea maxGenerationsTextField;
 
     private JLabel selectionMethodsLabel;
     private List<String> selectionMethods;
-    private JTextField selectionMethodsTextField;
+    private JTextArea selectionMethodsTextField;
 
     private JLabel tournamentSizeLabel;
     private List<String> tournamentSizeValues;
-    private JTextField tournamentSizeTextField;
+    private JTextArea tournamentSizeTextField;
 
     private JLabel selectivePressureLabel;
     private List<String> selectivePressureValues;
-    private JTextField selectivePressureTextField;
+    private JTextArea selectivePressureTextField;
 
     private JLabel recombinationMethodsLabel;
     private List<String> recombinationMethods;
-    private JTextField recombinationMethodsTextField;
+    private JTextArea recombinationMethodsTextField;
 
     private JLabel recombinationProbabilitiesLabel;
     private List<String> recombinationProbabilities;
-    private JTextField recombinationProbabilitiesTextField;
+    private JTextArea recombinationProbabilitiesTextField;
 
     private JLabel mutationMethodsLabel;
     private List<String> mutationMethods;
-    private JTextField mutationMethodsTextField;
+    private JTextArea mutationMethodsTextField;
 
     private JLabel mutationProbabilitiesLabel;
     private List<String> mutationProbabilities;
-    private JTextField mutationProbabilitiesTextField;
+    private JTextArea mutationProbabilitiesTextField;
 
     private JLabel timeWeightsLabel;
     private List<String> timeWeightValues;
-    private JTextField timeWeightsTextField;
+    private JTextArea timeWeightsTextField;
 
     private JLabel collisionsWeightsLabel;
     private List<String> collisionsWeightsValues;
-    private JTextField collisionsWeightsTextField;
+    private JTextArea collisionsWeightsTextField;
 
-    int isEditShowing= 0;
+    private JLabel statisticsSelection;
+    private List<String> statisticsValues;
+    private JTextArea statisticsTextField;
+    //private JScrollPane scrollPaneStatistics;
 
     public ExperimentParametersPanel(ExperimentsPanel mainPanel) {
 
@@ -69,103 +73,111 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         initVars();
 
         this.labels.add(numRunsLabel);
-        this.valueComponents.add(numRunsTextField);
+        numRunsTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 0)));
+        JScrollPane numRunsScrollPane = new JScrollPane(numRunsTextField);
+
+        this.valueComponents.add(numRunsScrollPane);
+
         numRunsTextField.addKeyListener(new IntegerTextField_KeyAdapter(null));
 
-        addComponents(2,populationSizesLabel,populationSizesTextField,populationSizes,"100");
-        addComponents(3,maxGenerationsLabel,maxGenerationsTextField,maxGenerations,"100");
-        addComponents(4,selectionMethodsLabel,selectionMethodsTextField,selectionMethods,"Tournament");
-        addComponents(5,tournamentSizeLabel,tournamentSizeTextField, tournamentSizeValues,"4");
-        addComponents(6,selectivePressureLabel,selectivePressureTextField, selectivePressureValues,"1.0");
-        addComponents(7,recombinationMethodsLabel,recombinationMethodsTextField, recombinationMethods,"PMX");
-        addComponents(8,recombinationProbabilitiesLabel,recombinationProbabilitiesTextField, recombinationProbabilities,"0.7");
-        addComponents(9,mutationMethodsLabel,mutationMethodsTextField, mutationMethods,"Insert");
-        addComponents(10,mutationProbabilitiesLabel,mutationProbabilitiesTextField, mutationProbabilities,"0.3");
-        addComponents(11,timeWeightsLabel,timeWeightsTextField, timeWeightValues,"1");
-        addComponents(12,collisionsWeightsLabel, collisionsWeightsTextField, collisionsWeightsValues,"1");
+        addComponents(2,populationSizesLabel,populationSizesTextField,populationSizes,"100", null);
+        addComponents(3,maxGenerationsLabel,maxGenerationsTextField,maxGenerations,"100", null);
+        addComponents(4,selectionMethodsLabel,selectionMethodsTextField,selectionMethods,"Tournament", null);
+        addComponents(5,tournamentSizeLabel,tournamentSizeTextField, tournamentSizeValues,"4", null);
+        addComponents(6,selectivePressureLabel,selectivePressureTextField, selectivePressureValues,"1.0", null);
+        addComponents(7,recombinationMethodsLabel,recombinationMethodsTextField, recombinationMethods,"PMX", null);
+        addComponents(8,recombinationProbabilitiesLabel,recombinationProbabilitiesTextField, recombinationProbabilities,"0.7", null);
+        addComponents(9,mutationMethodsLabel,mutationMethodsTextField, mutationMethods,"Insert", null);
+        addComponents(10,mutationProbabilitiesLabel,mutationProbabilitiesTextField, mutationProbabilities,"0.3", null);
+        addComponents(11,timeWeightsLabel,timeWeightsTextField, timeWeightValues,"1", null);
+        addComponents(12,collisionsWeightsLabel, collisionsWeightsTextField, collisionsWeightsValues,"1", null);
+        addComponents(13,statisticsSelection, statisticsTextField, statisticsValues,"StatisticBestAverage", null);
 
         configure();
     }
 
-    private void addComponents(int parameterId, JLabel label, JTextField textField, List<String> values, String defaultValue ){
+    private void addComponents(int parameterId, JLabel label, JTextArea textField, List<String> values, String defaultValue, JScrollPane scroll ){
         this.labels.add(label);
-        this.valueComponents.add(textField);
+
         values.add(defaultValue);
+        textField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 0)));
         textField.setEditable(false);
         textField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                showEditParameters(parameterId, values, textField.getLocationOnScreen());
+                showEditParameters(parameterId, values);
             }
         });
+        scroll=new JScrollPane(textField);
+        this.valueComponents.add(scroll);
 
     }
 
     private void initVars() {
-        numRunsTextField = new JTextField("30",7);
+        numRunsTextField = new JTextArea("30",1,25);
         numRunsLabel = new JLabel("Number of runs:");
 
         populationSizesLabel = new JLabel("Population sizes:");
         populationSizes = new LinkedList<>();
-        populationSizesTextField = new JTextField("100",7);
+        populationSizesTextField = new JTextArea("100",1,25);
 
         maxGenerationsLabel = new JLabel("Max generations:");
         maxGenerations = new LinkedList<>();
-        maxGenerationsTextField = new JTextField("100",7);
+        maxGenerationsTextField = new JTextArea("100",1,25);
 
         selectionMethodsLabel= new JLabel("Selection methods:");
         selectionMethods= new LinkedList<>();
-        selectionMethodsTextField = new JTextField("Tournament",20);
+        selectionMethodsTextField = new JTextArea("Tournament",1,25);
 
         tournamentSizeLabel= new JLabel("Tournament sizes:");
         tournamentSizeValues = new LinkedList<>();
-        tournamentSizeTextField = new JTextField("4",7);
+        tournamentSizeTextField = new JTextArea("4",1,25);
 
         selectivePressureLabel= new JLabel("Selective pressure values:");
         selectivePressureValues = new LinkedList<>();
-        selectivePressureTextField = new JTextField("1",7);
+        selectivePressureTextField = new JTextArea("1",1,25);
 
         recombinationMethodsLabel= new JLabel("Recombination methods:");
         recombinationMethods = new LinkedList<>();
-        recombinationMethodsTextField = new JTextField("PMX",7);
+        recombinationMethodsTextField = new JTextArea("PMX",1,25);
 
         recombinationProbabilitiesLabel= new JLabel("Recombination probabilities:");
         recombinationProbabilities = new LinkedList<>();
-        recombinationProbabilitiesTextField = new JTextField("0.7",7);
+        recombinationProbabilitiesTextField = new JTextArea("0.7",1,25);
 
         mutationMethodsLabel= new JLabel("Mutation methods:");
         mutationMethods = new LinkedList<>();
-        mutationMethodsTextField = new JTextField("Insert",7);
+        mutationMethodsTextField = new JTextArea("Insert",1,25);
 
         mutationProbabilitiesLabel= new JLabel("Mutation probabilities:");
         mutationProbabilities = new LinkedList<>();
-        mutationProbabilitiesTextField = new JTextField("0.3",7);
+        mutationProbabilitiesTextField = new JTextArea("0.3",1,25);
 
         timeWeightsLabel= new JLabel("Time weights:");
         timeWeightValues = new LinkedList<>();
-        timeWeightsTextField = new JTextField("1",7);
+        timeWeightsTextField = new JTextArea("1",1,25);
 
         collisionsWeightsLabel= new JLabel("Collision weights:");
         collisionsWeightsValues = new LinkedList<>();
-        collisionsWeightsTextField = new JTextField("1",7);
+        collisionsWeightsTextField = new JTextArea("1",1,25);
+
+        statisticsSelection= new JLabel("Statistics: ");
+        statisticsValues= new LinkedList<>();
+        statisticsTextField = new JTextArea("StatisticBestAverage",1, 25);
+
+
+        this.setBorder(new EmptyBorder(0,5,0,5));//top,left,bottom,right
+
     }
 
-    public void showEditParameters(int panelId, List values, Point location) {
-        if(isEditShowing==0){
-            isEditShowing=1;
-            mainPanel.showEditParameters(panelId, values, location);
-        }
+    public void showEditParameters(int panelId, List<String> values) {
+            mainPanel.showEditParameters(panelId, values);
     }
 
-    public void reverseEditing(){
-            isEditShowing=0;
-    }
-
-    public void hideEditParameters(int panelId){
-        if(isEditShowing==1){
-
-            mainPanel.hideEditParameters();
+    public void updateTextFieldParameters(int panelId){
 
             switch (panelId){
                 case 1:
@@ -203,10 +215,17 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
                 case 12:
                     collisionsWeightsTextField.setText(listsToString(collisionsWeightsValues));
                     break;
+                case 13:
+                    statisticsTextField.setText(listsToString(statisticsValues));
+                    break;
             }
-            isEditShowing=0;
-        }
     }
+
+    public void hideParameters(){
+        mainPanel.hideEditParameters();
+    }
+
+
 
     private String listsToString(List<String> list){
         StringBuilder sb = new StringBuilder();
@@ -221,7 +240,7 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         return sb.toString();
     }
 
-    public JTextField getNumRunsTextField() {
+    public JTextArea getNumRunsTextField() {
         return numRunsTextField;
     }
 
@@ -267,5 +286,9 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
 
     public List<String> getCollisionsWeightsValues() {
         return collisionsWeightsValues;
+    }
+
+    public List<String> getStatisticsValues() {
+        return statisticsValues;
     }
 }
