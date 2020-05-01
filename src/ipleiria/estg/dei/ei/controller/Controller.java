@@ -166,10 +166,17 @@ public class Controller {
             protected Void doInBackground() throws InterruptedException {
 
                 try {
+                    long start = System.currentTimeMillis();
                     Individual bestInRun = ga.run();
+                    long end = System.currentTimeMillis();
+
                     Environment.getInstance().setBestInRun(bestInRun);
                     view.getGaHistoryPanel().appendParametersOfRun(bestInRun,view.getGaPanel().getPanelParameters());
                     System.out.println(bestInRun);
+
+                    System.out.println("##################################");
+                    System.out.println("Time: " + ((end - start) / 1000) + " seconds");
+                    System.out.println("##################################");
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }

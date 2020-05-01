@@ -3,6 +3,8 @@ package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.search.AStar;
 import ipleiria.estg.dei.ei.model.search.Node;
+import ipleiria.estg.dei.ei.model.search.TimePair;
+import ipleiria.estg.dei.ei.utils.NodePathList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -136,29 +138,34 @@ public class Individual implements Comparable<Individual> {
     private void detectAndPenalizeCollisions() {
         this.numberOfCollisions = 0;
 
+        // BUILD PAIRS
+        for (AgentPath agentPath : this.individualPaths) {
+            agentPath.populateNodePairsMap();
+        }
+
         // TYPE 1 COLLISIONS
         for (int i = 0; i < this.individualPaths.size() - 1; i++) {
             for (int j = i + 1; j < this.individualPaths.size(); j++) {
                 for (Node node : this.individualPaths.get(i).getPath()) {
-                    for (Node node1 : this.individualPaths.get(j).getPath()) { // TODO OPTIMIZE THIS USING A HASH SET TO VERIFY IF LIST CONTAINS NODE AND REMOVE OFFLOAD NODE COLLISION VERIFICATION
-                        if (node.getNodeNumber() == node1.getNodeNumber() && node.getTime() == node1.getTime()) {
-                            this.numberOfCollisions++;
-                        }
+                    if (this.individualPaths.get(j).getPath().containsNodeAtTime(node.getNodeNumber(), node.getTime())) {
+                        this.numberOfCollisions++;
                     }
                 }
             }
         }
 
         // TYPE 2 COLLISIONS
+        List<TimePair> pairs;
         for (int i = 0; i < this.individualPaths.size() - 1; i++) {
-            List<Node> path = this.individualPaths.get(i).getPath();
+            NodePathList path = this.individualPaths.get(i).getPath();
             for (int j = i + 1; j < this.individualPaths.size(); j++) {
-                List<Node> path1 = this.individualPaths.get(j).getPath();
-                for (int k = 0; k < path.size() - 1; k++) { // TODO OPTIMIZE THIS USING A HASH SET
-                    for (int l = 0; l < path1.size() - 1; l++) {
-                        if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
-                            if (path1.get(l).getNodeNumber() == path.get(k + 1).getNodeNumber() && path1.get(l + 1).getNodeNumber() == path.get(k).getNodeNumber()) {
-                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), path1.get(l).getTime(), path1.get(l + 1).getTime())) {
+                NodePathList path1 = this.individualPaths.get(j).getPath();
+                for (int k = 0; k < path.size() - 1; k++) {
+                    if (isEdgeOneWay(path.get(k).getNodeNumber(), path.get(k + 1).getNodeNumber())) {
+                        pairs = path1.getPair(path.get(k + 1), path.get(k));
+                        if (pairs != null) {
+                            for (TimePair timePair : pairs) {
+                                if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), timePair.getNode1Time(), timePair.getNode2Time())) {
                                     this.numberOfCollisions++;
                                 }
                             }
