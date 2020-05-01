@@ -1,21 +1,23 @@
 package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 
 import ipleiria.estg.dei.ei.model.search.Node;
+import ipleiria.estg.dei.ei.utils.NodePathList;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AgentPath {
 
-    private List<Node> path;
+    private NodePathList path;
     private double value;
 
     public AgentPath() {
-        this.path = new LinkedList<>();
+        this.path = new NodePathList();
         this.value = 0;
     }
 
-    public List<Node> getPath() {
+    public NodePathList getPath() {
         return path;
     }
 
@@ -43,5 +45,9 @@ public class AgentPath {
         Node n = new Node(node);
         n.setTime(0);
         this.path.add(n);
+    }
+
+    public void populateNodePairsMap() {
+        this.path.populateNodePairsMap();
     }
 }
