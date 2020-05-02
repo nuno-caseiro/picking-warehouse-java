@@ -137,7 +137,7 @@ public class Individual implements Comparable<Individual> {
                 this.fitness = path.getValue();
             }
         }
-        this.fitnesswofitness= this.fitness;
+        this.fitnesswofitness = this.fitness;
 
 
         detectAndPenalizeCollisions();

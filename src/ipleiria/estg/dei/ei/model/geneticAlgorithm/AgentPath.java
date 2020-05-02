@@ -3,8 +3,6 @@ package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 import ipleiria.estg.dei.ei.model.search.Node;
 import ipleiria.estg.dei.ei.utils.NodePathList;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AgentPath {
