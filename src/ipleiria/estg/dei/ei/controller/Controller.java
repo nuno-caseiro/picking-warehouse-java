@@ -175,7 +175,7 @@ public class Controller {
                     System.out.println(bestInRun);
 
                     System.out.println("##################################");
-                    System.out.println("Time: " + ((end - start) / 1000) + " seconds");
+                    System.out.println("Time: " + ((double)(end - start) / 1000) + " seconds");
                     System.out.println("##################################");
                 } catch (Exception e) {
                     e.printStackTrace(System.err);

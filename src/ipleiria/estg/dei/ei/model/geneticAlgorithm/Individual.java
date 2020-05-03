@@ -141,6 +141,41 @@ public class Individual implements Comparable<Individual> {
 
 
         detectAndPenalizeCollisions();
+        detectPicksWeight(picks);
+    }
+
+    private void detectPicksWeight(List<Node> picks) {
+        int penalization = 0;
+
+        List<Node> orderedPicks = new ArrayList<>();
+        for (int pick : this.genome) {
+            if (pick > 0) {
+                orderedPicks.add(picks.get(pick - 1));
+            }
+        }
+
+        int weightOnTopOfCurrentPick;
+        Node pick;
+        for (int i = 0; i < this.genome.length; i++) {
+            if (this.genome[i] < 0) {
+                continue;
+            }
+
+            pick = picks.get(this.genome[i] - 1);
+            weightOnTopOfCurrentPick = 0;
+            for (int j = i + 1; j < this.genome.length; j++) {
+                if (this.genome[j] < 0) {
+                    break;
+                }
+                weightOnTopOfCurrentPick += picks.get(this.genome[j] - 1).getWeight();
+            }
+
+            if (weightOnTopOfCurrentPick > (pick.getWeight() * (pick.getCapacity() / 100))) {
+                penalization += weightOnTopOfCurrentPick - (pick.getWeight() * (pick.getCapacity() / 100));
+            }
+        }
+
+        this.fitness += penalization;
     }
 
     private void computePath(AgentPath agentPath, Node firstNde, Node secondNode) {
@@ -209,6 +244,8 @@ public class Individual implements Comparable<Individual> {
         StringBuilder sb = new StringBuilder();
         sb.append("Fitness: ");
         sb.append(fitness);
+        sb.append(" - Time: ");
+        sb.append(this.fitnesswofitness);
         sb.append(" - Collisions: ");
         sb.append(this.numberOfCollisions);
         sb.append("\nPath: ");

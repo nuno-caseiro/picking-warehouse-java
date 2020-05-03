@@ -1,0 +1,68 @@
+{
+    "picks": [
+        {
+            "line": 4,
+            "column": 1,
+            "edgeNumber": 2,
+            "location": -1,
+            "weight": 13,
+            "capacity": 800
+        },
+        {
+            "line": 4,
+            "column": 1,
+            "edgeNumber": 2,
+            "location": 1,
+            "weight": 16,
+            "capacity": 300
+        },
+        {
+            "line": 10,
+            "column": 1,
+            "edgeNumber": 4,
+            "location": -1,
+            "weight": 7,
+            "capacity": 1000
+        },
+        {
+            "line": 15,
+            "column": 1,
+            "edgeNumber": 4,
+            "location": -1,
+            "weight": 6,
+            "capacity": 400
+        },
+        {
+            "line": 2,
+            "column": 4,
+            "edgeNumber": 6,
+            "location": 1,
+            "weight": 15,
+            "capacity": 700
+        },
+        {
+            "line": 2,
+            "column": 4,
+            "edgeNumber": 6,
+            "location": -1,
+            "weight": 13,
+            "capacity": 700
+        },
+        {
+            "line": 6,
+            "column": 4,
+            "edgeNumber": 6,
+            "location": -1,
+            "weight": 10,
+            "capacity": 600
+        },
+        {
+            "line": 9,
+            "column": 4,
+            "edgeNumber": 8,
+            "location": 1,
+            "weight": 15,
+            "capacity": 1000
+        }
+    ]
+}
