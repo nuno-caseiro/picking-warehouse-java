@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.model.experiments;
 
+import ipleiria.estg.dei.ei.gui.Main;
 import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 public class StatisticBestAverage implements GAListener {
 
     private final double[] values;
+    private final double[] valuesWoFitness;
     private int run;
     private final double[] allRunsCollisions;
     private GeneticAlgorithm geneticAlgorithm;
@@ -18,10 +20,11 @@ public class StatisticBestAverage implements GAListener {
     public StatisticBestAverage(int numRuns, String experimentHeader) {
         run=0;
         values = new double[numRuns];
+        valuesWoFitness = new double[numRuns];
         allRunsCollisions = new double[numRuns];
         File file = new File("statistic_average_fitness.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness.xls", experimentHeader + "\t" + "Average:" + "\t" + "StdDev:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" + "\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness.xls", experimentHeader + "\t" + "Average:" + "\t" + "StdDev:" + "\t" + "AverageWoCollisions:" + "\t" + "StdDevWoCollisions:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" +"\t"+ "Number agents"+"\t"+ "Number picks" +"\r\n");
         }
     }
 
@@ -35,6 +38,7 @@ public class StatisticBestAverage implements GAListener {
     public void runEnded(GeneticAlgorithm geneticAlgorithm) {
         this.geneticAlgorithm= geneticAlgorithm;
         values[run]=geneticAlgorithm.getBestInRun().getFitness();
+        valuesWoFitness[run]=geneticAlgorithm.getBestInRun().getFitnesswofitness();
         allRunsCollisions[run++]=geneticAlgorithm.getBestInRun().getNumberOfCollisions();
     }
 
@@ -46,8 +50,15 @@ public class StatisticBestAverage implements GAListener {
         double collisionsAverage = Maths.average(allRunsCollisions);
         double collisionStdDeviation = Maths.standardDeviation(allRunsCollisions,collisionsAverage);
 
-        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average + "\t" + stdDeviation + "\t" + collisionsAverage + "\t" + collisionStdDeviation + "\r\n");
+        double averageWoCollisions = Maths.average(valuesWoFitness);
+        double stdDeviationWoCollisions = Maths.standardDeviation(valuesWoFitness,averageWoCollisions);
+
+        int nrAgents = Environment.getInstance().getNumberOfAgents();
+        int nrPicks = Environment.getInstance().getNumberOfPicks();
+
+        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t"+ nrPicks + "\r\n");
         Arrays.fill(values,0);
+        Arrays.fill(valuesWoFitness,0);
         Arrays.fill(allRunsCollisions,0);
         this.run=0;
     }
