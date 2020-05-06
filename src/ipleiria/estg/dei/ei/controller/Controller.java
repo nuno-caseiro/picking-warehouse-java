@@ -234,7 +234,7 @@ public class Controller {
     }
 
     private void loadPicks(){
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/picks/Picks_2.json"));
+        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/picks"));
         int returnVal = fc.showOpenDialog(view);
         try {
 

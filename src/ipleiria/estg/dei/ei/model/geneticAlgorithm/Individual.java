@@ -125,7 +125,7 @@ public class Individual implements Comparable<Individual> {
             computePath(agentPath, agent, picks.get(this.genome[i] - 1));
 
             weightOnTopOfRestrictionPick = 0;
-            restrictionPickCapacity = picks.get(this.genome[i] - 1).getWeight() * (picks.get(this.genome[i] - 1).getCapacity() / 100);
+            restrictionPickCapacity = picks.get(this.genome[i] - 1).getCapacity();
 
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
 
@@ -134,12 +134,12 @@ public class Individual implements Comparable<Individual> {
                     computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
 
                     weightOnTopOfRestrictionPick = 0;
-                    restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getWeight() * (picks.get(this.genome[i + 1] - 1).getCapacity() / 100);
+                    restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
                 } else {
                     weightOnTopOfRestrictionPick += picks.get(this.genome[i + 1] - 1).getWeight();
 
-                    if ((restrictionPickCapacity - weightOnTopOfRestrictionPick) > picks.get(this.genome[i + 1] - 1).getWeight() * (picks.get(this.genome[i + 1] - 1).getCapacity() / 100)) {
-                        restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getWeight() * (picks.get(this.genome[i + 1] - 1).getCapacity() / 100);
+                    if ((restrictionPickCapacity - weightOnTopOfRestrictionPick) > picks.get(this.genome[i + 1] - 1).getCapacity()) {
+                        restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
                         weightOnTopOfRestrictionPick = 0;
                     }
 
@@ -170,12 +170,12 @@ public class Individual implements Comparable<Individual> {
 //    private void detectPicksWeight(List<Node> picks) {
 //        int penalization = 0;
 //
-////        List<Node> orderedPicks = new ArrayList<>();
-////        for (int pick : this.genome) {
-////            if (pick > 0) {
-////                orderedPicks.add(picks.get(pick - 1));
-////            }
-////        }
+//        List<Node> orderedPicks = new ArrayList<>();
+//        for (int pick : this.genome) {
+//            if (pick > 0) {
+//                orderedPicks.add(picks.get(pick - 1));
+//            }
+//        }
 //
 //        int weightOnTopOfCurrentPick;
 //        Node pick;

@@ -566,13 +566,9 @@ public class Environment {
     }
 
     public void addToPairsMap(List<Node> path) {
-        List<Node> invPath = createInversePath(path);
 
         this.pairsMap.put(path.get(0).getNodeNumber() + "-" + path.get(path.size() - 1).getNodeNumber(), path);
-        this.pairsMap.put(invPath.get(0).getNodeNumber() + "-" + invPath.get(path.size() - 1).getNodeNumber(), invPath);
-
         path.remove(0);
-        invPath.remove(0);
     }
 
     public int getEdgeDirection(int node1, int node2) {
