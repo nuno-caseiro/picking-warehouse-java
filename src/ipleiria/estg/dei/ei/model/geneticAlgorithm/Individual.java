@@ -125,7 +125,7 @@ public class Individual implements Comparable<Individual> {
             computePath(agentPath, agent, picks.get(this.genome[i] - 1));
 
             weightOnTopOfRestrictionPick = 0;
-            restrictionPickCapacity = Integer.MAX_VALUE;
+            restrictionPickCapacity = picks.get(this.genome[i] - 1).getWeight() * (picks.get(this.genome[i] - 1).getCapacity() / 100);
 
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
 
@@ -134,7 +134,7 @@ public class Individual implements Comparable<Individual> {
                     computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
 
                     weightOnTopOfRestrictionPick = 0;
-                    restrictionPickCapacity = Integer.MAX_VALUE;
+                    restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getWeight() * (picks.get(this.genome[i + 1] - 1).getCapacity() / 100);
                 } else {
                     weightOnTopOfRestrictionPick += picks.get(this.genome[i + 1] - 1).getWeight();
 
@@ -202,7 +202,7 @@ public class Individual implements Comparable<Individual> {
 //    }
 
     private void computePath(AgentPath agentPath, Node firstNde, Node secondNode) {
-        agentPath.addPath(this.aStar.search(firstNde, secondNode), secondNode.getLocation());
+        agentPath.addPath(this.aStar.search(firstNde, secondNode), secondNode.getLocation(), secondNode.getWeight(), secondNode.getCapacity());
     }
 
     private void detectAndPenalizeCollisions() {

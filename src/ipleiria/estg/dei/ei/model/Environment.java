@@ -205,74 +205,74 @@ public class Environment {
 
         if (edgeNode1.getLine() == line) {
         return edgeNode1;
-    }
+        }
 
-    Node previousNode;
-    Node nextNode = edgeNode1;
-    int previousNodeNumber = -1;
-        do {
-        previousNode = nextNode;
-        nextNode = null;
-        for (Node n : graph.get(previousNode.getNodeNumber())) {
-            if (n.belongsToEdge(edgeNumber) && n.getNodeNumber() != previousNodeNumber) {
-                nextNode = n;
-                break;
+        Node previousNode;
+        Node nextNode = edgeNode1;
+        int previousNodeNumber = -1;
+            do {
+            previousNode = nextNode;
+            nextNode = null;
+            for (Node n : graph.get(previousNode.getNodeNumber())) {
+                if (n.belongsToEdge(edgeNumber) && n.getNodeNumber() != previousNodeNumber) {
+                    nextNode = n;
+                    break;
+                }
             }
-        }
 
-        if (nextNode == null) {
+            if (nextNode == null) {
+                return null;
+            }
+
+            if ((line - previousNode.getLine()) * (line - nextNode.getLine()) < 0) {
+                // ADD NEW NODE TO NODES
+                this.graphSize++;
+                Node newNode = new Node(this.graphSize, line, column, "O");
+                this.nodes.put(newNode.getNodeNumber(), newNode);
+
+                // ADD NEW NODE'S SUCCESSORS TO GRAPH
+                List<Node> successors = new ArrayList<>();
+                graph.put(newNode.getNodeNumber(), successors);
+                Node n1 = new Node(previousNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                Node n2 = new Node(nextNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                successors.add(n1);
+                successors.add(n2);
+
+                // ALTER PREVIOUS AND NEXT NODE SUCCESSORS
+                Node finalNextNode = nextNode;
+                graph.get(previousNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalNextNode.getNodeNumber());
+                Node finalPreviousNode = previousNode;
+                graph.get(nextNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalPreviousNode.getNodeNumber());
+
+                n1 = new Node(newNode);
+                n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
+                n1.addEdge(edgeNumber);
+                n2 = new Node(newNode);
+                n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
+                n2.addEdge(edgeNumber);
+
+                graph.get(previousNode.getNodeNumber()).add(n1);
+                graph.get(nextNode.getNodeNumber()).add(n2);
+
+                // CREATE NEW SUB EDGES
+                this.edgesMap.put(previousNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(previousNode.getNodeNumber()), newNode, Math.abs(previousNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+                this.edgesMap.put(nextNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(nextNode.getNodeNumber()), newNode, Math.abs(nextNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
+
+                return newNode;
+            }
+
+            if (line == nextNode.getLine()) {
+                return nextNode;
+            }
+
+            previousNodeNumber = previousNode.getNodeNumber();
+
+        } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
+
             return null;
-        }
-
-        if ((line - previousNode.getLine()) * (line - nextNode.getLine()) < 0) {
-            // ADD NEW NODE TO NODES
-            this.graphSize++;
-            Node newNode = new Node(this.graphSize, line, column, "O");
-            this.nodes.put(newNode.getNodeNumber(), newNode);
-
-            // ADD NEW NODE'S SUCCESSORS TO GRAPH
-            List<Node> successors = new ArrayList<>();
-            graph.put(newNode.getNodeNumber(), successors);
-            Node n1 = new Node(previousNode);
-            n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
-            Node n2 = new Node(nextNode);
-            n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
-            successors.add(n1);
-            successors.add(n2);
-
-            // ALTER PREVIOUS AND NEXT NODE SUCCESSORS
-            Node finalNextNode = nextNode;
-            graph.get(previousNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalNextNode.getNodeNumber());
-            Node finalPreviousNode = previousNode;
-            graph.get(nextNode.getNodeNumber()).removeIf(n -> n.getNodeNumber() == finalPreviousNode.getNodeNumber());
-
-            n1 = new Node(newNode);
-            n1.setCostFromAdjacentNode(Math.abs(previousNode.getLine() - line));
-            n1.addEdge(edgeNumber);
-            n2 = new Node(newNode);
-            n2.setCostFromAdjacentNode(Math.abs(nextNode.getLine() - line));
-            n2.addEdge(edgeNumber);
-
-            graph.get(previousNode.getNodeNumber()).add(n1);
-            graph.get(nextNode.getNodeNumber()).add(n2);
-
-            // CREATE NEW SUB EDGES
-            this.edgesMap.put(previousNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(previousNode.getNodeNumber()), newNode, Math.abs(previousNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
-            this.edgesMap.put(nextNode.getNodeNumber() + "-" + newNode.getNodeNumber(), new Edge(++this.edgesSize, this.nodes.get(nextNode.getNodeNumber()), newNode, Math.abs(nextNode.getLine() - line), this.edges.get(edgeNumber - 1).getDirection()));
-
-            return newNode;
-        }
-
-        if (line == nextNode.getLine()) {
-            return nextNode;
-        }
-
-        previousNodeNumber = previousNode.getNodeNumber();
-
-    } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
-
-        return null;
-}
+    }
 
     // FOR DEBUGGING
 //    public void printCollisions(Individual individual) {

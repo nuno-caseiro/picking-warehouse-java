@@ -3,8 +3,10 @@ package ipleiria.estg.dei.ei.controller;
 import ipleiria.estg.dei.ei.model.experiments.Experiment;
 import ipleiria.estg.dei.ei.gui.MainFrame;
 import ipleiria.estg.dei.ei.model.Environment;
+import ipleiria.estg.dei.ei.model.geneticAlgorithm.AgentPath;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
+import ipleiria.estg.dei.ei.model.search.Node;
 
 import javax.swing.*;
 import java.io.File;
@@ -177,6 +179,16 @@ public class Controller {
                     System.out.println("##################################");
                     System.out.println("Time: " + ((double)(end - start) / 1000) + " seconds");
                     System.out.println("##################################");
+
+                    for (AgentPath agentPath : bestInRun.getIndividualPaths()) {
+                        System.out.println("-------------------------------");
+                        for (Node node : agentPath.getPath()) {
+                            if (node.getWeight() != 0 || node.getNodeNumber() == 36) {
+                                System.out.print(node + ", ");
+                            }
+                        }
+                        System.out.println();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
                 }

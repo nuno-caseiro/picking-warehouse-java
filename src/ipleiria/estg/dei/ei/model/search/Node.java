@@ -186,6 +186,6 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        return nodeNumber + "/" + time;
+        return nodeNumber + "/" + weight + "-" + (weight * (capacity / 100)) + "/" + location;
     }
 }
