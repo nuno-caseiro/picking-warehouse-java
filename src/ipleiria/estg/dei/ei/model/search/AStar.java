@@ -31,7 +31,7 @@ public class AStar {
         while (!frontier.isEmpty()) {
             Node node = frontier.poll();
             if (node.getNodeNumber() == goalNode.getNodeNumber()) {
-                return computeSolution(node, initialNode.getLocation(), goalNode.getLocation());
+                return computeSolution(node);
             }
 
             explored.add(node.getNodeNumber());
@@ -41,7 +41,7 @@ public class AStar {
         return null;
     }
 
-    private List<Node> computeSolution(Node node, int initialNodeLocation, int goalNodeLocation) {
+    private List<Node> computeSolution(Node node) {
         List<Node> solution = new ArrayList<>();
 
         while (node != null) {
@@ -52,9 +52,6 @@ public class AStar {
         if (solution.size() == 1) { // WHEN INITIAL NODE AND GOAL NODE ARE THE SAME
             return new ArrayList<>();
         }
-
-//        solution.get(0).setLocation(initialNodeLocation);
-//        solution.get(solution.size() - 1).setLocation(goalNodeLocation);
 
         this.environment.addToPairsMap(solution);
         return solution;

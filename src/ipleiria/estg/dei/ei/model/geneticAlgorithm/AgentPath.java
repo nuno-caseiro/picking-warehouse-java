@@ -3,8 +3,6 @@ package ipleiria.estg.dei.ei.model.geneticAlgorithm;
 import ipleiria.estg.dei.ei.model.search.Node;
 import ipleiria.estg.dei.ei.utils.NodePathList;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AgentPath {
@@ -25,7 +23,7 @@ public class AgentPath {
         return value;
     }
 
-    public void addPath(List<Node> path, int pickLocation) {
+    public void addPath(List<Node> path, int pickLocation, int weight, int capacity) {
         Node n;
         for (Node node : path) {
             n = new Node(node);
@@ -37,6 +35,8 @@ public class AgentPath {
             this.path.get(this.path.size() - 1).setLocation(2);
         } else {
             this.path.get(this.path.size() - 1).setLocation(pickLocation);
+            this.path.get(this.path.size() - 1).setWeight(weight);
+            this.path.get(this.path.size() - 1).setCapacity(capacity);
             this.value += path.get(path.size() - 1).getG();
         }
     }

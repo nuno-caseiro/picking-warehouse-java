@@ -181,6 +181,12 @@ public class Environment {
 
                 if (newNode != null) {
                     newNode.setLocation(jsonPick.get("location").getAsInt());
+
+                    if (jsonPick.has("weight") && jsonPick.has("capacity")) {
+                        newNode.setWeight(jsonPick.get("weight").getAsInt());
+                        newNode.setCapacity(jsonPick.get("capacity").getAsInt());
+                    }
+
                     this.picks.add(newNode);
                 }
             }
@@ -198,13 +204,13 @@ public class Environment {
         Node edgeNode2 = this.edges.get(edgeNumber - 1).getNode2();
 
         if (edgeNode1.getLine() == line) {
-            return edgeNode1;
+        return edgeNode1;
         }
 
         Node previousNode;
         Node nextNode = edgeNode1;
         int previousNodeNumber = -1;
-        do {
+            do {
             previousNode = nextNode;
             nextNode = null;
             for (Node n : graph.get(previousNode.getNodeNumber())) {
@@ -265,7 +271,7 @@ public class Environment {
 
         } while (nextNode.getNodeNumber() != edgeNode2.getNodeNumber());
 
-        return null;
+            return null;
     }
 
     // FOR DEBUGGING
@@ -560,13 +566,9 @@ public class Environment {
     }
 
     public void addToPairsMap(List<Node> path) {
-        List<Node> invPath = createInversePath(path);
 
         this.pairsMap.put(path.get(0).getNodeNumber() + "-" + path.get(path.size() - 1).getNodeNumber(), path);
-        this.pairsMap.put(invPath.get(0).getNodeNumber() + "-" + invPath.get(path.size() - 1).getNodeNumber(), invPath);
-
         path.remove(0);
-        invPath.remove(0);
     }
 
     public int getEdgeDirection(int node1, int node2) {

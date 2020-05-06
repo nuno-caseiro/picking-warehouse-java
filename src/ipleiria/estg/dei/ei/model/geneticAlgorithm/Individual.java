@@ -47,7 +47,7 @@ public class Individual implements Comparable<Individual> {
         this.genome = new int[original.genome.length];
         System.arraycopy(original.genome, 0, this.genome, 0, this.genome.length);
         this.fitness = original.fitness;
-        this.fitnesswofitness=original.fitnesswofitness;
+        this.fitnesswofitness = original.fitnesswofitness;
         this.environment = Environment.getInstance();
         this.aStar = new AStar();
         this.individualPaths = original.individualPaths;
@@ -106,13 +106,16 @@ public class Individual implements Comparable<Individual> {
         List<Node> agents = this.environment.getAgents();
         int offloadArea = this.environment.getOffloadArea();
 
+        int weightOnTopOfRestrictionPick;
+        int restrictionPickCapacity;
+
         AgentPath agentPath;
         int i = 0;
         for (Node agent : agents) {
             agentPath = new AgentPath();
             agentPath.addAgentInitialPosition(agent);
 
-            if (i >= this.genome.length || this.genome[i] < 0) {
+            if (i >= this.genome.length || this.genome[i] < 0) { // WHEN THE FIRST ELEMENT OF THE GENOME IS NEGATIVE OR THERE ARE 2 CONSECUTIVE NEGATIVE ELEMENTS IN THE GENOME
                 computePath(agentPath, agent, this.environment.getNode(offloadArea));
                 this.individualPaths.add(agentPath);
                 i++;
@@ -121,8 +124,28 @@ public class Individual implements Comparable<Individual> {
 
             computePath(agentPath, agent, picks.get(this.genome[i] - 1));
 
+            weightOnTopOfRestrictionPick = 0;
+            restrictionPickCapacity = picks.get(this.genome[i] - 1).getCapacity();
+
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
-                computePath(agentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
+
+                if ((weightOnTopOfRestrictionPick + picks.get(this.genome[i + 1] - 1).getWeight()) > restrictionPickCapacity) {
+                    computePath(agentPath, picks.get(this.genome[i] - 1), this.environment.getNode(offloadArea));
+                    computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
+
+                    weightOnTopOfRestrictionPick = 0;
+                    restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
+                } else {
+                    weightOnTopOfRestrictionPick += picks.get(this.genome[i + 1] - 1).getWeight();
+
+                    if ((restrictionPickCapacity - weightOnTopOfRestrictionPick) > picks.get(this.genome[i + 1] - 1).getCapacity()) {
+                        restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
+                        weightOnTopOfRestrictionPick = 0;
+                    }
+
+                    computePath(agentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
+                }
+
                 i++;
             }
 
@@ -137,14 +160,49 @@ public class Individual implements Comparable<Individual> {
                 this.fitness = path.getValue();
             }
         }
-        this.fitnesswofitness= this.fitness;
+        this.fitnesswofitness = this.fitness;
 
 
         detectAndPenalizeCollisions();
+//        detectPicksWeight(picks);
     }
 
+//    private void detectPicksWeight(List<Node> picks) {
+//        int penalization = 0;
+//
+//        List<Node> orderedPicks = new ArrayList<>();
+//        for (int pick : this.genome) {
+//            if (pick > 0) {
+//                orderedPicks.add(picks.get(pick - 1));
+//            }
+//        }
+//
+//        int weightOnTopOfCurrentPick;
+//        Node pick;
+//        for (int i = 0; i < this.genome.length; i++) {
+//            if (this.genome[i] < 0) {
+//                continue;
+//            }
+//
+//            pick = picks.get(this.genome[i] - 1);
+//            weightOnTopOfCurrentPick = 0;
+//            for (int j = i + 1; j < this.genome.length; j++) {
+//                if (this.genome[j] < 0) {
+//                    break;
+//                }
+//                weightOnTopOfCurrentPick += picks.get(this.genome[j] - 1).getWeight();
+//            }
+//
+//            if (weightOnTopOfCurrentPick > (pick.getWeight() * (pick.getCapacity() / 100))) {
+//                penalization += weightOnTopOfCurrentPick - (pick.getWeight() * (pick.getCapacity() / 100));
+//            }
+//        }
+//
+//            this.fitness += penalization;
+//    }
+
     private void computePath(AgentPath agentPath, Node firstNde, Node secondNode) {
-        agentPath.addPath(this.aStar.search(firstNde, secondNode), secondNode.getLocation());
+        agentPath.addPath(this.aStar.search(firstNde, secondNode), secondNode.getLocation(), secondNode.getWeight(), secondNode.getCapacity());
     }
 
     private void detectAndPenalizeCollisions() {
@@ -209,6 +267,8 @@ public class Individual implements Comparable<Individual> {
         StringBuilder sb = new StringBuilder();
         sb.append("Fitness: ");
         sb.append(fitness);
+        sb.append(" - Time: ");
+        sb.append(this.fitnesswofitness);
         sb.append(" - Collisions: ");
         sb.append(this.numberOfCollisions);
         sb.append("\nPath: ");

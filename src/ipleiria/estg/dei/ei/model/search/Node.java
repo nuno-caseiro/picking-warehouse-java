@@ -21,6 +21,8 @@ public class Node implements Comparable<Node> {
     private String type;
     private double time;
     private int location; // -1 if pick is on the left of column, 1 if pick is on the right of column or 2 if there are picks both on the left and right
+    private int weight;
+    private int capacity;
     private List<Integer> edges;
 
     public Node(int nodeNumber, int line, int column, String type) {
@@ -54,6 +56,8 @@ public class Node implements Comparable<Node> {
         this.time = 0;
         this.edges = node.edges;
         this.location = node.location;
+        this.weight = node.weight;
+        this.capacity = node.capacity;
     }
 
     public Node(Node parent, double f, double g, int line, int column, int nodeNumber) {
@@ -147,6 +151,22 @@ public class Node implements Comparable<Node> {
         this.costFromAdjacentNode = costFromAdjacentNode;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
     public void addCost(double cost) {
         this.costFromAdjacentNode += cost;
     }
@@ -166,6 +186,6 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        return nodeNumber + "/" + time;
+        return nodeNumber + "/" + weight + "-" + capacity + "/" + location;
     }
 }
