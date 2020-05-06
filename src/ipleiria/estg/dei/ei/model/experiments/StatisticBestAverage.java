@@ -22,9 +22,9 @@ public class StatisticBestAverage implements GAListener {
         values = new double[numRuns];
         valuesWoFitness = new double[numRuns];
         allRunsCollisions = new double[numRuns];
-        File file = new File("statistic_average_fitness.xls");
+        File file = new File("statistic_average_fitness_1.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness.xls", experimentHeader + "\t" + "Average:" + "\t" + "StdDev:" + "\t" + "AverageWoCollisions:" + "\t" + "StdDevWoCollisions:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" +"\t"+ "Number agents"+"\t"+ "Number picks" +"\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "Average:" + "\t" + "StdDev:" + "\t" + "AverageWoCollisions:" + "\t" + "StdDevWoCollisions:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" +"\t"+ "Number agents"+"\t"+ "Number picks" +"\r\n");
         }
     }
 
@@ -56,7 +56,7 @@ public class StatisticBestAverage implements GAListener {
         int nrAgents = Environment.getInstance().getNumberOfAgents();
         int nrPicks = Environment.getInstance().getNumberOfPicks();
 
-        FileOperations.appendToTextFile("statistic_average_fitness.xls", buildExperimentValues() + "\t" + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t"+ nrPicks + "\r\n");
+        FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t"+ nrPicks + "\r\n");
         Arrays.fill(values,0);
         Arrays.fill(valuesWoFitness,0);
         Arrays.fill(allRunsCollisions,0);

@@ -36,6 +36,7 @@ public class Experiment implements ExperimentListener  {
         this.countAllRuns=1;
         this.statistics= new LinkedList<>();
         this.statisticsNames= new LinkedList<>();
+        this.seed=1;
     }
 
     public void readParameterFile() throws FileNotFoundException {
