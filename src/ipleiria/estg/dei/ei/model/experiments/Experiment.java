@@ -36,6 +36,7 @@ public class Experiment implements ExperimentListener  {
         this.countAllRuns=1;
         this.statistics= new LinkedList<>();
         this.statisticsNames= new LinkedList<>();
+        this.seed=1;
     }
 
     public void readParameterFile() throws FileNotFoundException {
@@ -82,26 +83,14 @@ public class Experiment implements ExperimentListener  {
         countAllRuns=countAllRuns*runs;
 
         String[] statistics = experimentParametersPanel.getStatisticsValues().toString().trim().replaceAll("[\\[\\]\\(\\)]", "").split(",");
-        for (int i = 0; i < statistics.length; i++) {
-            if(statistics[i].equals("StatisticBestAverage")){
-                StatisticBestAverage statisticBestAverage = new StatisticBestAverage(runs,buildExperimentHeader());
+        for (String statistic : statistics) {
+            if (statistic.equals("StatisticBestAverage")) {
+                StatisticBestAverage statisticBestAverage = new StatisticBestAverage(runs, buildExperimentHeader());
                 addExperimentListener(statisticBestAverage);
                 this.statistics.add(statisticBestAverage);
             }
-            if(statistics[i].equals(" StatisticBestAverageWithoutCollisions")){
-                StatisticBestAveragewoCollisions statisticBestAveragewoCollisions = new StatisticBestAveragewoCollisions(runs,buildExperimentHeader());
-                addExperimentListener(statisticBestAveragewoCollisions);
-                this.statistics.add(statisticBestAveragewoCollisions);
-            }
 
         }
-//        StatisticBestAverage statisticBestAverage = new StatisticBestAverage(runs,buildExperimentHeader());
-//        StatisticBestAveragewoCollisions statisticBestAveragewoCollisions = new StatisticBestAveragewoCollisions(runs,buildExperimentHeader());
-//        addExperimentListener(statisticBestAverage);
-//        addExperimentListener(statisticBestAveragewoCollisions);
-//        this.statistics.add(statisticBestAverage);
-//        this.statistics.add(statisticBestAveragewoCollisions);
-
     }
 
 
