@@ -195,6 +195,8 @@ public class Environment {
             e.printStackTrace();
         }
 
+        this.pairsMap = new HashMap<>();
+
         fireCreateSimulation();
     }
 

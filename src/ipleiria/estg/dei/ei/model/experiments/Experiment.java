@@ -194,7 +194,6 @@ public class Experiment implements ExperimentListener  {
             geneticAlgorithm = buildRun();
             geneticAlgorithm.addGAListener(experimentsPanel);
             geneticAlgorithm.run();
-            System.out.println("Done "+geneticAlgorithm.getAverageFitness() + " C:"+ geneticAlgorithm.getBestInRun().getNumberOfCollisions());
             seed++;
         }
         fireExperimentEnded();

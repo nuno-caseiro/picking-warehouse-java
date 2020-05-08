@@ -198,7 +198,7 @@ public class Controller {
             @Override
             protected void done() {
                 if(!isCancelled()){
-                view.manageButtons(true,false,false,true,false,true);
+                view.manageButtons(true,true,false,true,false,true);
                 }
 
             }
