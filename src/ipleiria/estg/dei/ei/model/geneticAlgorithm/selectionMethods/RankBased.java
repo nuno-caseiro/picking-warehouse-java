@@ -30,13 +30,11 @@ public class RankBased extends SelectionMethod  {
         original.getIndividuals().sort(new FitnessComparator());
 
         Population result = new Population(original.size());
-
+        double N=popSize;
         double[] prob = new double[original.size()];
-        for (int i = 0; i < original.size(); i++) {
-            prob[i] = (1/(double)popSize)
-                    *(2-ps+2*(ps-1)*((i-1)/((double)popSize-1)));
+        for (int i = 1; i <= original.size(); i++) {
+            prob[i-1] = (1/N) *(2-ps+2*(ps-1)*((i-1)/(N-1)));
         }
-
 
         accumulated[0] = prob[0];
         for (int i = 1; i < popSize; i++) {

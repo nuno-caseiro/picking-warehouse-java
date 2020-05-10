@@ -14,7 +14,7 @@ public class Individual implements Comparable<Individual> {
 
     private int[] genome;
     private double fitness;
-    private double fitnesswofitness;
+    private double fitnessWoCollisions;
     private int numberOfCollisions;
     private List<AgentPath> individualPaths;
     private Environment environment;
@@ -47,7 +47,7 @@ public class Individual implements Comparable<Individual> {
         this.genome = new int[original.genome.length];
         System.arraycopy(original.genome, 0, this.genome, 0, this.genome.length);
         this.fitness = original.fitness;
-        this.fitnesswofitness = original.fitnesswofitness;
+        this.fitnessWoCollisions = original.fitnessWoCollisions;
         this.environment = Environment.getInstance();
         this.aStar = new AStar();
         this.individualPaths = original.individualPaths;
@@ -78,8 +78,8 @@ public class Individual implements Comparable<Individual> {
         return individualPaths;
     }
 
-    public double getFitnesswofitness() {
-        return fitnesswofitness;
+    public double getFitnessWoCollisions() {
+        return fitnessWoCollisions;
     }
 
     public int getNumberOfCollisions() {
@@ -160,7 +160,7 @@ public class Individual implements Comparable<Individual> {
                 this.fitness = path.getValue();
             }
         }
-        this.fitnesswofitness = this.fitness;
+        this.fitnessWoCollisions = this.fitness;
 
 
         detectAndPenalizeCollisions();
@@ -268,7 +268,7 @@ public class Individual implements Comparable<Individual> {
         sb.append("Fitness: ");
         sb.append(fitness);
         sb.append(" - Time: ");
-        sb.append(this.fitnesswofitness);
+        sb.append(this.fitnessWoCollisions);
         sb.append(" - Collisions: ");
         sb.append(this.numberOfCollisions);
         sb.append("\nPath: ");
