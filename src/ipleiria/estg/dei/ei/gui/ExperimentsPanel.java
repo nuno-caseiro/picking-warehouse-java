@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.image.ImageObserver;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,9 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     values.add("StatisticBestAverage");
     values.add("StatisticBestAverageWithoutCollisions");
     availableParameters.put("Statistics",values);
+
+    List<List<String>> listOfPickFiles = new ArrayList<>();
+
 
     experimentsProgressBar = new JProgressBar();
     experimentsProgressBar.setStringPainted(true);

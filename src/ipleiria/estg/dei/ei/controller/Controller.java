@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Random;
 
 public class Controller {
@@ -207,7 +208,7 @@ public class Controller {
     }
 
     private void loadWarehouseLayout() {
-        JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/"));
+        JFileChooser fc = new JFileChooser(new File("src/ipleiria/estg/dei/ei/dataSets/warehouseLayout"));
         int returnVal = fc.showOpenDialog(this.view);
         this.environment.addEnvironmentListener(this.view.getSimulationPanel());
 
@@ -217,7 +218,9 @@ public class Controller {
                 Environment.getInstance().readInitialStateFromFile(dataSet);
                 if(!dataSet.getPath().contains("actual")){
                     try{
-                        Path newDataset = Files.move(Paths.get(dataSet.getPath()), Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/"+dataSet.getName()));
+                        //Path newDataset = Files.move(dataSet.toPath(), Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/").resolve(dataSet.toPath()));
+                        Path newDataset = Files.copy(dataSet.toPath(),Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/"+dataSet.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        Files.delete(dataSet.toPath());
                         Files.move(Paths.get(Environment.getInstance().getDefaultWarehouseLayout().getPath()),Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/other/"+Environment.getInstance().getDefaultWarehouseLayout().getName()));
                         Environment.getInstance().setDefaultWarehouseLayout(new File(String.valueOf(newDataset)));
                     }catch (Exception e){
