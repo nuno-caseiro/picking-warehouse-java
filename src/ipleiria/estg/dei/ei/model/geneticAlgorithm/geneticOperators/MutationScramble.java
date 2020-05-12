@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.model.geneticAlgorithm.geneticOperators;
 
+import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 
@@ -35,15 +36,12 @@ public class MutationScramble extends Mutation {
 
         for(int i = 0; i < list.size(); i++){
             do{
-                num1= GeneticAlgorithm.random.nextInt(ind.getNumGenes())+1;
-
+                num1= GeneticAlgorithm.random.nextInt((ind.getNumGenes()));
             }while(!list.contains(num1));
 
             do{
-                num2= GeneticAlgorithm.random.nextInt(ind.getNumGenes())+1;
-
-            }while(!list.contains(num2) );
-
+                num2= GeneticAlgorithm.random.nextInt((ind.getNumGenes()));
+            }while(!list.contains(num2));
 
             int auxNum2 = ind.getIndexOf(num2);
             ind.setGene(ind.getIndexOf(num1), num2);
