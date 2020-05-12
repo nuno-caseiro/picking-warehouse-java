@@ -134,8 +134,6 @@ public class Experiment implements ExperimentListener  {
         String filePick= (String) pickFile.get(atualPickFile);
 
         File pick= new File(filePick);
-
-        //File layout2= new File("src/ipleiria/estg/dei/ei/dataSets/picks/PicksWeightCapacity_Small.json");
         Environment.getInstance().loadPicksFromFile(pick);
 
         runs = Integer.parseInt(getParameterValue("Runs"));
@@ -218,7 +216,6 @@ public class Experiment implements ExperimentListener  {
             seed++;
         }
         fireExperimentEnded();
-
     }
 
 

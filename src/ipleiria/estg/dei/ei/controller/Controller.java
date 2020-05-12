@@ -214,17 +214,17 @@ public class Controller {
         try {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File dataSet = fc.getSelectedFile();
-                Environment.getInstance().readInitialStateFromFile(dataSet);
-                if(!dataSet.getPath().contains("actual")){
-                    try{
-                        Path newDataset = Files.move(Paths.get(dataSet.getPath()), Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/"+dataSet.getName()));
-                        Files.move(Paths.get(Environment.getInstance().getDefaultWarehouseLayout().getPath()),Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/other/"+Environment.getInstance().getDefaultWarehouseLayout().getName()));
-                        Environment.getInstance().setDefaultWarehouseLayout(new File(String.valueOf(newDataset)));
-                    }catch (Exception e){
-                        e.printStackTrace(System.err);
-                    }
+                File newFile= null;
+                Path newDataset = null;
+                try{
+                    newDataset = Files.move(Paths.get(dataSet.getPath()), Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/actual/"+dataSet.getName()));
+                    Files.move(Paths.get(Environment.getInstance().getDefaultWarehouseLayout().getPath()),Paths.get("./src/ipleiria/estg/dei/ei/dataSets/warehouseLayout/other/"+Environment.getInstance().getDefaultWarehouseLayout().getName()));
+                }catch (Exception e){
+                    e.printStackTrace(System.err);
                 }
-
+                newFile= new File(newDataset.toUri());
+                Environment.getInstance().setDefaultWarehouseLayout(newFile);
+                Environment.getInstance().readInitialStateFromFile(newFile);
                 view.manageButtons(true,true,false,false,false,false);
             }
 
@@ -232,6 +232,8 @@ public class Controller {
             JOptionPane.showMessageDialog(view, "Invalid file format", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
 
     private void loadPicks(){
         JFileChooser fc = new JFileChooser(new File("./src/ipleiria/estg/dei/ei/dataSets/picks"));
