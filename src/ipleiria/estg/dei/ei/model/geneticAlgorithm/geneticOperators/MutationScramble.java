@@ -14,8 +14,6 @@ public class MutationScramble extends Mutation {
 
     @Override
     public void mutate(Individual ind) {
-       // System.out.println("-----");
-      //  System.out.println(ind.toString());
         int min = (Environment.getInstance().getNumberOfAgents()-1)*-1;
         int cut1 = GeneticAlgorithm.random.nextInt(ind.getNumGenes());
         int cut2;
@@ -39,20 +37,16 @@ public class MutationScramble extends Mutation {
         for(int i = 0; i < list.size(); i++){
             do{
                 num1= GeneticAlgorithm.random.nextInt((ind.getNumGenes()-min)+1)+min;
-               // System.out.println("1- "+ num1);
             }while(!list.contains(num1));
 
             do{
                 num2= GeneticAlgorithm.random.nextInt((ind.getNumGenes()-min)+1)+min;
-                //System.out.println("2- "+ num2);
             }while(!list.contains(num2));
 
             int auxNum2 = ind.getIndexOf(num2);
             ind.setGene(ind.getIndexOf(num1), num2);
             ind.setGene(auxNum2, num1);
         }
-        //System.out.println(ind.toString());
-        //System.out.println("-----");
     }
 
     @Override
