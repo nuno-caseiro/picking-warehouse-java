@@ -37,11 +37,11 @@ public class MutationScramble extends Mutation {
         for(int i = 0; i < list.size(); i++){
             do{
                 num1= GeneticAlgorithm.random.nextInt((ind.getNumGenes()-min)+1)+min;
-            }while(!list.contains(num1));
+            }while(!list.contains(num1) || num1==0);
 
             do{
                 num2= GeneticAlgorithm.random.nextInt((ind.getNumGenes()-min)+1)+min;
-            }while(!list.contains(num2));
+            }while(!list.contains(num2) || num2==0);
 
             int auxNum2 = ind.getIndexOf(num2);
             ind.setGene(ind.getIndexOf(num1), num2);
