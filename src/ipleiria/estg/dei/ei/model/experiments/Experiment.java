@@ -121,6 +121,7 @@ public class Experiment implements ExperimentListener  {
     }
 
     private GeneticAlgorithm buildRun(){
+
         String atualLayout = getParameterValue("WarehouseLayout");
         HashMap<String,Object> warehousesLayout = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("WarehouseLayout");
         String file= (String) warehousesLayout.get(atualLayout);
@@ -215,6 +216,8 @@ public class Experiment implements ExperimentListener  {
             geneticAlgorithm.run();
             seed++;
         }
+        System.out.println(seed);
+        this.seed=1;
         fireExperimentEnded();
     }
 
