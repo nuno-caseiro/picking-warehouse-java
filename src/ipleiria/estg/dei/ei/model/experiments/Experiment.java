@@ -216,7 +216,6 @@ public class Experiment implements ExperimentListener  {
             geneticAlgorithm.run();
             seed++;
         }
-        System.out.println(seed);
         this.seed=1;
         fireExperimentEnded();
     }
