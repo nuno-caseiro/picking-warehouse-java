@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class ExperimentsEditParametersPanel extends JPanel {
 
     private final ExperimentParametersPanel experimentParametersPanel;
 
-    private HashMap<String,List<String>> availableParameters;
+    private HashMap<String,Object> availableParameters;
 
     private JButton add;
     private JButton remove;
@@ -42,7 +43,7 @@ public class ExperimentsEditParametersPanel extends JPanel {
     private JLabel activeParameter;
     private GridBagConstraints c = new GridBagConstraints();
 
-    public ExperimentsEditParametersPanel(int panelId, List<String> actualParameters, HashMap<String,List<String>> availableParameters, ExperimentParametersPanel experimentsPanel) {
+    public ExperimentsEditParametersPanel(int panelId, List<String> actualParameters, HashMap<String,Object> availableParameters, ExperimentParametersPanel experimentsPanel) {
         setLayout(new GridBagLayout());
 
 
@@ -94,10 +95,14 @@ public class ExperimentsEditParametersPanel extends JPanel {
             case 13:
                 switchHelper("Editing statistics ",10);
                 break;
-
+            case 14:
+                switchHelper("Editing warehouse laytous",11);
+                break;
+            case 15:
+                switchHelper("Editing pick files",12);
+                break;
         }
-
-
+        
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -160,25 +165,6 @@ public class ExperimentsEditParametersPanel extends JPanel {
             }
         });
 
- /*       ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                actualParameters.clear();
-                for (int i = 0; i < atualParametersModel.size(); i++) {
-                    actualParameters.add(atualParametersModel.get(i).toString());
-                }
-                experimentParametersPanel.updateTextFieldParameters(panelId);
-                experimentParametersPanel.hideParameters();
-            }
-        });
-
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                experimentParametersPanel.updateTextFieldParameters(panelId);
-            }
-        });
-*/
         JPanel addRemovePanel = new JPanel(new GridLayout(2,1));
         addRemovePanel.add(add);
         addRemovePanel.add(remove);
@@ -221,26 +207,6 @@ public class ExperimentsEditParametersPanel extends JPanel {
         availableParametersList.setMaximumSize(new Dimension(100,100));
         this.add(actualComponent,c);
 
-/*
-        JPanel westPanel = new JPanel(new GridLayout(2,1));
-        JLabel jLabel= new JLabel("Actual Parameters");
-        westPanel.add(jLabel);
-        westPanel.add(jScrollPaneOfAtualParam);
-        this.add(westPanel,BorderLayout.WEST);
-
-        JPanel eastPanel = new JPanel(new GridLayout(2,1));
-        JLabel jLabel2= new JLabel("Available Parameters");
-        eastPanel.add(jLabel2);
-        eastPanel.add(actualComponent);
-        this.add(eastPanel,BorderLayout.EAST);
-
-
-        this.add(addRemovePanel,BorderLayout.CENTER);
-
-        this.southPanel.add(ok,BorderLayout.WEST);
-        this.southPanel.add(cancel,BorderLayout.EAST);
-        this.add(southPanel,BorderLayout.SOUTH);*/
-
     }
 
     private void init(){
@@ -266,7 +232,6 @@ public class ExperimentsEditParametersPanel extends JPanel {
     }
 
     private void switchHelper(String labelTitleText, int typeOfComponent) {
-        JComponent component = null;
         activeParameter.setText(labelTitleText);
         switch (typeOfComponent) {
             case 1:
@@ -276,7 +241,7 @@ public class ExperimentsEditParametersPanel extends JPanel {
                 actualComponent = integerToAdd;
                 break;
             case 4:
-                availableParametersModel.addAll(availableParameters.get("Selection"));
+                availableParametersModel.addAll((Collection<? extends String>) availableParameters.get("Selection"));
                 availableParametersList.setModel(availableParametersModel);
                 actualComponent = jScrollPaneOfAvailableParam;
                 break;
@@ -287,7 +252,7 @@ public class ExperimentsEditParametersPanel extends JPanel {
                 actualComponent = selectivePressureToAdd;
                 break;
             case 7:
-                availableParametersModel.addAll(availableParameters.get("Recombination"));
+                availableParametersModel.addAll((Collection<? extends String>) availableParameters.get("Recombination"));
                 availableParametersList.setModel(availableParametersModel);
                 actualComponent = jScrollPaneOfAvailableParam;
                 break;
@@ -298,16 +263,28 @@ public class ExperimentsEditParametersPanel extends JPanel {
                 actualComponent = gaProbabilityToAdd;
                 break;
             case 9:
-                availableParametersModel.addAll(availableParameters.get("Mutation"));
+                availableParametersModel.addAll((Collection<? extends String>) availableParameters.get("Mutation"));
                 availableParametersList.setModel(availableParametersModel);
                 actualComponent = jScrollPaneOfAvailableParam;
                 break;
             case 10:
-                availableParametersModel.addAll(availableParameters.get("Statistics"));
+                availableParametersModel.addAll((Collection<? extends String>) availableParameters.get("Statistics"));
                 availableParametersList.setModel(availableParametersModel);
                 actualComponent = jScrollPaneOfAvailableParam;
                 break;
                 //actualComponent =component;
+            case 11:
+               HashMap<String,Object> layouts = (HashMap<String, Object>) availableParameters.get("WarehouseLayout");
+                availableParametersModel.addAll(layouts.keySet());
+                availableParametersList.setModel(availableParametersModel);
+                actualComponent = jScrollPaneOfAvailableParam;
+                break;
+            case 12:
+                HashMap<String,Object> picks = (HashMap<String, Object>) availableParameters.get("Picks");
+                availableParametersModel.addAll(picks.keySet());
+                availableParametersList.setModel(availableParametersModel);
+                actualComponent = jScrollPaneOfAvailableParam;
+                break;
         }
 
     }

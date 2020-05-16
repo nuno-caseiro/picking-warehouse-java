@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,7 +65,14 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
     private JLabel statisticsSelection;
     private List<String> statisticsValues;
     private JTextArea statisticsTextField;
-    //private JScrollPane scrollPaneStatistics;
+
+    private JLabel warehouseLayouts;
+    private List<String> warehouseLayoutsValues;
+    private JTextArea warehouseLayoutsValuesTextField;
+
+    private JLabel pickLayouts;
+    private List<String> pickValues;
+    private JTextArea pickValuesTextField;
 
     public ExperimentParametersPanel(ExperimentsPanel mainPanel) {
 
@@ -93,13 +102,14 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         addComponents(11,timeWeightsLabel,timeWeightsTextField, timeWeightValues,"1", null);
         addComponents(12,collisionsWeightsLabel, collisionsWeightsTextField, collisionsWeightsValues,"1", null);
         addComponents(13,statisticsSelection, statisticsTextField, statisticsValues,"StatisticBestAverage", null);
+        addComponents(14,warehouseLayouts, warehouseLayoutsValuesTextField, warehouseLayoutsValues,"WarehouseLayout.json", null);
+        addComponents(15,pickLayouts, pickValuesTextField, pickValues,"PicksWeightCapacity.json", null);
 
         configure();
     }
 
     private void addComponents(int parameterId, JLabel label, JTextArea textField, List<String> values, String defaultValue, JScrollPane scroll ){
         this.labels.add(label);
-
         values.add(defaultValue);
         textField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
                 BorderFactory.createEmptyBorder(10, 10, 10, 0)));
@@ -113,7 +123,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         });
         scroll=new JScrollPane(textField);
         this.valueComponents.add(scroll);
-
     }
 
     private void initVars() {
@@ -168,6 +177,14 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         statisticsValues= new LinkedList<>();
         statisticsTextField = new JTextArea("StatisticBestAverage",1, 25);
 
+        warehouseLayouts= new JLabel("Warehouse Layouts: ");
+        warehouseLayoutsValues= new LinkedList<>();
+        warehouseLayoutsValuesTextField = new JTextArea("WarehouseLayout.json",1, 25);
+
+        pickLayouts= new JLabel("Pick files: ");
+        pickValues= new LinkedList<>();
+        pickValuesTextField = new JTextArea("PicksWeightCapacity.json",1, 25);
+
 
         this.setBorder(new EmptyBorder(0,5,0,5));//top,left,bottom,right
 
@@ -218,14 +235,18 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
                 case 13:
                     statisticsTextField.setText(listsToString(statisticsValues));
                     break;
+                case 14:
+                    warehouseLayoutsValuesTextField.setText(listsToString(warehouseLayoutsValues));
+                    break;
+                case 15:
+                    pickValuesTextField.setText(listsToString(pickValues));
+                    break;
             }
     }
 
     public void hideParameters(){
         mainPanel.hideEditParameters();
     }
-
-
 
     private String listsToString(List<String> list){
         StringBuilder sb = new StringBuilder();
@@ -290,5 +311,13 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
 
     public List<String> getStatisticsValues() {
         return statisticsValues;
+    }
+
+    public List<String> getWarehouseLayoutsValues() {
+        return warehouseLayoutsValues;
+    }
+
+    public List<String> getPickValues() {
+        return pickValues;
     }
 }

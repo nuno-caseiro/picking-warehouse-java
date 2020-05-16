@@ -15,6 +15,8 @@ import ipleiria.estg.dei.ei.utils.Maths;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 
 
@@ -76,7 +78,9 @@ public class Experiment implements ExperimentListener  {
         addParameter("Mutation",experimentParametersPanel.getMutationMethods());
         addParameter("Mutation probability",experimentParametersPanel.getMutationProbabilities());
         addParameter("Time weight",experimentParametersPanel.getTimeWeightValues());
-        addParameter("Collisions weight",experimentParametersPanel.getTimeWeightValues());
+        addParameter("Collisions weight",experimentParametersPanel.getCollisionsWeightsValues());
+        addParameter("WarehouseLayout",experimentParametersPanel.getWarehouseLayoutsValues());
+        addParameter("Picks",experimentParametersPanel.getPickValues());
 
         runs = Integer.parseInt(getParameterValue("Runs"));
 
@@ -117,6 +121,22 @@ public class Experiment implements ExperimentListener  {
     }
 
     private GeneticAlgorithm buildRun(){
+
+        String atualLayout = getParameterValue("WarehouseLayout");
+        HashMap<String,Object> warehousesLayout = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("WarehouseLayout");
+        String file= (String) warehousesLayout.get(atualLayout);
+
+        File layout= new File(file);
+        Environment.getInstance().setDefaultWarehouseLayout(layout);
+        Environment.getInstance().readInitialStateFromFile(layout);
+
+        String atualPickFile = getParameterValue("Picks");
+        HashMap<String,Object> pickFile = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("Picks");
+        String filePick= (String) pickFile.get(atualPickFile);
+
+        File pick= new File(filePick);
+        Environment.getInstance().loadPicksFromFile(pick);
+
         runs = Integer.parseInt(getParameterValue("Runs"));
         int populationSize = Integer.parseInt(getParameterValue("Population size"));
         int maxGenerations = Integer.parseInt(getParameterValue("Max generations"));
@@ -196,8 +216,8 @@ public class Experiment implements ExperimentListener  {
             geneticAlgorithm.run();
             seed++;
         }
+        this.seed=1;
         fireExperimentEnded();
-
     }
 
 

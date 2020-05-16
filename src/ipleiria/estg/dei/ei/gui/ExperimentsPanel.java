@@ -1,19 +1,18 @@
 package ipleiria.estg.dei.ei.gui;
 
-import ipleiria.estg.dei.ei.model.Environment;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.image.ImageObserver;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ExperimentsPanel extends JPanel implements GAListener {
@@ -22,12 +21,13 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     private final ExperimentParametersPanel experimentParameters;
     private final JPanel eastPanel;
     private ExperimentsEditParametersPanel experimentsEditParametersPanel;
-    private final HashMap<String,List<String>> availableParameters;
+    private final HashMap<String,Object> availableParameters;
     private JButton run;
     private JProgressBar experimentsProgressBar;
     private int atualValueProgressBar;
     private JTextArea individual = new JTextArea(10,50);
-
+    HashMap<String, String> mapPickFiles = new HashMap<String, String>();
+    HashMap<String, String> mapWarhouseLayoutFiles = new HashMap<String, String>();
 
     public ExperimentsPanel() {
 
@@ -59,6 +59,34 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     values.add("StatisticBestAverage");
     values.add("StatisticBestAverageWithoutCollisions");
     availableParameters.put("Statistics",values);
+
+
+        try {
+            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
+            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
+            for (int i = 0; i < files.size(); i++) {
+
+                mapPickFiles.put(files.get(i).toString(),filesToString.get(i));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
+            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
+
+            for (int i = 0; i < files.size(); i++) {
+
+                mapWarhouseLayoutFiles.put(files.get(i).toString(),filesToString.get(i));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        availableParameters.put("WarehouseLayout", mapWarhouseLayoutFiles);
+        availableParameters.put("Picks", mapPickFiles);
 
     experimentsProgressBar = new JProgressBar();
     experimentsProgressBar.setStringPainted(true);
@@ -98,21 +126,7 @@ public class ExperimentsPanel extends JPanel implements GAListener {
         this.repaint();
     }
 
-    /*public void showEditParameters(int panelId, List values, Point point) {
-        experimentsEditParametersPanel= new ExperimentsEditParametersPanel(panelId,values,availableParameters,experimentParameters);
-        experimentsEditParametersPanel.setLocation(point.x+250,point.y);
-        experimentsEditParametersPanel.setPreferredSize(new Dimension(300,200));
-        eastPanel.setComponentPopupMenu(experimentsEditParametersPanel);
-        experimentsEditParametersPanel.setInvoker(eastPanel);
-        experimentsEditParametersPanel.setVisible(true);
-    }
-
-    public void hideEditParameters(){
-        experimentsEditParametersPanel.setInvoker(null);
-        experimentsEditParametersPanel.setVisible(false);
-    }*/
-
-    public HashMap<String, List<String>> getAvailableParameters() {
+    public HashMap<String, Object> getAvailableParameters() {
         return availableParameters;
     }
 
