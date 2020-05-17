@@ -77,8 +77,6 @@ public class Experiment implements ExperimentListener  {
         addParameter("Recombination probability",experimentParametersPanel.getRecombinationProbabilities());
         addParameter("Mutation",experimentParametersPanel.getMutationMethods());
         addParameter("Mutation probability",experimentParametersPanel.getMutationProbabilities());
-        addParameter("Time weight",experimentParametersPanel.getTimeWeightValues());
-        addParameter("Collisions weight",experimentParametersPanel.getCollisionsWeightsValues());
         addParameter("WarehouseLayout",experimentParametersPanel.getWarehouseLayoutsValues());
         addParameter("Picks",experimentParametersPanel.getPickValues());
 
@@ -187,9 +185,6 @@ public class Experiment implements ExperimentListener  {
                 mutation = new MutationInversion(mutationProbability);
                 break;
         }
-
-        timeWeight= Integer.parseInt(getParameterValue("Time weight"));
-        collisionsWeight= Integer.parseInt(getParameterValue("Collisions weight"));
 
         Random random = new Random(seed);
 

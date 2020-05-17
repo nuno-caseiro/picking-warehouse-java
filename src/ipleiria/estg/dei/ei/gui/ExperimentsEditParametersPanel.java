@@ -86,12 +86,6 @@ public class ExperimentsEditParametersPanel extends JPanel {
             case 10:
                 switchHelper("Editing mutation probabilities",8);
                 break;
-            case 11:
-                switchHelper("Editing time weights",1);
-                break;
-            case 12:
-                switchHelper("Editing collision weights",1);
-                break;
             case 13:
                 switchHelper("Editing statistics ",10);
                 break;
