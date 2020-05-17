@@ -151,6 +151,10 @@ public class Node implements Comparable<Node> {
         this.costFromAdjacentNode = costFromAdjacentNode;
     }
 
+    public List<Integer> getEdges() {
+        return edges;
+    }
+
     public int getWeight() {
         return weight;
     }

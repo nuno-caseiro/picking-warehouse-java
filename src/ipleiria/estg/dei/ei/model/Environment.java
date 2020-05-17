@@ -544,8 +544,16 @@ public class Environment {
         return Math.min(n1Distance, n2Distance);
     }
 
-    public double getDistanceToDecisionNodeType1(int nodeNumber, List<Node> path, List<Node> path1) {
-        return 0;
+    public double getDistanceToDecisionNodeType1(int nodeNumber) {
+        Node node = this.nodes.get(nodeNumber);
+        Edge e = this.edges.get(node.getEdges().get(0) - 1);
+        Node n1 = e.getNode1();
+        Node n2 = e.getNode2();
+
+        int d1 = Math.abs(node.getLine() - n1.getLine()) + Math.abs(node.getColumn() - n1.getColumn());
+        int d2 = Math.abs(node.getLine() - n2.getLine()) + Math.abs(node.getColumn() - n2.getColumn());
+
+        return Math.min(d1, d2);
     }
 
     public boolean isDecisionNode(int nodeNumber) {

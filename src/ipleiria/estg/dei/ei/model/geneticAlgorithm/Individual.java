@@ -220,9 +220,12 @@ public class Individual implements Comparable<Individual> {
                 for (int k = 0; k < this.individualPaths.get(i).getPath().size(); k++) {
                     node = this.individualPaths.get(i).getPath().get(k);
                     if (this.individualPaths.get(j).getPath().containsNodeAtTime(node.getNodeNumber(), node.getTime())) {
-                        if (environment.isDecisionNode(node.getNodeNumber()) && isEdgeOneWay(node.getNodeNumber(), this.individualPaths.get(i).getPath().get(k + 1).getNodeNumber())) {
+                        if (!environment.isDecisionNode(node.getNodeNumber()) && isEdgeOneWay(node.getNodeNumber(), this.individualPaths.get(i).getPath().get(k + 1).getNodeNumber())) {
                             this.numberOfCollisions++;
-                            this.fitness += environment.getDistanceToDecisionNodeType1(node.getNodeNumber(), this.individualPaths.get(i).getPath(), this.individualPaths.get(j).getPath()) + 1;
+                            this.fitness += environment.getDistanceToDecisionNodeType1(node.getNodeNumber()) + 1;
+                        } else {
+                            this.numberOfCollisions++;
+                            this.fitness++;
                         }
                     }
                 }
