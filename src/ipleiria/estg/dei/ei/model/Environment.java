@@ -34,8 +34,6 @@ public class Environment {
     private int offloadArea;
     private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
-    private int timeWeight;
-    private int collisionsWeight;
     private Boolean pause;
     private int executionSteps= 0;
     private Thread auxThread;
@@ -472,22 +470,6 @@ public class Environment {
         return solutionLocations;
     }
 
-    public int getTimeWeight() {
-        return timeWeight;
-    }
-
-    public void setTimeWeight(int timeWeight) {
-        this.timeWeight = timeWeight;
-    }
-
-    public int getCollisionsWeight() {
-        return collisionsWeight;
-    }
-
-    public void setCollisionsWeight(int collisionsWeight) {
-        this.collisionsWeight = collisionsWeight;
-    }
-
     public List<Node> getPicks() {
         return picks;
     }
@@ -504,7 +486,7 @@ public class Environment {
         return nodes.get(i);
     }
 
-    public double getDistanceToDecisionNode(int numberNode1, double timeNode1, List<Node> l1, int indexN1, int numberNode2, double timeNode2, List<Node> l2, int indexN2) {
+    public double getDistanceToDecisionNode(int numberNode1, double timeNode1, List<Node> l1, int indexN1, AgentPath a1, int numberNode2, double timeNode2, List<Node> l2, int indexN2, AgentPath a2) {
         Node n1 = this.nodes.get(numberNode1);
         int n1Distance = 0;
         Node n2 = this.nodes.get(numberNode2);
@@ -541,10 +523,16 @@ public class Environment {
         n1Distance += Math.abs(n1.getLine() - n1Decision.getLine()) + Math.abs(n1.getColumn() - n1Decision.getColumn());
         n2Distance += Math.abs(n2.getLine() - n2Decision.getLine()) + Math.abs(n2.getColumn() - n2Decision.getColumn());
 
-        return Math.min(n1Distance, n2Distance);
+        if (a1.getTimeWithPenalization() + n1Distance < a2.getTimeWithPenalization() + n2Distance) {
+            a1.addPenalization(n1Distance);
+            return n1Distance;
+        }
+
+        a2.addPenalization(n2Distance);
+        return n2Distance;
     }
 
-    public double getDistanceToDecisionNodeType1(int nodeNumber) {
+    public double getDistanceToDecisionNodeType1(int nodeNumber, AgentPath a1, int indexN1, AgentPath a2) {
         Node node = this.nodes.get(nodeNumber);
         Edge e = this.edges.get(node.getEdges().get(0) - 1);
         Node n1 = e.getNode1();
@@ -552,8 +540,22 @@ public class Environment {
 
         int d1 = Math.abs(node.getLine() - n1.getLine()) + Math.abs(node.getColumn() - n1.getColumn());
         int d2 = Math.abs(node.getLine() - n2.getLine()) + Math.abs(node.getColumn() - n2.getColumn());
+        int dAux;
 
-        return Math.min(d1, d2);
+        Node n1Previous = a1.getPath().get(indexN1 - 1);
+        if (Math.abs(n1Previous.getLine() - n1.getLine()) + Math.abs(n1Previous.getColumn() - n1.getColumn()) > d1) {
+            dAux = d1;
+            d1 = d2;
+            d2 = dAux;
+        }
+
+        if (a1.getTimeWithPenalization() + d1 < a2.getTimeWithPenalization() + d2) {
+            a1.addPenalization(d1);
+            return d1;
+        }
+
+        a2.addPenalization(d2);
+        return d2;
     }
 
     public boolean isDecisionNode(int nodeNumber) {

@@ -211,6 +211,7 @@ public class Individual implements Comparable<Individual> {
         // BUILD PAIRS
         for (AgentPath agentPath : this.individualPaths) {
             agentPath.populateNodePairsMap();
+            agentPath.setTimeWithPenalization(agentPath.getValue());
         }
 
         // TYPE 1 COLLISIONS
@@ -222,7 +223,7 @@ public class Individual implements Comparable<Individual> {
                     if (this.individualPaths.get(j).getPath().containsNodeAtTime(node.getNodeNumber(), node.getTime())) {
                         if (!environment.isDecisionNode(node.getNodeNumber()) && isEdgeOneWay(node.getNodeNumber(), this.individualPaths.get(i).getPath().get(k + 1).getNodeNumber())) {
                             this.numberOfCollisions++;
-                            this.fitness += environment.getDistanceToDecisionNodeType1(node.getNodeNumber()) + 1;
+                            this.fitness += environment.getDistanceToDecisionNodeType1(node.getNodeNumber(), this.individualPaths.get(i), k, this.individualPaths.get(j)) + 1;
                         } else {
                             this.numberOfCollisions++;
                             this.fitness++;
@@ -245,7 +246,7 @@ public class Individual implements Comparable<Individual> {
                             for (TimePair timePair : pairs) {
                                 if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), timePair.getNode1Time(), timePair.getNode2Time())) {
                                     this.numberOfCollisions++;
-                                    this.fitness += environment.getDistanceToDecisionNode(path.get(k).getNodeNumber(), path.get(k).getTime(), path, k, path.get(k + 1).getNodeNumber(), timePair.getNode1Time(), path1, timePair.getIndex()) + 1;
+                                    this.fitness += environment.getDistanceToDecisionNode(path.get(k).getNodeNumber(), path.get(k).getTime(), path, k, this.individualPaths.get(i), path.get(k + 1).getNodeNumber(), timePair.getNode1Time(), path1, timePair.getIndex(), this.individualPaths.get(j)) + 1;
                                 }
                             }
                         }

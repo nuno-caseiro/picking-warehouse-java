@@ -71,8 +71,6 @@ public class StatisticBestAverage implements GAListener {
         sb.append(geneticAlgorithm.getRecombination().getProbability() + "\t");
         sb.append(geneticAlgorithm.getMutation() + "\t");
         sb.append(geneticAlgorithm.getMutation().getProbability() + "\t");
-        sb.append(Environment.getInstance().getTimeWeight() + "\t");
-        sb.append(Environment.getInstance().getCollisionsWeight() + "\t");
         return sb.toString();
     }
 

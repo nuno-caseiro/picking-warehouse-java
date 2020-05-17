@@ -97,8 +97,6 @@ public class GeneticAlgorithm {
         sb.append("Recombination prob.: " + recombination.getProbability() + "\r\n");
         sb.append("Mutation:" + mutation + "\r\n");
         sb.append("Mutation prob.: " + mutation.getProbability()+ "\r\n");
-        sb.append("Time weight:" + Environment.getInstance().getTimeWeight()+ "\r\n");
-        sb.append("Collisions weight:" + Environment.getInstance().getCollisionsWeight()+ "\r\n");
         return sb.toString();
     }
 

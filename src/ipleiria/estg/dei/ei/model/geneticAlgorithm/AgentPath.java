@@ -9,6 +9,7 @@ public class AgentPath {
 
     private NodePathList path;
     private double value;
+    private double timeWithPenalization;
 
     public AgentPath() {
         this.path = new NodePathList();
@@ -39,6 +40,18 @@ public class AgentPath {
             this.path.get(this.path.size() - 1).setCapacity(capacity);
             this.value += path.get(path.size() - 1).getG();
         }
+    }
+
+    public double getTimeWithPenalization() {
+        return timeWithPenalization;
+    }
+
+    public void addPenalization(double value) {
+        this.timeWithPenalization += value;
+    }
+
+    public void setTimeWithPenalization(double timeWithPenalization) {
+        this.timeWithPenalization = timeWithPenalization;
     }
 
     public void addAgentInitialPosition(Node node) {
