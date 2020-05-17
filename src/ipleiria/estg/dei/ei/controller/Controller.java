@@ -149,9 +149,6 @@ public class Controller {
         view.manageButtons(true,false,true,true,true,false);
         Random random = new Random(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldSeed().getText()));
 
-        Environment.getInstance().setTimeWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldTimeWeight().getText()));
-        Environment.getInstance().setCollisionsWeight(Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldCollisionsWeight().getText()));
-
         GeneticAlgorithm ga = new GeneticAlgorithm(
                 Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldN().getText()),
                 Integer.parseInt(view.getGaPanel().getPanelParameters().getTextFieldGenerations().getText()),

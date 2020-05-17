@@ -194,8 +194,6 @@ public class Experiment implements ExperimentListener  {
         Random random = new Random(seed);
 
         GeneticAlgorithm ga = new GeneticAlgorithm(populationSize,maxGenerations,selection,recombination,mutation, Environment.getInstance().getNumberOfAgents(),Environment.getInstance().getNumberOfPicks(),random);
-        Environment.getInstance().setTimeWeight(timeWeight);
-        Environment.getInstance().setCollisionsWeight(collisionsWeight);
 
         for (ExperimentListener statistic : statistics) {
             ga.addGAListener((GAListener) statistic);

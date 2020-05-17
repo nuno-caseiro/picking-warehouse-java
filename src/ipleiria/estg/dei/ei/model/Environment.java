@@ -34,8 +34,6 @@ public class Environment {
     private int offloadArea;
     private HashMap<String, Edge> edgesMap;
     private List<Edge> edges;
-    private int timeWeight;
-    private int collisionsWeight;
     private Boolean pause;
     private int executionSteps= 0;
     private Thread auxThread;
@@ -470,22 +468,6 @@ public class Environment {
             agentLocations = new ArrayList<>();
         }
         return solutionLocations;
-    }
-
-    public int getTimeWeight() {
-        return timeWeight;
-    }
-
-    public void setTimeWeight(int timeWeight) {
-        this.timeWeight = timeWeight;
-    }
-
-    public int getCollisionsWeight() {
-        return collisionsWeight;
-    }
-
-    public void setCollisionsWeight(int collisionsWeight) {
-        this.collisionsWeight = collisionsWeight;
     }
 
     public List<Node> getPicks() {
