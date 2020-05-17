@@ -54,14 +54,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
     private List<String> mutationProbabilities;
     private JTextArea mutationProbabilitiesTextField;
 
-    private JLabel timeWeightsLabel;
-    private List<String> timeWeightValues;
-    private JTextArea timeWeightsTextField;
-
-    private JLabel collisionsWeightsLabel;
-    private List<String> collisionsWeightsValues;
-    private JTextArea collisionsWeightsTextField;
-
     private JLabel statisticsSelection;
     private List<String> statisticsValues;
     private JTextArea statisticsTextField;
@@ -99,8 +91,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         addComponents(8,recombinationProbabilitiesLabel,recombinationProbabilitiesTextField, recombinationProbabilities,"0.7", null);
         addComponents(9,mutationMethodsLabel,mutationMethodsTextField, mutationMethods,"Insert", null);
         addComponents(10,mutationProbabilitiesLabel,mutationProbabilitiesTextField, mutationProbabilities,"0.3", null);
-        addComponents(11,timeWeightsLabel,timeWeightsTextField, timeWeightValues,"1", null);
-        addComponents(12,collisionsWeightsLabel, collisionsWeightsTextField, collisionsWeightsValues,"1", null);
         addComponents(13,statisticsSelection, statisticsTextField, statisticsValues,"StatisticBestAverage", null);
         addComponents(14,warehouseLayouts, warehouseLayoutsValuesTextField, warehouseLayoutsValues,"WarehouseLayout.json", null);
         addComponents(15,pickLayouts, pickValuesTextField, pickValues,"PicksWeightCapacity.json", null);
@@ -165,14 +155,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         mutationProbabilities = new LinkedList<>();
         mutationProbabilitiesTextField = new JTextArea("0.3",1,25);
 
-        timeWeightsLabel= new JLabel("Time weights:");
-        timeWeightValues = new LinkedList<>();
-        timeWeightsTextField = new JTextArea("1",1,25);
-
-        collisionsWeightsLabel= new JLabel("Collision weights:");
-        collisionsWeightsValues = new LinkedList<>();
-        collisionsWeightsTextField = new JTextArea("1",1,25);
-
         statisticsSelection= new JLabel("Statistics: ");
         statisticsValues= new LinkedList<>();
         statisticsTextField = new JTextArea("StatisticBestAverage",1, 25);
@@ -225,12 +207,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
                     break;
                 case 10:
                     mutationProbabilitiesTextField.setText(listsToString(mutationProbabilities));
-                    break;
-                case 11:
-                    timeWeightsTextField.setText(listsToString(timeWeightValues));
-                    break;
-                case 12:
-                    collisionsWeightsTextField.setText(listsToString(collisionsWeightsValues));
                     break;
                 case 13:
                     statisticsTextField.setText(listsToString(statisticsValues));
@@ -301,13 +277,6 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         return mutationProbabilities;
     }
 
-    public List<String> getTimeWeightValues() {
-        return timeWeightValues;
-    }
-
-    public List<String> getCollisionsWeightsValues() {
-        return collisionsWeightsValues;
-    }
 
     public List<String> getStatisticsValues() {
         return statisticsValues;
