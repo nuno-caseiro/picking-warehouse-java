@@ -37,7 +37,7 @@ public class StatisticBestAverage implements GAListener {
     public void runEnded(GeneticAlgorithm geneticAlgorithm) {
         this.geneticAlgorithm= geneticAlgorithm;
         values[run]=geneticAlgorithm.getBestInRun().getFitness();
-        valuesWoCollisions[run]=geneticAlgorithm.getBestInRun().getFitnessWoCollisions();
+        valuesWoCollisions[run]=geneticAlgorithm.getBestInRun().getTime();
         allRunsCollisions[run++]=geneticAlgorithm.getBestInRun().getNumberOfCollisions();
     }
 

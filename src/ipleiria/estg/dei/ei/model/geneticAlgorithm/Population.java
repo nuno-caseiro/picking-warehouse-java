@@ -61,7 +61,7 @@ public class Population {
     public double getAverageFitnessWithoutCollisions(){
         double fitnessSum = 0;
         for (Individual individual : individuals) {
-            fitnessSum += individual.getFitnessWoCollisions();
+            fitnessSum += individual.getTime();
         }
         return fitnessSum / individuals.size();
     }

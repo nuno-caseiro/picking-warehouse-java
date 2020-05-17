@@ -46,10 +46,10 @@ public class NodePathList extends ArrayList<Node> {
 
             times = this.nodePairs.get(n1.getNodeNumber() + "-" + n2.getNodeNumber());
             if (times != null) {
-                times.add(new TimePair(n1.getTime(), n2.getTime()));
+                times.add(new TimePair(n1.getTime(), n2.getTime(), i));
             } else {
                 times = new ArrayList<>();
-                times.add(new TimePair(n1.getTime(), n2.getTime()));
+                times.add(new TimePair(n1.getTime(), n2.getTime(), i));
 
                 this.nodePairs.put(n1.getNodeNumber() + "-" + n2.getNodeNumber(), times);
             }

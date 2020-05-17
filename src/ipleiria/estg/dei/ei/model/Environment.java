@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.AgentPath;
 import ipleiria.estg.dei.ei.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.model.search.*;
+import ipleiria.estg.dei.ei.utils.NodePathList;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -501,6 +502,54 @@ public class Environment {
 
     public Node getNode(int i) {
         return nodes.get(i);
+    }
+
+    public double getDistanceToDecisionNode(int numberNode1, double timeNode1, List<Node> l1, int indexN1, int numberNode2, double timeNode2, List<Node> l2, int indexN2) {
+        Node n1 = this.nodes.get(numberNode1);
+        int n1Distance = 0;
+        Node n2 = this.nodes.get(numberNode2);
+        int n2Distance = 0;
+
+        int timeDifference = (int) Math.abs(timeNode1 - timeNode2);
+
+        if (timeNode1 < timeNode2) {
+            n1Distance += timeDifference;
+        } else {
+            n2Distance += timeDifference;
+        }
+
+        int distance = ((Math.abs(n1.getLine() - n2.getLine()) + Math.abs(n1.getColumn() - n2.getColumn())) - timeDifference) / 2;
+        n1Distance += distance;
+        n2Distance += distance;
+
+        Node n1Decision = this.nodes.get(l1.get(indexN1).getNodeNumber());
+        for (int i = indexN1; i >= 0; i--) {
+            n1Decision = this.nodes.get(l1.get(i).getNodeNumber());
+            if (n1Decision.getType().equals("D")) {
+                break;
+            }
+        }
+
+        Node n2Decision = this.nodes.get(l2.get(indexN2).getNodeNumber());
+        for (int i = indexN2; i >= 0; i--) {
+            n2Decision = this.nodes.get(l2.get(i).getNodeNumber());
+            if (n2Decision.getType().equals("D")) {
+                break;
+            }
+        }
+
+        n1Distance += Math.abs(n1.getLine() - n1Decision.getLine()) + Math.abs(n1.getColumn() - n1Decision.getColumn());
+        n2Distance += Math.abs(n2.getLine() - n2Decision.getLine()) + Math.abs(n2.getColumn() - n2Decision.getColumn());
+
+        return Math.min(n1Distance, n2Distance);
+    }
+
+    public double getDistanceToDecisionNodeType1(int nodeNumber, List<Node> path, List<Node> path1) {
+        return 0;
+    }
+
+    public boolean isDecisionNode(int nodeNumber) {
+        return this.nodes.get(nodeNumber).getType().equals("D");
     }
 
     public List<Node> getAdjacentNodes(int nodeNumber) {
