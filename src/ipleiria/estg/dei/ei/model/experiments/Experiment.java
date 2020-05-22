@@ -208,6 +208,7 @@ public class Experiment implements ExperimentListener  {
             geneticAlgorithm.addGAListener(experimentsPanel);
             geneticAlgorithm.run();
             seed++;
+            System.out.println(geneticAlgorithm.getBestInRun().getWaitTime());
         }
         this.seed=1;
         fireExperimentEnded();
@@ -234,8 +235,6 @@ public class Experiment implements ExperimentListener  {
         sb.append("Recombination prob.:" + "\t");
         sb.append("Mutation:" + "\t");
         sb.append("Mutation prob.:" + "\t");
-        sb.append("Time weight:" + "\t");
-        sb.append("Collisions weight:" + "\t");
         return sb.toString();
     }
 
