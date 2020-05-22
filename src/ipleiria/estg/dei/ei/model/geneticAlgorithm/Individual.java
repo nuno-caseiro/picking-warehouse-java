@@ -54,6 +54,8 @@ public class Individual implements Comparable<Individual> {
         this.aStar = new AStar();
         this.individualPaths = original.individualPaths;
         this.numberOfCollisions = original.numberOfCollisions;
+        this.numberTimesOffload = original.numberTimesOffload;
+        this.waitTime = original.waitTime;
     }
 
     public int[] getGenome() {
@@ -297,6 +299,10 @@ public class Individual implements Comparable<Individual> {
         sb.append(this.time);
         sb.append(" - Collisions: ");
         sb.append(this.numberOfCollisions);
+        sb.append(" - #Offload: ");
+        sb.append(this.numberTimesOffload);
+        sb.append(" - Wait Time: ");
+        sb.append(this.waitTime);
         sb.append("\nPath: ");
         for (int value : genome) {
             sb.append(value).append(" ");
