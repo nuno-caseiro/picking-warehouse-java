@@ -276,7 +276,7 @@ public class Individual implements Comparable<Individual> {
                 }
             }
         }
-        System.out.println("123");
+
     }
 
     private boolean isEdgeOneWay(int node1, int node2) {

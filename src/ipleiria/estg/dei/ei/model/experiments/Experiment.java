@@ -234,8 +234,6 @@ public class Experiment implements ExperimentListener  {
         sb.append("Recombination prob.:" + "\t");
         sb.append("Mutation:" + "\t");
         sb.append("Mutation prob.:" + "\t");
-        sb.append("Time weight:" + "\t");
-        sb.append("Collisions weight:" + "\t");
         return sb.toString();
     }
 
