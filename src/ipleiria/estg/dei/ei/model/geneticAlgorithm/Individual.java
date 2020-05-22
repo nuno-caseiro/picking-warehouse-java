@@ -19,6 +19,8 @@ public class Individual implements Comparable<Individual> {
     private List<AgentPath> individualPaths;
     private Environment environment;
     private AStar aStar;
+    private int numberTimesOffload;
+    private double waitTime;
 
     public Individual(int numPicks, int numAgents) {
         int genomeSize = numPicks + (numAgents - 1);
@@ -86,6 +88,14 @@ public class Individual implements Comparable<Individual> {
         return numberOfCollisions;
     }
 
+    public int getNumberTimesOffload() {
+        return numberTimesOffload;
+    }
+
+    public double getWaitTime() {
+        return waitTime;
+    }
+
     public int getIndexOf(int value){
         for (int i = 0; i < genome.length; i++) {
             if (genome[i] == value) {
@@ -101,6 +111,7 @@ public class Individual implements Comparable<Individual> {
 
     public void computeFitness() {
         this.individualPaths = new ArrayList<>();
+        this.numberTimesOffload = 0;
 
         List<Node> picks = this.environment.getPicks();
         List<Node> agents = this.environment.getAgents();
@@ -130,6 +141,8 @@ public class Individual implements Comparable<Individual> {
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
 
                 if ((weightOnTopOfRestrictionPick + picks.get(this.genome[i + 1] - 1).getWeight()) > restrictionPickCapacity) {
+                    this.numberTimesOffload++;
+
                     computePath(agentPath, picks.get(this.genome[i] - 1), this.environment.getNode(offloadArea));
                     computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
 
@@ -207,12 +220,14 @@ public class Individual implements Comparable<Individual> {
 
     private void detectAndPenalizeCollisions() {
         this.numberOfCollisions = 0;
+        this.waitTime = 0;
 
         // BUILD PAIRS
         for (AgentPath agentPath : this.individualPaths) {
             agentPath.populateNodePairsMap();
         }
 
+        double waitTime;
         // TYPE 1 COLLISIONS
         Node node;
         for (int i = 0; i < this.individualPaths.size() - 1; i++) {
@@ -222,10 +237,13 @@ public class Individual implements Comparable<Individual> {
                     if (this.individualPaths.get(j).getPath().containsNodeAtTime(node.getNodeNumber(), node.getTime())) {
                         if (!environment.isDecisionNode(node.getNodeNumber()) && isEdgeOneWay(node.getNodeNumber(), this.individualPaths.get(i).getPath().get(k + 1).getNodeNumber())) {
                             this.numberOfCollisions++;
-                            this.fitness += environment.getDistanceToDecisionNodeType1(node.getNodeNumber()) + 1;
+                            waitTime = environment.getDistanceToDecisionNodeType1(node.getNodeNumber()) + 1;
+                            this.fitness += waitTime;
+                            this.waitTime += waitTime;
                         } else {
                             this.numberOfCollisions++;
                             this.fitness++;
+                            this.waitTime++;
                         }
                     }
                 }
@@ -245,7 +263,9 @@ public class Individual implements Comparable<Individual> {
                             for (TimePair timePair : pairs) {
                                 if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), timePair.getNode1Time(), timePair.getNode2Time())) {
                                     this.numberOfCollisions++;
-                                    this.fitness += environment.getDistanceToDecisionNode(path.get(k).getNodeNumber(), path.get(k).getTime(), path, k, path.get(k + 1).getNodeNumber(), timePair.getNode1Time(), path1, timePair.getIndex()) + 1;
+                                    waitTime = environment.getDistanceToDecisionNode(path.get(k).getNodeNumber(), path.get(k).getTime(), path, k, path.get(k + 1).getNodeNumber(), timePair.getNode1Time(), path1, timePair.getIndex()) + 1;
+                                    this.fitness += waitTime;
+                                    this.waitTime += waitTime;
                                 }
                             }
                         }
