@@ -74,7 +74,7 @@ public class StatisticBestAverage implements GAListener {
         Arrays.fill(allRunsCollisions,0);
         this.run=0;
         this.numberTimesOffload=0;
-
+        this.waitTime=0;
     }
 
     private String buildExperimentValues() {
