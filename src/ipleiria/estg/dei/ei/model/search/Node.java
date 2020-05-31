@@ -40,6 +40,14 @@ public class Node implements Comparable<Node> {
 
     }
 
+    public Node(int line, int column, int location, int weight, int capacity) {
+        this.line = line;
+        this.column = column;
+        this.location = location;
+        this.weight = weight;
+        this.capacity = capacity;
+    }
+
     public Node(double costFromAdjacentNode, int line, int column, int nodeNumber) {
         this.costFromAdjacentNode = costFromAdjacentNode;
         this.line = line;

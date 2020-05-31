@@ -23,7 +23,7 @@ public class StatisticBestAverage implements GAListener {
         allRunsCollisions = new double[numRuns];
         File file = new File("statistic_average_fitness_1.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "Average:" + "\t" + "StdDev:" + "\t" + "AverageWoCollisions:" + "\t" + "StdDevWoCollisions:" + "\t" + "Collisions average" + "\t" + "Collisions stdDev" +"\t"+ "Number agents"+"\t"+ "Number picks" +"\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "AverageFitness:" + "\t" + "AverageFitnessStdDev:" + "\t" + "AverageTime:" + "\t" + "AverageTimeStdDev:" + "\t" + "CollisionsAverage" + "\t" + "CollisionsAverageStdDev" +"\t"+ "NumberAgents"+"\t"+ "NumberPicks" +"\t"+"NumberTimesOffload" + "\t" + "TimeWaitAvg" +"\r\n");
         }
     }
 
