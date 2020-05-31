@@ -671,6 +671,11 @@ public class Environment {
         int d2 = Math.abs(node.getLine() - n2.getLine()) + Math.abs(node.getColumn() - n2.getColumn());
         int dAux;
 
+        if (indexN1 == 0) {
+            a1.addPenalization(d1);
+            return d1;
+        }
+
         Node n1Previous = a1.getPath().get(indexN1 - 1);
         if (Math.abs(n1Previous.getLine() - n1.getLine()) + Math.abs(n1Previous.getColumn() - n1.getColumn()) > d1) {
             dAux = d1;
