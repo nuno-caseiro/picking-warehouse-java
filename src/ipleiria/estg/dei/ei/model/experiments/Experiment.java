@@ -77,8 +77,8 @@ public class Experiment implements ExperimentListener  {
         addParameter("Recombination probability",experimentParametersPanel.getRecombinationProbabilities());
         addParameter("Mutation",experimentParametersPanel.getMutationMethods());
         addParameter("Mutation probability",experimentParametersPanel.getMutationProbabilities());
-        addParameter("WarehouseLayout",experimentParametersPanel.getWarehouseLayoutsValues());
-        addParameter("Picks",experimentParametersPanel.getPickValues());
+        addParameter("NumAgents",experimentParametersPanel.getNumberAgentsValues());
+        addParameter("NumPicks",experimentParametersPanel.getNumberPicksValues());
 
         runs = Integer.parseInt(getParameterValue("Runs"));
 
@@ -118,31 +118,33 @@ public class Experiment implements ExperimentListener  {
         }
     }
 
-    private GeneticAlgorithm buildRun(){
+    private GeneticAlgorithm buildRun() {
 
-        String atualLayout = getParameterValue("WarehouseLayout");
-        HashMap<String,Object> warehousesLayout = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("WarehouseLayout");
-        String file= (String) warehousesLayout.get(atualLayout);
+//        String atualLayout = getParameterValue("WarehouseLayout");
+//        HashMap<String,Object> warehousesLayout = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("WarehouseLayout");
+//        String file= (String) warehousesLayout.get(atualLayout);
+//
+//        File layout= new File(file);
+//        Environment.getInstance().setDefaultWarehouseLayout(layout);
+        Environment.getInstance().generateRandomLayout();
 
-        File layout= new File(file);
-        Environment.getInstance().setDefaultWarehouseLayout(layout);
-        Environment.getInstance().readInitialStateFromFile(layout);
+//        String atualPickFile = getParameterValue("Picks");
+//        HashMap<String,Object> pickFile = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("Picks");
+//        String filePick= (String) pickFile.get(atualPickFile);
 
-        String atualPickFile = getParameterValue("Picks");
-        HashMap<String,Object> pickFile = (HashMap<String, Object>) experimentsPanel.getAvailableParameters().get("Picks");
-        String filePick= (String) pickFile.get(atualPickFile);
-
-        File pick= new File(filePick);
-        Environment.getInstance().loadPicksFromFile(pick);
+//        File pick= new File(filePick);
 
         runs = Integer.parseInt(getParameterValue("Runs"));
+        int numAgents = Integer.parseInt(getParameterValue("NumAgents"));
+        int numPicks = Integer.parseInt(getParameterValue("NumPicks"));
+
+        Environment.getInstance().generateRandomPicks(this.seed, numPicks, numAgents, this.runs);
+
         int populationSize = Integer.parseInt(getParameterValue("Population size"));
         int maxGenerations = Integer.parseInt(getParameterValue("Max generations"));
         SelectionMethod selection = null;
         Recombination recombination = null;
         Mutation mutation= null;
-        int timeWeight = 1;
-        int collisionsWeight = 1;
 
         if (getParameterValue("Selection").equals("Tournament")) {
             int tournamentSize = Integer.parseInt(getParameterValue("Tournament size"));

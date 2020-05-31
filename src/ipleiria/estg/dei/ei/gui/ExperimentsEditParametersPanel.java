@@ -90,10 +90,10 @@ public class ExperimentsEditParametersPanel extends JPanel {
                 switchHelper("Editing statistics ",10);
                 break;
             case 14:
-                switchHelper("Editing warehouse laytous",11);
+                switchHelper("Editing number of agents",1);
                 break;
             case 15:
-                switchHelper("Editing pick files",12);
+                switchHelper("Editing number of picks",1);
                 break;
         }
         
