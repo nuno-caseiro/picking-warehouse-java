@@ -58,13 +58,13 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
     private List<String> statisticsValues;
     private JTextArea statisticsTextField;
 
-    private JLabel warehouseLayouts;
-    private List<String> warehouseLayoutsValues;
-    private JTextArea warehouseLayoutsValuesTextField;
+    private JLabel numberAgents;
+    private List<String> numberAgentsValues;
+    private JTextArea numberAgentsTextField;
 
-    private JLabel pickLayouts;
-    private List<String> pickValues;
-    private JTextArea pickValuesTextField;
+    private JLabel numberPicks;
+    private List<String> numberPicksValues;
+    private JTextArea numberPicksTextField;
 
     public ExperimentParametersPanel(ExperimentsPanel mainPanel) {
 
@@ -92,8 +92,8 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         addComponents(9,mutationMethodsLabel,mutationMethodsTextField, mutationMethods,"Insert", null);
         addComponents(10,mutationProbabilitiesLabel,mutationProbabilitiesTextField, mutationProbabilities,"0.3", null);
         addComponents(13,statisticsSelection, statisticsTextField, statisticsValues,"StatisticBestAverage", null);
-        addComponents(14,warehouseLayouts, warehouseLayoutsValuesTextField, warehouseLayoutsValues,"WarehouseLayout.json", null);
-        addComponents(15,pickLayouts, pickValuesTextField, pickValues,"PicksWeightCapacity.json", null);
+        addComponents(14, numberAgents, numberAgentsTextField, numberAgentsValues,"3", null);
+        addComponents(15, numberPicks, numberPicksTextField, numberPicksValues,"45", null);
 
         configure();
     }
@@ -159,13 +159,13 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         statisticsValues= new LinkedList<>();
         statisticsTextField = new JTextArea("StatisticBestAverage",1, 25);
 
-        warehouseLayouts= new JLabel("Warehouse Layouts: ");
-        warehouseLayoutsValues= new LinkedList<>();
-        warehouseLayoutsValuesTextField = new JTextArea("WarehouseLayout.json",1, 25);
+        numberAgents = new JLabel("Number of Agents ");
+        numberAgentsValues = new LinkedList<>();
+        numberAgentsTextField = new JTextArea("3",1, 25);
 
-        pickLayouts= new JLabel("Pick files: ");
-        pickValues= new LinkedList<>();
-        pickValuesTextField = new JTextArea("PicksWeightCapacity.json",1, 25);
+        numberPicks = new JLabel("Number of picks: ");
+        numberPicksValues = new LinkedList<>();
+        numberPicksTextField = new JTextArea("45",1, 25);
 
 
         this.setBorder(new EmptyBorder(0,5,0,5));//top,left,bottom,right
@@ -212,10 +212,10 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
                     statisticsTextField.setText(listsToString(statisticsValues));
                     break;
                 case 14:
-                    warehouseLayoutsValuesTextField.setText(listsToString(warehouseLayoutsValues));
+                    numberAgentsTextField.setText(listsToString(numberAgentsValues));
                     break;
                 case 15:
-                    pickValuesTextField.setText(listsToString(pickValues));
+                    numberPicksTextField.setText(listsToString(numberPicksValues));
                     break;
             }
     }
@@ -282,11 +282,11 @@ public class ExperimentParametersPanel extends PanelAtributesValue {
         return statisticsValues;
     }
 
-    public List<String> getWarehouseLayoutsValues() {
-        return warehouseLayoutsValues;
+    public List<String> getNumberAgentsValues() {
+        return numberAgentsValues;
     }
 
-    public List<String> getPickValues() {
-        return pickValues;
+    public List<String> getNumberPicksValues() {
+        return numberPicksValues;
     }
 }

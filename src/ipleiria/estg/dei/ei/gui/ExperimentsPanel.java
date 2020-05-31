@@ -61,32 +61,32 @@ public class ExperimentsPanel extends JPanel implements GAListener {
     availableParameters.put("Statistics",values);
 
 
-        try {
-            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
-            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
-            for (int i = 0; i < files.size(); i++) {
-
-                mapPickFiles.put(files.get(i).toString(),filesToString.get(i));
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
-            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
-
-            for (int i = 0; i < files.size(); i++) {
-
-                mapWarhouseLayoutFiles.put(files.get(i).toString(),filesToString.get(i));
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        availableParameters.put("WarehouseLayout", mapWarhouseLayoutFiles);
-        availableParameters.put("Picks", mapPickFiles);
+//        try {
+//            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
+//            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/picks")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
+//            for (int i = 0; i < files.size(); i++) {
+//
+//                mapPickFiles.put(files.get(i).toString(),filesToString.get(i));
+//
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            List<Path> files = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
+//            List<String> filesToString = Files.walk(Paths.get("src/ipleiria/estg/dei/ei/dataSets/wareHouseLayout")).filter(s -> s.toString().endsWith(".json")).map(Path::toString).sorted().collect(Collectors.toList());
+//
+//            for (int i = 0; i < files.size(); i++) {
+//
+//                mapWarhouseLayoutFiles.put(files.get(i).toString(),filesToString.get(i));
+//
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        availableParameters.put("WarehouseLayout", mapWarhouseLayoutFiles);
+//        availableParameters.put("Picks", mapPickFiles);
 
     experimentsProgressBar = new JProgressBar();
     experimentsProgressBar.setStringPainted(true);
