@@ -15,15 +15,17 @@ public class StatisticBestAverage implements GAListener {
     private int run;
     private final double[] allRunsCollisions;
     private GeneticAlgorithm geneticAlgorithm;
+    private double numberTimesOffload;
 
     public StatisticBestAverage(int numRuns, String experimentHeader) {
         run=0;
         values = new double[numRuns];
         valuesWoCollisions = new double[numRuns];
         allRunsCollisions = new double[numRuns];
+        numberTimesOffload = 0;
         File file = new File("statistic_average_fitness_1.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "AverageFitness:" + "\t" + "AverageFitnessStdDev:" + "\t" + "AverageTime:" + "\t" + "AverageTimeStdDev:" + "\t" + "CollisionsAverage" + "\t" + "CollisionsAverageStdDev" +"\t"+ "NumberAgents"+"\t"+ "NumberPicks"+"\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "AverageFitness:" + "\t" + "AverageFitnessStdDev:" + "\t" + "AverageTime:" + "\t" + "AverageTimeStdDev:" + "\t" + "CollisionsAverage" + "\t" + "CollisionsAverageStdDev" +"\t"+ "NumberAgents"+"\t"+ "NumberPicks\t"+"#Offload"+"\r\n");
         }
     }
 
@@ -39,6 +41,7 @@ public class StatisticBestAverage implements GAListener {
         values[run]=geneticAlgorithm.getBestInRun().getFitness();
         valuesWoCollisions[run]=geneticAlgorithm.getBestInRun().getFitnessWoCollisions();
         allRunsCollisions[run++]=geneticAlgorithm.getBestInRun().getNumberOfCollisions();
+        this.numberTimesOffload += geneticAlgorithm.getBestInRun().getNumberTimesOffload();
     }
 
 
@@ -55,11 +58,14 @@ public class StatisticBestAverage implements GAListener {
         int nrAgents = Environment.getInstance().getNumberOfAgents();
         int nrPicks = Environment.getInstance().getNumberOfPicks();
 
-        FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t"+ nrPicks + "\r\n");
+        double numTimesOffload = numberTimesOffload/(this.values.length * nrAgents);
+
+        FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t"+ nrPicks + "\t"+ numTimesOffload  +"\r\n");
         Arrays.fill(values,0);
         Arrays.fill(valuesWoCollisions,0);
         Arrays.fill(allRunsCollisions,0);
         this.run=0;
+        this.numberTimesOffload = 0;
     }
 
     private String buildExperimentValues() {

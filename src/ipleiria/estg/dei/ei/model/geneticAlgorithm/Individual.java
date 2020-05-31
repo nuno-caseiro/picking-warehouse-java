@@ -19,6 +19,7 @@ public class Individual implements Comparable<Individual> {
     private List<AgentPath> individualPaths;
     private Environment environment;
     private AStar aStar;
+    private int numberTimesOffload;
 
     public Individual(int numPicks, int numAgents) {
         int genomeSize = numPicks + (numAgents - 1);
@@ -52,6 +53,7 @@ public class Individual implements Comparable<Individual> {
         this.aStar = new AStar();
         this.individualPaths = original.individualPaths;
         this.numberOfCollisions = original.numberOfCollisions;
+        this.numberTimesOffload = original.numberTimesOffload;
     }
 
     public int[] getGenome() {
@@ -86,6 +88,10 @@ public class Individual implements Comparable<Individual> {
         return numberOfCollisions;
     }
 
+    public int getNumberTimesOffload() {
+        return numberTimesOffload;
+    }
+
     public int getIndexOf(int value){
         for (int i = 0; i < genome.length; i++) {
             if (genome[i] == value) {
@@ -101,6 +107,7 @@ public class Individual implements Comparable<Individual> {
 
     public void computeFitness() {
         this.individualPaths = new ArrayList<>();
+        this.numberTimesOffload = 0;
 
         List<Node> picks = this.environment.getPicks();
         List<Node> agents = this.environment.getAgents();
@@ -130,6 +137,8 @@ public class Individual implements Comparable<Individual> {
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
 
                 if ((weightOnTopOfRestrictionPick + picks.get(this.genome[i + 1] - 1).getWeight()) > restrictionPickCapacity) {
+                    this.numberTimesOffload++;
+
                     computePath(agentPath, picks.get(this.genome[i] - 1), this.environment.getNode(offloadArea));
                     computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
 
@@ -271,6 +280,8 @@ public class Individual implements Comparable<Individual> {
         sb.append(this.fitnessWoCollisions);
         sb.append(" - Collisions: ");
         sb.append(this.numberOfCollisions);
+        sb.append(" - #Offload: ");
+        sb.append(this.numberTimesOffload);
         sb.append("\nPath: ");
         for (int value : genome) {
             sb.append(value).append(" ");
