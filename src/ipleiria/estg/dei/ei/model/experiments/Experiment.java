@@ -31,8 +31,6 @@ public class Experiment implements ExperimentListener  {
     protected List<ExperimentListener> statistics;
     private ExperimentsPanel experimentsPanel;
 
-
-
     public Experiment() {
         this.parameters= new LinkedHashMap<>();
         this.countAllRuns=1;
@@ -203,14 +201,13 @@ public class Experiment implements ExperimentListener  {
         return parameters.get("Runs").activeValueIndex < parameters.get("Runs").getNumberOfValues();
     }
 
-    public void run(){
+    public void run() {
 
         for (int i = 0; i < runs; i++) {
             geneticAlgorithm = buildRun();
             geneticAlgorithm.addGAListener(experimentsPanel);
             geneticAlgorithm.run();
             seed++;
-            System.out.println(geneticAlgorithm.getBestInRun().getWaitTime());
         }
         this.seed=1;
         fireExperimentEnded();

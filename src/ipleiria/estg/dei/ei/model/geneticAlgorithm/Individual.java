@@ -21,6 +21,7 @@ public class Individual implements Comparable<Individual> {
     private AStar aStar;
     private int numberTimesOffload;
     private double waitTime;
+    private double maxWaitTime;
 
     public Individual(int numPicks, int numAgents) {
         int genomeSize = numPicks + (numAgents - 1);
@@ -56,6 +57,7 @@ public class Individual implements Comparable<Individual> {
         this.numberOfCollisions = original.numberOfCollisions;
         this.numberTimesOffload = original.numberTimesOffload;
         this.waitTime = original.waitTime;
+        this.maxWaitTime = original.maxWaitTime;
     }
 
     public int[] getGenome() {
@@ -92,6 +94,16 @@ public class Individual implements Comparable<Individual> {
 
     public int getNumberTimesOffload() {
         return numberTimesOffload;
+    }
+
+    public double getMaxWaitTime() {
+        return maxWaitTime;
+    }
+
+    private void compareMaxWaitTime(double time) {
+        if (time > this.maxWaitTime) {
+            this.maxWaitTime = time;
+        }
     }
 
     public double getWaitTime() {
@@ -223,6 +235,7 @@ public class Individual implements Comparable<Individual> {
     private void detectAndPenalizeCollisions() {
         this.numberOfCollisions = 0;
         this.waitTime = 0;
+        this.maxWaitTime = 0;
 
         // BUILD PAIRS
         for (AgentPath agentPath : this.individualPaths) {
@@ -242,10 +255,12 @@ public class Individual implements Comparable<Individual> {
                             waitTime = environment.getDistanceToDecisionNodeType1(node.getNodeNumber()) + 1;
                             this.fitness += waitTime;
                             this.waitTime += waitTime;
+                            compareMaxWaitTime(waitTime);
                         } else {
                             this.numberOfCollisions++;
                             this.fitness++;
                             this.waitTime++;
+                            compareMaxWaitTime(1);
                         }
                     }
                 }
@@ -268,6 +283,7 @@ public class Individual implements Comparable<Individual> {
                                     waitTime = environment.getDistanceToDecisionNode(path.get(k).getNodeNumber(), path.get(k).getTime(), path, k, path.get(k + 1).getNodeNumber(), timePair.getNode1Time(), path1, timePair.getIndex()) + 1;
                                     this.fitness += waitTime;
                                     this.waitTime += waitTime;
+                                    compareMaxWaitTime(waitTime);
                                 }
                             }
                         }
