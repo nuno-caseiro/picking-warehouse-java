@@ -92,7 +92,7 @@ public class StatisticBestAverage implements GAListener {
         double meanMaxTimeWaitForIndividualsWithCollisions = Maths.average(this.maxWaitTimes);
         Collections.sort(this.maxWaitTimes);
         double medianMaxTimeWaitForIndividualsWithCollisions = Maths.computeMedian(this.maxWaitTimes);
-        double maxWaitTimeForExperiment = Collections.max(this.maxWaitTimes);
+        double maxWaitTimeForExperiment = this.maxWaitTimes.size() > 0 ? this.maxWaitTimes.get(this.maxWaitTimes.size() - 1) : 0;
 
         FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t" + nrPicks + "\t" + numberTimesOffl + "\t"+ timeWaitAvg + "\t"+ meanTimeWaitForIndividualsWithCollisions + "\t" + medianTimeWaitForIndividualsWithCollisions + "\t" + percentageOfRunsWithCollisions + "\t" + meanMaxTimeWaitForIndividualsWithCollisions + "\t" + medianMaxTimeWaitForIndividualsWithCollisions + "\t" + maxWaitTimeForExperiment + "\r\n");
         Arrays.fill(values,0);
