@@ -37,6 +37,9 @@ public class Maths {
     }
 
     public static double computeMedian(List<Double> values) {
+        if(values.size()==0){
+            return 0;
+        }
         double value;
         if (values.size() % 2 == 0) {
             value = (values.get(values.size() / 2) + values.get((values.size() / 2) - 1)) / 2;
