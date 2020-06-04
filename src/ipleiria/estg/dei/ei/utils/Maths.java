@@ -35,4 +35,15 @@ public class Maths {
         }
         return Math.sqrt(1 / (double) array.size() * sum);
     }
+
+    public static double computeMedian(List<Double> values) {
+        double value;
+        if (values.size() % 2 == 0) {
+            value = (values.get(values.size() / 2) + values.get((values.size() / 2) - 1)) / 2;
+        } else {
+            value = values.get(values.size() / 2);
+        }
+
+        return  value;
+    }
 }

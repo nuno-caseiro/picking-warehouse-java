@@ -6,7 +6,10 @@ import ipleiria.estg.dei.ei.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.utils.FileOperations;
 import ipleiria.estg.dei.ei.utils.Maths;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class StatisticBestAverage implements GAListener {
 
@@ -18,6 +21,9 @@ public class StatisticBestAverage implements GAListener {
     private double waitTime;
     private GeneticAlgorithm geneticAlgorithm;
     private final int numRuns;
+    private int numberOfIndividualsWithCollisions;
+    private List<Double> waitTimes;
+    private List<Double> maxWaitTimes;
 
     public StatisticBestAverage(int numRuns, String experimentHeader) {
         run=0;
@@ -26,11 +32,14 @@ public class StatisticBestAverage implements GAListener {
         allRunsCollisions = new double[numRuns];
         numberTimesOffload = 0;
         waitTime = 0;
+        this.numberOfIndividualsWithCollisions = 0;
         this.numRuns=numRuns;
+        this.waitTimes = new ArrayList<>();
+        this.maxWaitTimes = new ArrayList<>();
 
         File file = new File("statistic_average_fitness_1.xls");
         if(!file.exists()){
-            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "AverageFitness:" + "\t" + "AverageFitnessStdDev:" + "\t" + "AverageTime:" + "\t" + "AverageTimeStdDev:" + "\t" + "CollisionsAverage" + "\t" + "CollisionsAverageStdDev" +"\t"+ "NumberAgents"+"\t"+ "NumberPicks" +"\t"+"NumberTimesOffload" + "\t" + "TimeWaitAvg" +"\r\n");
+            FileOperations.appendToTextFile("statistic_average_fitness_1.xls", experimentHeader + "AverageFitness:" + "\t" + "AverageFitnessStdDev:" + "\t" + "AverageTime:" + "\t" + "AverageTimeStdDev:" + "\t" + "CollisionsAverage" + "\t" + "CollisionsAverageStdDev" +"\t"+ "NumberAgents"+"\t"+ "NumberPicks" +"\t"+"NumberTimesOffload" + "\t" + "TimeWaitAvg" + "\t" + "MeanTimeWait" + "\t" + "MedianTimeWait" + "\t" + "%runsWithCollisions" + "\t" + "MeanMaxTimeWait" + "\t" + "MedianMaxTimeWait" + "\t" + "MaxTimeWaitExperiment" + "\r\n");
         }
     }
 
@@ -48,6 +57,13 @@ public class StatisticBestAverage implements GAListener {
         numberTimesOffload+= geneticAlgorithm.getBestInRun().getNumberTimesOffload();
         waitTime += geneticAlgorithm.getBestInRun().getWaitTime();
         allRunsCollisions[run++]=geneticAlgorithm.getBestInRun().getNumberOfCollisions();
+
+        if (geneticAlgorithm.getBestInRun().getNumberOfCollisions() > 0) {
+            this.numberOfIndividualsWithCollisions++;
+            this.waitTimes.add(geneticAlgorithm.getBestInRun().getWaitTime());
+            this.maxWaitTimes.add(geneticAlgorithm.getBestInRun().getMaxWaitTime());
+        }
+        System.out.println("#Collisions: " + geneticAlgorithm.getBestInRun().getNumberOfCollisions() + " WaitTime: " + geneticAlgorithm.getBestInRun().getWaitTime() + " MaxWaitTime: " + geneticAlgorithm.getBestInRun().getMaxWaitTime());
     }
 
 
@@ -67,14 +83,28 @@ public class StatisticBestAverage implements GAListener {
         double numberTimesOffl = numberTimesOffload/(numRuns * nrAgents);
         double timeWaitAvg = waitTime/(numRuns * nrAgents);
 
-        FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t" + nrPicks + "\t" + numberTimesOffl + "\t"+ timeWaitAvg + "\r\n");
+        double meanTimeWaitForIndividualsWithCollisions = waitTime / numberOfIndividualsWithCollisions;
+        Collections.sort(this.waitTimes);
+        double medianTimeWaitForIndividualsWithCollisions = Maths.computeMedian(this.waitTimes);
+        double percentageOfRunsWithCollisions = (this.numberOfIndividualsWithCollisions / (double) this.numRuns) * 100;
+
+        double meanMaxTimeWaitForIndividualsWithCollisions = Maths.average(this.maxWaitTimes);
+        Collections.sort(this.maxWaitTimes);
+        double medianMaxTimeWaitForIndividualsWithCollisions = Maths.computeMedian(this.maxWaitTimes);
+        double maxWaitTimeForExperiment = Collections.max(this.maxWaitTimes);
+
+        FileOperations.appendToTextFile("statistic_average_fitness_1.xls", buildExperimentValues() + average +"\t" + stdDeviation + "\t" + averageWoCollisions + "\t"+ stdDeviationWoCollisions  +"\t" + collisionsAverage + "\t" + collisionStdDeviation +"\t"+ nrAgents + "\t" + nrPicks + "\t" + numberTimesOffl + "\t"+ timeWaitAvg + "\t"+ meanTimeWaitForIndividualsWithCollisions + "\t" + medianTimeWaitForIndividualsWithCollisions + "\t" + percentageOfRunsWithCollisions + "\t" + meanMaxTimeWaitForIndividualsWithCollisions + "\t" + medianMaxTimeWaitForIndividualsWithCollisions + "\t" + maxWaitTimeForExperiment + "\r\n");
         Arrays.fill(values,0);
         Arrays.fill(valuesWoCollisions,0);
         Arrays.fill(allRunsCollisions,0);
         this.run=0;
         this.numberTimesOffload=0;
         this.waitTime=0;
+        this.numberOfIndividualsWithCollisions = 0;
+        this.waitTimes = new ArrayList<>();
+        this.maxWaitTimes = new ArrayList<>();
 
+        System.out.println("##################################################");
     }
 
     private String buildExperimentValues() {
